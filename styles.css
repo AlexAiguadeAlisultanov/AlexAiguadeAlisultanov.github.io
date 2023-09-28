@@ -1,0 +1,151 @@
+/* Estilos generales */
+body {
+    background:url(Img/fondo.jpg) no-repeat center center fixed;
+    background-repeat:no-repeat;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    margin-top: 190px;
+}
+
+.menu {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    padding: 10px;
+    transition: transform 0.3s ease-in-out;
+    transform: translateY(0);
+    background-color: rgba(175, 108, 49, 0.63);
+    color: rgb(255, 255, 255);
+    text-align: center;
+    font-size: 24px;
+    border-radius: 40px;
+}
+#yo{
+    width:250px;
+    height:250px;
+    border-radius: 130px;
+}
+.menu.hidden {
+    transform: translateY(-100%);
+}
+
+.content {
+    padding-top: 60px; /* Añade un espacio en la parte superior igual a la altura del menú */
+}
+
+nav ul {
+    list-style: none;
+    display: flex;
+    justify-content: center;
+    background-color: rgba(175, 108, 49, 0.63);
+    padding: 10px;
+    margin: auto; /* Elimina el margen predeterminado */
+}
+
+nav li {
+    margin: 0 20px;
+}
+
+nav a {
+    text-decoration: none;
+    color: white;
+    font-weight: bold;
+}
+
+/* Estilos de secciones */
+section {
+    padding: 40px;
+    text-align: left; /* Centra el contenido en todas las secciones */
+}
+#Imatgejava  {
+    padding: 10px;
+    margin: auto;
+    width:50px;
+    height: 50px;
+    margin: 30px;
+    border-radius: 50px;
+}
+#Imatgejavascript {
+    padding: 10px;
+    margin: auto;
+    width:50px;
+    height: 50px;
+    margin: 30px;
+    border-radius: 50px;
+}
+#Imatgehtml  {
+    padding: 10px;
+    margin: auto;
+    border-radius: 50px;
+    width: 100px;
+    height: 50px;
+    margin: 30px;
+}
+#Imatgecss  {
+    padding: 10px;
+    margin: auto;
+    border-radius: 50px;
+    width:50px;
+    height: 50px;
+    margin: 30px;
+}
+#ImatgePHP{
+    padding: 10px;
+    margin: auto;
+    border-radius: 50px;
+    width:50px;
+    height: 50px;
+    margin: 30px;
+}
+#ImatgeMySQL{
+    padding: 10px;
+    margin: auto;
+    border-radius: 50px;
+    width:50px;
+    height: 50px;
+    margin: 30px;
+}
+#Imatgemongo{
+    padding: 10px;
+    margin: auto;
+    border-radius:50px;
+    width:50px;
+    height: 50px;
+    margin: 30px;
+}
+
+
+section.about {
+    color: #333;
+}
+
+.project, .skills , div {
+    background-color: #f4f4f4;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+/* Estilos de pie de página */
+footer {
+    background-color: #333;
+    color: white;
+    text-align: center;
+    padding: 10px;
+}
+.flex-container {
+    display: flex;
+    flex-direction: row;
+    font-size: 30px;
+    text-align: center;
+}
+@media (max-width: 800px) {
+    .flex-container {
+      flex-direction: column;
+    }
+  }

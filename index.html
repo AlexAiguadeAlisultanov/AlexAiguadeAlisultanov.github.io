@@ -1,25 +1,92 @@
-<html lang="ca">
+<!DOCTYPE html>
+<html lang="en">
 <head>
-        <link rel="icon" href="Img/FotoAlex.ico"/>
-        <link rel="stylesheet"  href="style.css">
-        <title>EmboÀrea</title>
-        <meta charset="UTF-8">
-        <meta name="keywords" content="Portafoli,github">
-        <meta name="desctription" content="Aquest es el meu Portafoli">
-        <meta name="author" content="Alex Aiguade">
-        <meta name="copyright" content="PortafoliAlex">
+    <link rel="icon" href="Img/FotoAlex.ico"/>
+    <link rel="stylesheet" href="styles.css">
+    <title>Alex Aiguade Alisultanov</title>
+    <meta charset="UTF-8">
+    <meta name="keywords" content="Portafoli,github">
+    <meta name="description" content="Aquest es el meu Portafoli">
+    <meta name="author" content="Alex Aiguade">
+    <meta name="copyright" content="PortafoliAlex">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
 </head>
 <body>
-    <div class="divlogo"><img class="lembo" title="Imatge Alex Aiguade" alt="Imatge Alex Aiguade" src="Img/FotoAlex.ico"/></a></div>
-        <h3 class="titol">AQUEST ES EL MEU PORTAFOLI I AQUI US EXPLICARE ELS MEUS ESDEVENIMENTS</h3>
-        <ul class="ulmenuin">
-            <li class="limenuin"><i class="fas fa-home"></i><a class="amenuin" href="index.html">PORTAFOLI</a></li>
-            <li class="limenuin"><i class="fas fa-file-download"></i><a class="amenuin" href="aboutme.html">ABOUT ME</a></li>
-            <li class="limenuin"><i class="far fa-calendar-alt"></i><a class="amenuin" href="skills.html">SKILLS</a></li>
-            <li class="limenuin"><i class="fas fa-users"></i><a class="amenuin" href="contact.html">CONTACT</a></li>
-        </ul>
+    <header class="menu">
+        <h1>El Meu Portafoli</h1>
+        <nav>
+            <ul class="flex-container">
+                <li><a href="#about">About Me</a></li>
+                <li><a href="#skills">Skills</a></li>
+                <li><a href="#projects">Projects</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+    <img src="Img/FotoAlex.png" alt="" id = "yo">
+    <main>
+        <section class="about" id="about" >
+            <h2>About Me</h2>
+            <div>
+                <p>I am a Computer Science Grad Student at Arizona State University. I enjoy problem-solving and coding. Always strive to bring 100% to the work I do. I have worked on technologies like Python, Django, Flask, MySQL, PostgreSQL, MongoDB, HTML5, CSS, Java, C++ during my bachelor's. I have 19 months of professional work experience which helped me strengthen my experience in Python, Flask, and Django. I am passionate about developing complex applications that solve real-world problems impacting millions of users.</p>
+            </div>
+            <h3>Languages: </h3>
+            <div>
+                <p>Java, JavaScript, HTML/CSS, Python, PHP</p>
+            </div>
+            <h3>Databases: </h3>
+            <div>
+                <p>MySQL, MongoDB</p>
+            </div>
+            <h3>Tools & Technologies: </h3>
+            <div>
+                <p>Github</p><br><br>
+                <p>Looking for an opportunity to work in a challenging position combining my skills in Software Engineering, which provides professional development, interesting experiences and personal growth.</p>
+            </div>
+            
+        </section>
+        <section id="skills">
+            <h2>Skills</h2>
+            <div class="skills">
+                <h3>Languages</h3>
+                <ul class="flex-container">
+                    <img id="Imatgejava" src="Img/Java.png" alt="">
+                    <img id="Imatgejavascript" src="Img/javascript.png" alt="">
+                    <img id="Imatgehtml" src="Img/html.jpg" alt="">
+                    <img id="Imatgecss" src="Img/css.png" alt="">
+                </ul>
+            </div>
+            <div class="skills">
+                <h3>Databases</h3>
+                <img id="ImatgePHP" src="Img/php.png" alt="">
+                <img id="ImatgeMySQL" src="Img/mysql.png" alt="">
+                <img id="Imatgemongo" src="Img/mongodb.png" alt="">
+            </div>
+        </section>
+    
+        <section id="projects">
+            <h2>Projects</h2>
+            <div class="project">
+                <h3>Projecte 1</h3>
+                <p>Descripción del Proyecto 1</p>
+            </div>
+            <div class="project">
+                <h3>Proyecto 2</h3>
+                <p>Descripción del Proyecto 2</p>
+            </div>
+        </section>
+    
+        <section class="contact" id="contact">
+            <h2>Contact</h2>
+            <p>Puedes contactarme en [alexaiguade@email.com]</p>
+            <p>Puedes tambien contactarme en [684258353]</p>
+        </section>
+    
+        <footer>
+            <p>&copy; 2023 - El Meu Portafoli</p>
+        </footer>
+        <script src="script.js"></script>
+    </main>
 </body>
 </html>
