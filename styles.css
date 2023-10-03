@@ -1,6 +1,7 @@
+
 /* Estilos generales */
 body {
-    background:url(Img/fondo.jpg) no-repeat center center fixed;
+    background-color: #A8757F;
     background-repeat:no-repeat;
     -webkit-background-size: cover;
     -moz-background-size: cover;
