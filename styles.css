@@ -1,7 +1,7 @@
 
 /* Estilos generales */
 body {
-    background-color: #A8757F;
+    background-color: #CF9F70;
     background-repeat:no-repeat;
     -webkit-background-size: cover;
     -moz-background-size: cover;
@@ -21,7 +21,7 @@ body {
     padding: 10px;
     transition: transform 0.3s ease-in-out;
     transform: translateY(0);
-    background-color: rgba(175, 108, 49, 0.63);
+    background-color: #85424f;
     color: rgb(255, 255, 255);
     text-align: center;
     font-size: 24px;
@@ -44,7 +44,8 @@ nav ul {
     list-style: none;
     display: flex;
     justify-content: center;
-    background-color: rgba(175, 108, 49, 0.63);
+    background-color: #c66478;
+    border-radius: 40px;
     padding: 10px;
     margin: auto; /* Elimina el margen predeterminado */
 }
