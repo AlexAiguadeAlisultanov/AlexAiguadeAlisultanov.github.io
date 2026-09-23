@@ -26,6 +26,20 @@
   --topbar-bg: rgba(250, 250, 249, .78);
   --flag-ring: rgba(20, 20, 22, .16);
 
+  /* Fondo. Los colores van en triplete RGB sin envolver porque el script los lee de
+     aquí: así el fondo se retoca en la hoja de estilos, no en el JavaScript.
+     Las opacidades están medidas, no puestas a ojo: con estas, el píxel más cargado
+     que el fondo puede llegar a pintar deja el texto secundario en 4.9 : 1 en claro y
+     5.2 : 1 en oscuro, por encima del 4.5 : 1 que pide la norma. Si se suben, hay que
+     volver a medirlo. */
+  --fons-base: 250 250 249;
+  --fons-1: 28 107 117;    --fons-a1: .150;
+  --fons-2: 62 158 176;    --fons-a2: .130;
+  --fons-3: 201 168 122;   --fons-a3: .115;
+  --fons-4: 28 107 117;    --fons-a4: .100;
+  --fons-5: 70 170 186;    --fons-a5: .075;
+  --gra: .035;
+
   --font: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI Variable Text",
           "Segoe UI", Inter, Roboto, "Helvetica Neue", sans-serif;
 
@@ -66,6 +80,16 @@
     --shadow-up: 0 1px 2px rgba(0, 0, 0, .55), 0 16px 32px -16px rgba(0, 0, 0, .8);
     --topbar-bg: rgba(15, 15, 17, .74);
     --flag-ring: rgba(255, 255, 255, .22);
+
+    /* En oscuro las manchas tiran a azul verdoso y una queda cálida, para que el negro
+       no se vuelva gris. El grano baja porque sobre un fondo casi negro se nota más. */
+    --fons-base: 15 15 17;
+    --fons-1: 95 198 212;    --fons-a1: .120;
+    --fons-2: 52 132 158;    --fons-a2: .140;
+    --fons-3: 150 118 78;    --fons-a3: .090;
+    --fons-4: 95 198 212;    --fons-a4: .090;
+    --fons-5: 120 214 226;   --fons-a5: .065;
+    --gra: .025;
   }
 }
 
@@ -73,14 +97,18 @@
 
 *, *::before, *::after { box-sizing: border-box; }
 
+/* El color de fondo vive en el html y el body se queda transparente: así el lienzo
+   decorativo, que va por detrás con z-index negativo, se ve. Si el lienzo no llega a
+   pintarse nunca, lo que queda es el mismo color de siempre. */
 html {
   scroll-behavior: smooth;
   -webkit-text-size-adjust: 100%;
+  background: var(--bg);
 }
 
 body {
   margin: 0;
-  background: var(--bg);
+  background: transparent;
   color: var(--text);
   font-family: var(--font);
   font-size: var(--fs-base);
@@ -107,6 +135,47 @@ a { color: inherit; }
 }
 
 .sprite { position: absolute; width: 0; height: 0; overflow: hidden; }
+
+/* ---------- Fondo ---------- */
+
+/* Va por detrás de todo con z-index negativo, así que sirve igual para la pantalla de
+   acceso y para el portafolio ya abierto sin tener que duplicarlo. No recibe clics ni
+   entra en el orden de tabulación. */
+
+.fons {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  contain: layout paint;
+}
+
+/* Arranca invisible y entra con calma cuando ya hay un fotograma pintado: sin esto se
+   vería un salto del color plano al lienzo. */
+.fons__llenc,
+.fons__gra {
+  display: block;
+  opacity: 0;
+  transition: opacity .8s var(--ease);
+}
+
+.fons__llenc {
+  width: 100%;
+  height: 100%;
+}
+
+.fons__llenc.is-on { opacity: 1; }
+
+/* Grano fino encima de las manchas. Un degradado grande y suave se ve a bandas en
+   pantallas de 8 bits, y el ruido las deshace. La textura la genera el script. */
+.fons__gra {
+  position: absolute;
+  inset: 0;
+  background-repeat: repeat;
+  background-size: 64px 64px;
+}
+
+.fons__gra.is-on { opacity: var(--gra); }
 
 .wrap {
   width: 100%;
@@ -144,13 +213,14 @@ a { color: inherit; }
 /* És l'única cosa que porta el HTML. El portafoli entra quan l'API diu qui és qui, i
    aquesta capa marxa del document sencera. */
 
+/* Sin color propio: la tarjeta ya es opaca y el fondo de detrás se ve también aquí. */
 .porta {
   position: fixed;
   inset: 0;
   z-index: 60;
   display: flex;
   flex-direction: column;
-  background: var(--bg);
+  background: transparent;
   overflow-y: auto;
 }
 
@@ -1074,6 +1144,28 @@ button.btn {
   color: var(--text-2);
 }
 
+/* ---------- Entrada de las secciones ---------- */
+
+/* La clase la pone el script, nunca el HTML: si el JavaScript o el observador fallan,
+   nadie se queda con el contenido invisible. */
+
+.reveal {
+  opacity: 0;
+  transform: translateY(12px);
+  transition: opacity .6s var(--ease), transform .6s var(--ease);
+}
+
+.reveal:not(.is-vis) { will-change: opacity, transform; }
+
+.reveal.is-vis {
+  opacity: 1;
+  transform: none;
+  will-change: auto;
+}
+
+/* El retrato entra justo detrás del texto, no a la vez. */
+.hero__photo.reveal { transition-delay: .09s; }
+
 /* ---------- Adaptacions ---------- */
 
 @media (max-width: 760px) {
@@ -1135,6 +1227,10 @@ button.btn {
   .estat--waking .estat__punt { animation: none; opacity: 1; }
   /* Sense l'espera les targetes es quedarien invisibles durant el retard. */
   .card--nou { animation-delay: 0s !important; }
+
+  /* El fondo se queda quieto: el script pinta un solo fotograma y no vuelve a tocarlo.
+     Aquí solo se retira la aparición gradual, que la regla de arriba ya deja en nada. */
+  .reveal { opacity: 1; transform: none; }
 }
 
 @media (forced-colors: active) {
@@ -1142,9 +1238,11 @@ button.btn {
   .cert, .langs li, .porta__card, .camp input, .sortir { border: 1px solid CanvasText; }
   .lang__btn[aria-pressed="true"] { border: 1px solid CanvasText; }
   .flag { opacity: 1; forced-color-adjust: none; }
+  /* En alto contraste manda el color del sistema, así que el fondo sobra. */
+  .fons { display: none; }
 }
 
 @media print {
-  .topbar, .skip { display: none; }
+  .topbar, .skip, .fons { display: none; }
   .card, .contact, .cert, .timeline > li { break-inside: avoid; box-shadow: none; }
 }

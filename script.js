@@ -5,6 +5,403 @@
 (function () {
   "use strict";
 
+  /* ---------- Fondo ---------- */
+
+  // Un lienzo detrás de todo el contenido, el mismo para la pantalla de acceso y para el
+  // portafolio ya abierto: cuatro manchas de color muy tenues que van a la deriva, se
+  // apartan del puntero con retardo y se reparten a distinta velocidad según bajas por
+  // la página. Sin librerías y con un solo requestAnimationFrame.
+  //
+  // Lo que hace que no cueste nada: se pinta en un búfer de unos 400 px de ancho y se
+  // escala al tamaño real. Lo que se ve son degradados suaves, así que el escalado no se
+  // nota y el coste deja de depender del tamaño de la pantalla.
+
+  var fons = (function () {
+    var buit = { remesurar: function () {} };
+
+    var capa = document.getElementById("fons");
+    var llenc = document.getElementById("fons-llenc");
+    var gra = document.getElementById("fons-gra");
+    if (!capa || !llenc || !llenc.getContext) return buit;
+
+    var ctx = null;
+    var bctx = null;
+    var buf = document.createElement("canvas");
+    try {
+      ctx = llenc.getContext("2d", { alpha: false });
+      bctx = buf.getContext("2d", { alpha: false });
+    } catch (e) {
+      return buit;
+    }
+    if (!ctx || !bctx) return buit;
+
+    var consulta = function (text) {
+      return window.matchMedia ? window.matchMedia(text) : null;
+    };
+    var compleix = function (m) { return !!(m && m.matches); };
+
+    var mqFosc = consulta("(prefers-color-scheme: dark)");
+    var mqQuiet = consulta("(prefers-reduced-motion: reduce)");
+    var mqRatoli = consulta("(hover: hover) and (pointer: fine)");
+
+    // En un móvil no hay ratón, así que ahí el fondo solo responde al desplazamiento y
+    // el bucle se para en cuanto la página se queda quieta: parado no gasta nada.
+    var ambRatoli = compleix(mqRatoli);
+    var quiet = compleix(mqQuiet);
+
+    var TAU = Math.PI * 2;
+
+    // Cómo cae la opacidad de una mancha del centro al borde, en tramos. Es una campana:
+    // de un tirón se le vería el anillo del borde, y ese anillo es lo que delata a un
+    // fondo mal hecho. Llega a cero de verdad, así que la mancha tiene un final.
+    var CAIGUDA = [
+      [0, 1], [.25, .78], [.5, .37], [.72, .12], [.88, .03], [1, 0]
+    ];
+
+    // Radio de la luz que sigue al puntero, en fracción del lado mayor del búfer.
+    var R_LLUM = .30;
+
+    // Composición fija: las manchas viven pegadas a las esquinas y no llegan a taparse
+    // del todo, así que por el centro, que es por donde va el texto, siempre se ve el
+    // color de fondo de siempre. Posición y radio en fracción del búfer.
+    //   dx/dy  cuánto se mueven solas      vx/vy  a qué velocidad, en vueltas por segundo
+    //   p1/p2  desfase, para que no vayan a la vez
+    //   rato   cuánto responden al puntero  puja/gira  cuánto se desplazan al bajar
+    var TAQUES = [
+      { c: 1, x: .08, y: .04, r: .46, dx: .055, dy: .042, vx: .047, vy: .031, p1: 0.0, p2: 1.9, rato: 1.00, puja: -.26, gira:  .07 },
+      { c: 2, x: .95, y: .15, r: .38, dx: .048, dy: .055, vx: .038, vy: .044, p1: 2.4, p2: 0.6, rato:  .45, puja: -.14, gira: -.11 },
+      { c: 3, x: .72, y: .96, r: .50, dx: .060, dy: .038, vx: .029, vy: .026, p1: 4.1, p2: 3.3, rato: 1.55, puja: -.46, gira:  .15 },
+      { c: 4, x: .02, y: .82, r: .34, dx: .044, dy: .050, vx: .043, vy: .036, p1: 5.6, p2: 2.2, rato:  .70, puja: -.10, gira: -.06 }
+    ];
+
+    var ample = 0, alt = 0;              // tamaño en píxeles CSS
+    var bw = 0, bh = 0;                  // tamaño del búfer
+    var base = [250, 250, 249];
+    var tons = [];
+
+    var rellotge = 0;                    // segundos acumulados de animación
+    var ratoX = 0, ratoY = 0;            // puntero suavizado, de -0.5 a 0.5
+    var ratoFiX = 0, ratoFiY = 0;        // puntero sin suavizar
+    var llumX = .5, llumY = .5, llumVX = 0, llumVY = 0;
+    var baixada = 0, baixadaFi = 0;      // desplazamiento, de 0 a 1
+    var maxScroll = 1;
+
+    var rid = 0, viu = false, anterior = 0, finsQuan = 0;
+    var ences = false, hiHaGra = false;
+    var nivell = 0;                      // 0 completo · 1 recortado · 2 congelado
+    var mitjana = 16.7, mostres = 0;
+    var ampleAbans = 0, altAbans = 0, rellotgeMida = 0;
+
+    var ara = (window.performance && window.performance.now)
+      ? function () { return window.performance.now(); }
+      : function () { return Date.now(); };
+
+    var cenyir = function (v, min, max) { return v < min ? min : (v > max ? max : v); };
+
+    // Suavizado exponencial: el resultado no depende de a cuántos fotogramas vaya la
+    // pantalla, así que a 60 y a 144 Hz el retardo se siente igual.
+    var suavitzar = function (valor, desti, dt, tau) {
+      return valor + (desti - valor) * (1 - Math.exp(-dt / tau));
+    };
+
+    /* Paleta. Los colores viven en la hoja de estilos, aquí solo se leen. */
+
+    var trio = function (estil, nom, defecte) {
+      var parts = String(estil.getPropertyValue(nom) || "").trim().split(/[\s,]+/);
+      if (parts.length < 3) return defecte;
+      var eixida = [];
+      for (var i = 0; i < 3; i++) {
+        var n = parseFloat(parts[i]);
+        if (!isFinite(n)) return defecte;
+        eixida.push(cenyir(Math.round(n), 0, 255));
+      }
+      return eixida;
+    };
+
+    var xifra = function (estil, nom, defecte) {
+      var n = parseFloat(estil.getPropertyValue(nom));
+      return isFinite(n) ? n : defecte;
+    };
+
+    var llegirPaleta = function () {
+      var estil = window.getComputedStyle(document.documentElement);
+      base = trio(estil, "--fons-base", [250, 250, 249]);
+      tons = [];
+      for (var i = 1; i <= 5; i++) {
+        var rgb = trio(estil, "--fons-" + i, null);
+        var a = xifra(estil, "--fons-a" + i, 0);
+        tons.push(rgb && a > 0 ? { rgb: rgb, a: a } : null);
+      }
+    };
+
+    /* Pintado */
+
+    var taca = function (x, y, r, to) {
+      if (!to || r <= 1) return;
+      var cap = "rgba(" + to.rgb[0] + "," + to.rgb[1] + "," + to.rgb[2] + ",";
+      var g = bctx.createRadialGradient(x, y, 0, x, y, r);
+      for (var i = 0; i < CAIGUDA.length; i++) {
+        g.addColorStop(CAIGUDA[i][0], cap + (to.a * CAIGUDA[i][1]).toFixed(4) + ")");
+      }
+      bctx.fillStyle = g;
+      bctx.fillRect(x - r, y - r, r * 2, r * 2);
+    };
+
+    var dibuixar = function () {
+      if (!bw || !bh || !tons.length) return;
+      var gran = bw > bh ? bw : bh;
+
+      bctx.fillStyle = "rgb(" + base[0] + "," + base[1] + "," + base[2] + ")";
+      bctx.fillRect(0, 0, bw, bh);
+
+      var quantes = nivell >= 1 ? 3 : TAQUES.length;
+      for (var i = 0; i < quantes; i++) {
+        var t = TAQUES[i];
+        var x = (t.x + Math.sin(rellotge * t.vx * TAU + t.p1) * t.dx
+                     + ratoX * t.rato * .10 + baixada * t.gira) * bw;
+        var y = (t.y + Math.cos(rellotge * t.vy * TAU + t.p2) * t.dy
+                     + ratoY * t.rato * .10 + baixada * t.puja) * bh;
+        // El radio respira un poco: sin esto la composición se lee como cuatro círculos.
+        var r = t.r * gran * (1 + Math.sin(rellotge * t.vx * TAU * .6 + t.p2) * .06);
+        taca(x, y, r, tons[t.c - 1]);
+      }
+
+      if (ambRatoli && nivell === 0) taca(llumX * bw, llumY * bh, R_LLUM * gran, tons[4]);
+
+      ctx.drawImage(buf, 0, 0, bw, bh, 0, 0, llenc.width, llenc.height);
+    };
+
+    var encendre = function () {
+      if (ences) return;
+      ences = true;
+      llenc.classList.add("is-on");
+      if (hiHaGra) gra.classList.add("is-on");
+    };
+
+    /* Medidas */
+
+    var mesurar = function () {
+      var doc = document.documentElement;
+      maxScroll = Math.max(1, (doc ? doc.scrollHeight : 0) - window.innerHeight);
+    };
+
+    var dimensionar = function () {
+      ample = Math.max(1, capa.clientWidth || window.innerWidth || 1);
+      alt = Math.max(1, capa.clientHeight || window.innerHeight || 1);
+
+      // Densidad real, pero con tope: en una pantalla de densidad 3 pintar nueve veces
+      // los píxeles de un degradado borroso no cambia nada de lo que se ve.
+      var sostre = nivell >= 1 ? 1 : (ambRatoli ? 2 : 1.5);
+      var dpr = cenyir(window.devicePixelRatio || 1, 1, sostre);
+      llenc.width = Math.round(ample * dpr);
+      llenc.height = Math.round(alt * dpr);
+      ctx.imageSmoothingEnabled = true;
+      if ("imageSmoothingQuality" in ctx) ctx.imageSmoothingQuality = "high";
+
+      var divisor = nivell >= 1 ? 4.6 : 3.4;
+      var maxim = ambRatoli ? 440 : 320;
+      bw = cenyir(Math.round(ample / divisor), 160, maxim);
+      bh = Math.max(120, Math.round(bw * (alt / ample)));
+      buf.width = bw;
+      buf.height = bh;
+
+      mesurar();
+    };
+
+    /* Bucle */
+
+    var segueix = function (marca) {
+      if (nivell >= 2 || document.hidden) return false;
+      if (ambRatoli) return true;
+      if (marca < finsQuan) return true;
+      return Math.abs(baixada - baixadaFi) > .0008;
+    };
+
+    var rebaixar = function () {
+      nivell++;
+      mostres = 0;
+      mitjana = 16.7;
+      dimensionar();
+    };
+
+    var bucle = function (marca) {
+      rid = 0;
+      var dt = anterior ? (marca - anterior) / 1000 : 1 / 60;
+      anterior = marca;
+      if (!(dt > 0) || dt > .25) dt = 1 / 60;   // veníamos de una pausa: no dar el salto
+      var pas = dt > .05 ? .05 : dt;
+
+      // Media móvil de lo que cuesta cada fotograma. Si el equipo no da, el fondo se
+      // recorta solo antes que dejar la página a tirones.
+      mitjana += (dt * 1000 - mitjana) * .05;
+      mostres++;
+      if (mostres > 80 && nivell < 2 && mitjana > 30) rebaixar();
+
+      rellotge += pas;
+
+      if (window.scrollY > maxScroll) mesurar();
+      baixadaFi = cenyir(window.scrollY / maxScroll, 0, 1);
+      baixada = suavitzar(baixada, baixadaFi, pas, .28);
+
+      if (ambRatoli) {
+        ratoX = suavitzar(ratoX, ratoFiX, pas, .50);
+        ratoY = suavitzar(ratoY, ratoFiY, pas, .50);
+
+        // El punto de luz va con muelle: llega tarde y se pasa un poco de largo. Eso es
+        // lo que da la sensación de líquido, en vez de la de algo pegado al cursor.
+        llumVX += (ratoFiX + .5 - llumX) * 26 * pas;
+        llumVY += (ratoFiY + .5 - llumY) * 26 * pas;
+        var fre = Math.exp(-7 * pas);
+        llumVX *= fre;
+        llumVY *= fre;
+        llumX += llumVX * pas;
+        llumY += llumVY * pas;
+      }
+
+      dibuixar();
+      encendre();
+
+      if (!segueix(marca)) { viu = false; return; }
+      rid = window.requestAnimationFrame(bucle);
+    };
+
+    var arrencar = function () {
+      if (viu || quiet || nivell >= 2 || document.hidden) return;
+      viu = true;
+      anterior = 0;
+      rid = window.requestAnimationFrame(bucle);
+    };
+
+    var parar = function () {
+      if (rid) window.cancelAnimationFrame(rid);
+      rid = 0;
+      viu = false;
+    };
+
+    // Con movimiento reducido no hay animación lenta: hay un fotograma y punto. La
+    // composición se coloca a mano para que quede equilibrada sin moverse.
+    var estatic = function () {
+      rellotge = 0;
+      baixada = 0; baixadaFi = 0;
+      ratoX = 0; ratoY = 0; ratoFiX = 0; ratoFiY = 0;
+      llumX = .72; llumY = .34; llumVX = 0; llumVY = 0;
+      dibuixar();
+      encendre();
+    };
+
+    /* Textura */
+
+    // Ruido fino por encima. Un degradado grande y suave sale a bandas en pantallas de 8
+    // bits, y el grano las deshace. Mitad puntos negros y mitad blancos, para que no
+    // levante el negro del modo oscuro. Se genera aquí: no se descarga nada.
+    var ferGra = function () {
+      if (!gra) return;
+      try {
+        var n = document.createElement("canvas");
+        n.width = 64;
+        n.height = 64;
+        var nc = n.getContext("2d");
+        if (!nc) return;
+        var img = nc.createImageData(64, 64);
+        var d = img.data;
+        for (var i = 0; i < d.length; i += 4) {
+          var v = Math.random() < .5 ? 0 : 255;
+          d[i] = v; d[i + 1] = v; d[i + 2] = v;
+          d[i + 3] = Math.random() * 255 | 0;
+        }
+        nc.putImageData(img, 0, 0);
+        gra.style.backgroundImage = 'url("' + n.toDataURL("image/png") + '")';
+        hiHaGra = true;
+      } catch (e) {
+        // Sin textura el fondo se ve igual, solo un pelín más liso.
+      }
+    };
+
+    /* Sucesos */
+
+    var escoltar = function (m, fn) {
+      if (!m) return;
+      if (m.addEventListener) m.addEventListener("change", fn);
+      else if (m.addListener) m.addListener(fn);
+    };
+
+    var canviMida = function () {
+      rellotgeMida = 0;
+      var w = capa.clientWidth || window.innerWidth || 1;
+      var h = capa.clientHeight || window.innerHeight || 1;
+      // En el móvil la barra del navegador aparece y desaparece al desplazarse, y eso
+      // dispara un resize cada dos por tres. Si solo cambia el alto, y poco, no se rehace.
+      if (w === ampleAbans && Math.abs(h - altAbans) < 140) {
+        mesurar();
+        return;
+      }
+      ampleAbans = w;
+      altAbans = h;
+      dimensionar();
+      if (!viu) dibuixar();
+    };
+
+    window.addEventListener("resize", function () {
+      if (rellotgeMida) window.clearTimeout(rellotgeMida);
+      rellotgeMida = window.setTimeout(canviMida, 160);
+    }, { passive: true });
+
+    document.addEventListener("visibilitychange", function () {
+      // Pestaña tapada: se para del todo. No se pinta para nadie.
+      if (document.hidden) { parar(); return; }
+      if (!ambRatoli) finsQuan = ara() + 600;
+      arrencar();
+    });
+
+    if (ambRatoli && !quiet) {
+      var alCentre = function () { ratoFiX = 0; ratoFiY = 0; };
+
+      window.addEventListener("pointermove", function (ev) {
+        if (ev.pointerType === "touch") return;
+        ratoFiX = cenyir(ev.clientX / ample - .5, -.5, .5);
+        ratoFiY = cenyir(ev.clientY / alt - .5, -.5, .5);
+      }, { passive: true });
+
+      // Al salir de la ventana vuelve al centro, en vez de quedarse clavado en el borde.
+      document.addEventListener("pointerleave", alCentre);
+      window.addEventListener("blur", alCentre);
+    }
+
+    if (!ambRatoli && !quiet) {
+      // Sin ratón el bucle solo corre mientras te desplazas, y se apaga al frenar.
+      window.addEventListener("scroll", function () {
+        finsQuan = ara() + 900;
+        arrencar();
+      }, { passive: true });
+    }
+
+    escoltar(mqFosc, function () {
+      llegirPaleta();
+      if (!viu) dibuixar();
+    });
+
+    escoltar(mqQuiet, function (ev) {
+      quiet = !!(ev && ev.matches);
+      if (quiet) { parar(); estatic(); return; }
+      mostres = 0;
+      mitjana = 16.7;
+      arrencar();
+    });
+
+    llegirPaleta();
+    ferGra();
+    ampleAbans = capa.clientWidth || window.innerWidth || 1;
+    altAbans = capa.clientHeight || window.innerHeight || 1;
+    dimensionar();
+
+    if (quiet) estatic();
+    else arrencar();
+
+    // El alto de la página cambia cuando entra el portafolio y cuando llegan los
+    // proyectos, y de ese alto sale el desplazamiento: hay que volver a medirlo.
+    return { remesurar: mesurar };
+  })();
+
   /* ---------- Idiomas ---------- */
 
   // Todo lo que se ve, menos la pantalla de acceso, se pinta desde JavaScript, así que
@@ -281,7 +678,7 @@
       "porta.titular": "Tècnic IT · Sistemes · Ciberseguretat",
       "porta.user": "Usuari",
       "porta.pass": "Contrasenya",
-      "porta.nota": "El compte de convidat ja ve posat. La contrasenya te la passa l'Alex.",
+      "porta.nota": "Entra com a convidat, ja ho tens tot posat.",
       "porta.enter": "Entrar",
       "porta.sending": "Entrant",
       "porta.retry": "Tornar-ho a provar",
@@ -426,7 +823,7 @@
       "porta.titular": "IT technician · Systems · Cybersecurity",
       "porta.user": "Username",
       "porta.pass": "Password",
-      "porta.nota": "The guest account is already filled in. Alex gives you the password.",
+      "porta.nota": "Come in as a guest, everything is already filled in.",
       "porta.enter": "Sign in",
       "porta.sending": "Signing in",
       "porta.retry": "Try again",
@@ -1645,6 +2042,8 @@
     estrena = false;
     comptar(idioma);
     sincronitzarDemos();
+    // Con las tarjetas puestas la página es más alta que hace un momento.
+    fons.remesurar();
   };
 
   var carregant = function (si) {
@@ -1864,6 +2263,49 @@
     if (any) any.textContent = String(new Date().getFullYear());
   };
 
+  /* ---------- Entrada de las secciones ---------- */
+
+  // Cada bloque entra cuando llega a la pantalla. La clase la pone el script y nunca el
+  // HTML, así que si esto no se llega a ejecutar el contenido se ve desde el principio.
+  var muntarRevelats = function () {
+    if (window.matchMedia &&
+        window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    if (!("IntersectionObserver" in window)) return;
+
+    var peces = Array.prototype.slice.call(
+      document.querySelectorAll(".hero__text, .hero__photo, .section > .wrap")
+    );
+    if (!peces.length) return;
+
+    var cap = false;
+
+    var mostrar = function (peca) {
+      cap = true;
+      peca.classList.add("is-vis");
+    };
+
+    peces.forEach(function (peca) { peca.classList.add("reveal"); });
+
+    var observador = new IntersectionObserver(function (entrades) {
+      entrades.forEach(function (entrada) {
+        if (!entrada.isIntersecting) return;
+        mostrar(entrada.target);
+        observador.unobserve(entrada.target);
+      });
+    }, { rootMargin: "0px 0px -8% 0px", threshold: 0 });
+
+    peces.forEach(function (peca) { observador.observe(peca); });
+
+    // Red de seguridad: si al cabo de un rato no se ha enseñado ni un bloque, el
+    // observador no está haciendo su trabajo y se enseña todo. Nadie se puede quedar
+    // sin ver el contenido por culpa de una animación.
+    window.setTimeout(function () {
+      if (cap) return;
+      observador.disconnect();
+      peces.forEach(mostrar);
+    }, 2500);
+  };
+
   /* ---------- Pantalla de acceso ---------- */
 
   // Quién puede entrar lo decide la API, no esta página: aquí no hay ninguna
@@ -2008,6 +2450,9 @@
     aplicar(idiomaActual);
     muntarProjectes();
     muntarCapcalera();
+    muntarRevelats();
+    // La página acaba de crecer de golpe y del alto sale el desplazamiento del fondo.
+    fons.remesurar();
 
     var boto = document.getElementById("sortir");
     if (boto) {
@@ -2157,11 +2602,12 @@
     });
 
     pintarPorta();
-    // El usuario ya viene puesto, así que el foco va donde queda algo por escribir.
+    // Los dos campos vienen puestos: lo único que queda por hacer es pulsar el botón,
+    // así que el foco va ahí. Quien quiera otra cuenta borra los campos y escribe.
     try {
-      campClau.focus({ preventScroll: true });
+      botoPorta.focus({ preventScroll: true });
     } catch (e) {
-      campClau.focus();
+      botoPorta.focus();
     }
     mirarSessio();
   }
