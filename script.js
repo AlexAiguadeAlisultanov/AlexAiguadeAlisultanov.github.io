@@ -23,7 +23,37 @@
       "feed.soon": "Demo en camino",
       "feed.onlycode": "Solo código por ahora",
       "proj.code": "Código en GitHub",
-      "hero.count": "{n} proyectos publicados"
+      "hero.count": "{n} proyectos publicados",
+      "wake.title": "Las demos se duermen solas",
+      "wake.text": "Están en un plan gratuito que las apaga a los quince minutos sin visitas. Arráncalas todas de una vez, o una a una desde su tarjeta, y cada una te va diciendo cómo está. Desde aquí solo se puede saber si el servidor contesta, no qué contesta.",
+      "wake.on": "Iniciar las {n} demos",
+      "wake.on.one": "Iniciar la demo",
+      "wake.working": "Quedan {n} por contestar",
+      "wake.working.one": "Queda 1 por contestar",
+      "wake.retry": "Volver a intentarlo con {n}",
+      "wake.retry.one": "Volver a intentarlo",
+      "wake.done": "Las demos ya están en marcha",
+      "wake.hint": "La primera arrancada tarda cerca de un minuto. Puedes seguir leyendo mientras.",
+      "wake.hint.working": "Cerca de un minuto es lo normal. Llevan {s} s.",
+      "wake.hint.done": "Se quedan despiertas mientras las uses. A los quince minutos sin visitas vuelven a dormirse.",
+      "wake.hint.some": "Alguna no ha contestado a tiempo. Puedes volver a intentarlo desde su tarjeta o desde aquí.",
+      "wake.live.on": "Iniciando {n} demos. Puede tardar cerca de un minuto.",
+      "wake.live.on.one": "Iniciando una demo. Puede tardar cerca de un minuto.",
+      "wake.live.ready": "{t}: ya contesta, la puedes abrir.",
+      "wake.live.fail": "{t}: no ha contestado.",
+      "wake.live.done": "Todas las demos contestan.",
+      "wake.live.starting": "{t}: arrancando. Puede tardar cerca de un minuto.",
+      "demo.start": "Iniciar la demo",
+      "estat.off": "Sin comprobar",
+      "estat.off.why": "Iníciala para poder abrirla.",
+      "estat.waking": "Arrancando",
+      "estat.waking.why": "El servidor está arrancando. Suele tardar cerca de un minuto.",
+      "estat.on": "Activa",
+      "estat.on.why": "Ya contesta, puedes abrirla.",
+      "estat.fail": "No ha contestado",
+      "estat.fail.why": "Se ha esperado dos minutos y medio sin respuesta. Prueba otra vez.",
+      "estat.secs": "{s} s",
+      "estat.again": "Volver a intentarlo"
     },
     ca: {
       "doc.title": "Alex Aiguadé Alisultánov · Portafoli",
@@ -65,6 +95,36 @@
       "feed.code": "Codi",
       "feed.soon": "Demo en camí",
       "feed.onlycode": "Només codi de moment",
+      "wake.title": "Les demos s'adormen soles",
+      "wake.text": "Són en un pla gratuït que les apaga als quinze minuts sense visites. Arrenca-les totes de cop, o una a una des de la seva targeta, i cadascuna et va dient com està. Des d'aquí només es pot saber si el servidor contesta, no pas què contesta.",
+      "wake.on": "Iniciar les {n} demos",
+      "wake.on.one": "Iniciar la demo",
+      "wake.working": "En queden {n} per contestar",
+      "wake.working.one": "En queda 1 per contestar",
+      "wake.retry": "Tornar-ho a provar amb {n}",
+      "wake.retry.one": "Tornar-ho a provar",
+      "wake.done": "Les demos ja són en marxa",
+      "wake.hint": "La primera arrencada triga prop d'un minut. Pots seguir llegint mentrestant.",
+      "wake.hint.working": "Prop d'un minut és el normal. Porten {s} s.",
+      "wake.hint.done": "Es queden despertes mentre les facis servir. Als quinze minuts sense visites tornen a adormir-se.",
+      "wake.hint.some": "Alguna no ha contestat a temps. Pots tornar-ho a provar des de la seva targeta o des d'aquí.",
+      "wake.live.on": "Iniciant {n} demos. Pot trigar prop d'un minut.",
+      "wake.live.on.one": "Iniciant una demo. Pot trigar prop d'un minut.",
+      "wake.live.ready": "{t}: ja contesta, la pots obrir.",
+      "wake.live.fail": "{t}: no ha contestat.",
+      "wake.live.done": "Totes les demos contesten.",
+      "wake.live.starting": "{t}: arrencant. Pot trigar prop d'un minut.",
+      "demo.start": "Iniciar la demo",
+      "estat.off": "Sense comprovar",
+      "estat.off.why": "Inicia-la per poder obrir-la.",
+      "estat.waking": "Arrencant",
+      "estat.waking.why": "El servidor està arrencant. Sol trigar prop d'un minut.",
+      "estat.on": "Activa",
+      "estat.on.why": "Ja contesta, la pots obrir.",
+      "estat.fail": "No ha contestat",
+      "estat.fail.why": "S'han esperat dos minuts i mig sense resposta. Prova-ho un altre cop.",
+      "estat.secs": "{s} s",
+      "estat.again": "Tornar-ho a provar",
       "skills.h": "Habilitats",
       "skills.intro": "Amb el que he treballat durant el grau mitjà, el superior i els projectes de dalt.",
       "skills.langs": "Llenguatges",
@@ -118,6 +178,36 @@
       "feed.code": "Code",
       "feed.soon": "Demo on the way",
       "feed.onlycode": "Code only for now",
+      "wake.title": "The demos fall asleep on their own",
+      "wake.text": "They run on a free plan that shuts them down after fifteen minutes without visits. Start them all at once, or one at a time from its card, and each one tells you how it is doing. From here all you can know is whether the server answers, not what it answers.",
+      "wake.on": "Start the {n} demos",
+      "wake.on.one": "Start the demo",
+      "wake.working": "{n} still to answer",
+      "wake.working.one": "1 still to answer",
+      "wake.retry": "Try {n} again",
+      "wake.retry.one": "Try it again",
+      "wake.done": "The demos are up",
+      "wake.hint": "The first start takes close to a minute. You can keep reading meanwhile.",
+      "wake.hint.working": "Close to a minute is normal. {s} s so far.",
+      "wake.hint.done": "They stay up while you use them. After fifteen minutes without visits they go back to sleep.",
+      "wake.hint.some": "One of them did not answer in time. You can try again from its card or from here.",
+      "wake.live.on": "Starting {n} demos. It can take close to a minute.",
+      "wake.live.on.one": "Starting one demo. It can take close to a minute.",
+      "wake.live.ready": "{t}: answering now, you can open it.",
+      "wake.live.fail": "{t}: no answer.",
+      "wake.live.done": "Every demo answers.",
+      "wake.live.starting": "{t}: starting up. It can take close to a minute.",
+      "demo.start": "Start the demo",
+      "estat.off": "Not checked",
+      "estat.off.why": "Start it to be able to open it.",
+      "estat.waking": "Starting up",
+      "estat.waking.why": "The server is starting up. It usually takes close to a minute.",
+      "estat.on": "Up",
+      "estat.on.why": "It answers, you can open it.",
+      "estat.fail": "No answer",
+      "estat.fail.why": "Two and a half minutes went by with no answer. Give it another go.",
+      "estat.secs": "{s} s",
+      "estat.again": "Try again",
       "skills.h": "Skills",
       "skills.intro": "What I have worked with across both training levels and the projects above.",
       "skills.langs": "Languages",
@@ -377,6 +467,15 @@
     return typeof url === "string" && /^https?:\/\//i.test(url);
   };
 
+  // La dirección de la demo sale de la ficha del proyecto y, si no la tiene, de la web
+  // que lleve puesta el repositorio en GitHub. Para estrenar una demo nueva basta con
+  // rellenar el campo "demo" de ahí arriba: todo lo demás va solo.
+  var adrecaDemo = function (repo) {
+    var fitxa = fitxes[repo.nom.toLowerCase()];
+    if (fitxa && esWeb(fitxa.demo)) return fitxa.demo;
+    return esWeb(repo.web) ? repo.web : "";
+  };
+
   // "hace 3 días", con las palabras del idioma que esté puesto.
   var quanFa = function (idioma, iso) {
     var moment = Date.parse(iso);
@@ -423,7 +522,7 @@
       url: repo.url,
       text: "",
       tec: [],
-      demo: esWeb(repo.web) ? repo.web : "",
+      demo: adrecaDemo(repo),
       tipus: "",
       marca: "",
       data: repo.data
@@ -434,7 +533,6 @@
       dades.text = enIdioma(fitxa.text, idioma);
       dades.tec = fitxa.tec || [];
       dades.tipus = fitxa.tipus || "web";
-      if (esWeb(fitxa.demo)) dades.demo = fitxa.demo;
     } else {
       dades.text = repo.desc || frase(idioma, "feed.nodesc");
       if (repo.llenguatge) dades.tec = [repo.llenguatge];
@@ -452,10 +550,11 @@
 
     var h3 = crear("h3");
     // El título cubre la tarjeta entera, así que apunta a lo que se quiere abrir al
-    // pulsarla: la aplicación si está en marcha, y si no el código. Mientras un
-    // repositorio siga siendo privado no hay ninguna de las dos cosas, así que el
-    // título se queda como texto y la tarjeta deja de comportarse como un enlace.
-    var obrir = dades.demo || dades.url;
+    // pulsarla: la aplicación si está en marcha, y si no el código. Cuando el
+    // repositorio es privado, o cuando la demo está dormida y todavía no contesta, no
+    // hay nada que abrir: el título se queda en texto y la tarjeta deja de ser enlace.
+    var dorm = esAdormida(dades.demo);
+    var obrir = dorm && !enMarxa(dades.demo) ? "" : (dades.demo || dades.url);
     if (obrir) {
       var enllac = crear("a");
       enllac.href = obrir;
@@ -496,25 +595,33 @@
       li.appendChild(meta);
     }
 
+    // Qué sabemos de la demo y por qué no se puede abrir todavía. Solo la llevan las
+    // que se duermen.
+    var linia = dorm ? liniaEstat(li) : null;
+
     var peu = crear("div", "card__foot");
 
-    if (dades.demo) {
-      // Aplicación en marcha: abrirla manda, y el código se queda de apoyo.
-      var provar = crear("a", "btn btn--primary card__provar");
-      provar.href = dades.demo;
-      provar.target = "_blank";
-      provar.rel = "noopener";
-      provar.appendChild(document.createTextNode(frase(idioma, "feed.try")));
-      provar.appendChild(icona("i-arrow"));
-      peu.appendChild(provar);
+    var accio = null;
 
-      var codi = crear("a", "card__codi");
-      codi.href = dades.url;
-      codi.target = "_blank";
-      codi.rel = "noopener";
-      codi.appendChild(icona("i-github"));
-      codi.appendChild(document.createTextNode(frase(idioma, "feed.code")));
-      peu.appendChild(codi);
+    if (dades.demo) {
+      // Aplicación en marcha: abrirla manda, y el código se queda de apoyo. La acción
+      // vive dentro de un hueco propio porque cambia de botón de iniciar a enlace de
+      // probar según conteste la demo o no, y así solo se rehace esa pieza.
+      accio = crear("span", "card__accio");
+      if (!dorm) accio.appendChild(enllacDemo(dades.demo, idioma));
+      peu.appendChild(accio);
+
+      // Sin repositorio público no hay código que enseñar: el enlace daría un 404 a
+      // cualquiera que no sea del equipo.
+      if (dades.url) {
+        var codi = crear("a", "card__codi");
+        codi.href = dades.url;
+        codi.target = "_blank";
+        codi.rel = "noopener";
+        codi.appendChild(icona("i-github"));
+        codi.appendChild(document.createTextNode(frase(idioma, "feed.code")));
+        peu.appendChild(codi);
+      }
     } else {
       // Sin nada que abrir, el código es lo que hay que ver, y al lado una marca que
       // dice por qué no hay aplicación que probar.
@@ -536,6 +643,17 @@
 
     li.appendChild(peu);
 
+    if (dorm) {
+      apuntarDemo({
+        url: dades.demo,
+        nom: dades.titol,
+        li: li,
+        titol: h3,
+        linia: linia,
+        accio: accio
+      });
+    }
+
     if (estrena) {
       li.classList.add("card--nou");
       li.style.animationDelay = Math.min(ordre, 4) * 40 + "ms";
@@ -543,6 +661,408 @@
 
     return li;
   };
+
+  /* ---------- Encender las demos ---------- */
+
+  // Las demos viven en un plan gratuito que apaga el servicio a los quince minutos sin
+  // visitas, y volver a arrancarlo tarda cerca de un minuto. La página no llama a
+  // ninguna por su cuenta: cada petición despierta un servicio, así que sondear al
+  // cargar significaría cinco arranques por visita. Se enciende cuando alguien lo pide.
+  //
+  // Esos servidores no mandan cabeceras CORS, de modo que la respuesta llega opaca y no
+  // hay forma de leer ni el código ni el cuerpo. Lo único que se sabe es si la petición
+  // ha terminado, que resulta ser justo la señal que hace falta: termina cuando el
+  // servidor ya está arriba. Por eso los textos hablan de contestar y no de estar bien.
+
+  var DORMEN = ["onrender.com"];  // dominios cuyos servicios se apagan solos
+  var TOPE = 150000;              // espera máxima antes de dar una demo por fallida
+  var CADUCA = 900000;            // quince minutos, lo que tardan en volver a dormirse
+  var CLAU_DEMOS = "portafoli-demos";
+
+  var hiHaFetch = !!(window.fetch && window.Promise);
+  var estats = {};    // dirección de la demo, con lo que sabemos de ella
+  var titols = {};    // dirección y nombre del proyecto, para los avisos hablados
+  var carnets = [];   // los trozos de cada tarjeta que hay que ir actualizando
+  var adreces = [];   // las demos que hay ahora mismo en pantalla
+  var panell = null, panellTitol = null, panellText = null, panellBoto = null,
+      panellPista = null, panellViu = null;
+  var rellotge = null, cadencia = 0, totesLlestes = false, comptadorLinies = 0;
+
+  // Una demo alojada donde no se apaga nada sigue siendo un enlace normal. Sin fetch
+  // tampoco hay forma de encender nada, así que la página se queda como siempre.
+  var esAdormida = function (url) {
+    if (!hiHaFetch || !esWeb(url)) return false;
+    var amfitrio = (String(url).split("//")[1] || "").split("/")[0].split(":")[0].toLowerCase();
+    return DORMEN.some(function (domini) {
+      return amfitrio === domini || amfitrio.slice(-domini.length - 1) === "." + domini;
+    });
+  };
+
+  var registre = function (url) {
+    if (!estats[url]) estats[url] = { fase: "off", inici: 0, quan: 0, intent: 0 };
+    return estats[url];
+  };
+
+  var enMarxa = function (url) {
+    return registre(url).fase === "on";
+  };
+
+  var desarDemos = function () {
+    try {
+      var desa = {};
+      Object.keys(estats).forEach(function (url) {
+        if (estats[url].fase === "on") desa[url] = estats[url].quan;
+      });
+      window.localStorage.setItem(CLAU_DEMOS, JSON.stringify(desa));
+    } catch (e) {
+      // Sin almacenamiento el encendido vale solo para esta pestaña.
+    }
+  };
+
+  // Al cargar no se sondea nada, pero si hace menos de quince minutos que una demo
+  // contestó, sigue despierta. Eso es una respuesta medida hace un rato, no una
+  // suposición, y ahorra un arranque de más.
+  var recuperarDemos = function () {
+    try {
+      var desa = JSON.parse(window.localStorage.getItem(CLAU_DEMOS) || "{}");
+      Object.keys(desa).forEach(function (url) {
+        var quan = Number(desa[url]);
+        if (quan > 0 && Date.now() - quan < CADUCA) {
+          var reg = registre(url);
+          reg.fase = "on";
+          reg.quan = quan;
+        }
+      });
+    } catch (e) {
+      // Si no hay nada que recuperar salen todas sin comprobar, que es lo seguro.
+    }
+  };
+
+  var comptes = function () {
+    var ara = Date.now();
+    var c = { total: 0, off: 0, waking: 0, on: 0, fail: 0, segons: 0 };
+    adreces.forEach(function (url) {
+      var reg = registre(url);
+      c.total += 1;
+      c[reg.fase] += 1;
+      if (reg.fase === "waking" && reg.inici) {
+        c.segons = Math.max(c.segons, Math.round((ara - reg.inici) / 1000));
+      }
+    });
+    return c;
+  };
+
+  // Un aviso corto para quien va con lector de pantalla, sin tocar nada de lo que se ve.
+  var dir = function (clau, url) {
+    if (!panellViu) return;
+    panellViu.textContent = frase(idiomaActual, clau).replace("{t}", titols[url] || "");
+  };
+
+  var compte = function (idioma, clau, n) {
+    return frase(idioma, n === 1 ? clau + ".one" : clau).replace("{n}", String(n));
+  };
+
+  var marcar = function (url, nova) {
+    var reg = registre(url);
+    if (reg.fase === nova) return;
+    reg.fase = nova;
+    if (nova === "on") reg.quan = Date.now();
+    desarDemos();
+    refrescar();
+  };
+
+  var visita = function (url) {
+    // Abrir la demo cuenta como visita, así que el reloj de los quince minutos vuelve
+    // a empezar.
+    registre(url).quan = Date.now();
+    desarDemos();
+  };
+
+  var despertar = function (url) {
+    var reg = registre(url);
+    if (reg.fase === "on" || reg.fase === "waking") return;
+    reg.fase = "waking";
+    reg.inici = Date.now();
+    reg.intent += 1;
+    var intent = reg.intent;
+
+    // Con no-cors la petición sale igual aunque el servidor no deje leer la respuesta,
+    // que es lo que despierta el servicio.
+    window.fetch(url, { mode: "no-cors", cache: "no-store", credentials: "omit" })
+      .then(function () {
+        // Aunque llegue tarde, si ha contestado es que ya está en marcha.
+        if (registre(url).fase !== "on") {
+          dir("wake.live.ready", url);
+          marcar(url, "on");
+        }
+      })
+      .catch(function () {
+        var ara = registre(url);
+        if (ara.intent === intent && ara.fase === "waking") {
+          dir("wake.live.fail", url);
+          marcar(url, "fail");
+        }
+      });
+  };
+
+  var encendre = function () {
+    var quantes = 0;
+    adreces.forEach(function (url) {
+      var fase = registre(url).fase;
+      if (fase === "off" || fase === "fail") {
+        despertar(url);
+        quantes += 1;
+      }
+    });
+    if (!quantes) return;
+    if (panellViu) {
+      panellViu.textContent = compte(idiomaActual, "wake.live.on", quantes);
+    }
+    refrescar();
+  };
+
+  var tic = function () {
+    var ara = Date.now();
+    adreces.forEach(function (url) {
+      var reg = registre(url);
+      if (reg.fase === "waking" && reg.inici && ara - reg.inici > TOPE) {
+        // Se rinde y deja volver a intentarlo. Si la petición acaba contestando más
+        // tarde, la tarjeta pasa sola a activa.
+        dir("wake.live.fail", url);
+        marcar(url, "fail");
+      } else if (reg.fase === "on" && reg.quan && ara - reg.quan > CADUCA) {
+        marcar(url, "off");
+      }
+    });
+    refrescar();
+  };
+
+  // Mientras alguna despierta hace falta el segundero. El resto del tiempo basta con
+  // mirar de vez en cuando si alguna ya se ha vuelto a dormir.
+  var ritme = function () {
+    var c = comptes();
+    var vol = c.waking ? 1000 : (c.on ? 20000 : 0);
+    if (vol === cadencia) return;
+    if (rellotge) window.clearInterval(rellotge);
+    rellotge = vol ? window.setInterval(tic, vol) : null;
+    cadencia = vol;
+  };
+
+  var liniaEstat = function (li) {
+    var linia = crear("p", "card__estat");
+    comptadorLinies += 1;
+    linia.id = "estat-demo-" + comptadorLinies;
+    var punt = crear("span", "estat__punt");
+    punt.setAttribute("aria-hidden", "true");
+    linia.appendChild(punt);
+    linia.appendChild(crear("span", "estat__nom"));
+    linia.appendChild(crear("span", "estat__nota"));
+    li.appendChild(linia);
+    return linia;
+  };
+
+  var enllacDemo = function (url, idioma) {
+    var a = crear("a", "btn btn--primary card__provar");
+    a.href = url;
+    a.target = "_blank";
+    a.rel = "noopener";
+    a.appendChild(document.createTextNode(frase(idioma, "feed.try")));
+    a.appendChild(icona("i-arrow"));
+    a.addEventListener("click", function () {
+      visita(url);
+    });
+    return a;
+  };
+
+  // El mismo botón de siempre, pero apagado, y la línea de estado de al lado dice por
+  // qué lo está.
+  // Mientras la demo no conteste, en su hueco está el botón de iniciarla, no el de
+  // probarla: los dos nunca se ven a la vez, uno sustituye al otro.
+  var botoIniciar = function (carnet, idioma) {
+    var fase = registre(carnet.url).fase;
+    var arrencant = fase === "waking";
+    var boto = document.createElement("button");
+    boto.type = "button";
+    boto.className = "btn btn--primary card__iniciar" + (arrencant ? " is-bloquejat" : "");
+    boto.setAttribute("aria-describedby", carnet.linia.id);
+    boto.textContent = frase(idioma, arrencant
+      ? "estat.waking"
+      : (fase === "fail" ? "estat.again" : "demo.start"));
+
+    if (arrencant) boto.setAttribute("aria-disabled", "true");
+
+    boto.addEventListener("click", function () {
+      if (registre(carnet.url).fase === "waking") return;
+      dir("wake.live.starting", carnet.url);
+      despertar(carnet.url);
+      refrescar();
+    });
+    return boto;
+  };
+
+  // El título de la tarjeta abre la demo, pero solo cuando la demo contesta.
+  var pintarTitol = function (carnet, obre) {
+    carnet.titol.textContent = "";
+    if (obre) {
+      var enllac = crear("a");
+      enllac.href = carnet.url;
+      enllac.target = "_blank";
+      enllac.rel = "noopener";
+      enllac.textContent = carnet.nom;
+      enllac.addEventListener("click", function () {
+        visita(carnet.url);
+      });
+      carnet.titol.appendChild(enllac);
+      carnet.li.classList.remove("card--fix");
+    } else {
+      carnet.titol.appendChild(document.createTextNode(carnet.nom));
+      carnet.li.classList.add("card--fix");
+    }
+  };
+
+  var pintarCarnet = function (carnet) {
+    var idioma = idiomaActual;
+    var reg = registre(carnet.url);
+    var nom = frase(idioma, "estat." + reg.fase);
+
+    if (reg.fase === "waking" && reg.inici) {
+      nom += " · " + frase(idioma, "estat.secs")
+        .replace("{s}", String(Math.round((Date.now() - reg.inici) / 1000)));
+    }
+
+    carnet.linia.className = "card__estat estat--" + reg.fase;
+    carnet.nomEl.textContent = nom;
+    carnet.notaEl.textContent = frase(idioma, "estat." + reg.fase + ".why");
+
+    // Lo único que cambia cada segundo es el contador. El título y el botón solo se
+    // rehacen cuando la demo cambia de estado, para no tirar abajo el foco de nadie.
+    if (carnet.fase === reg.fase) return;
+    var mode = reg.fase === "on" ? "on" : "off";
+    var canviaTitol = carnet.fase === undefined || carnet.mode !== mode;
+    carnet.fase = reg.fase;
+    carnet.mode = mode;
+
+    var teniaFoco = carnet.accio.contains(document.activeElement);
+
+    if (canviaTitol) pintarTitol(carnet, mode === "on");
+
+    carnet.accio.textContent = "";
+    carnet.accio.appendChild(mode === "on"
+      ? enllacDemo(carnet.url, idioma)
+      : botoIniciar(carnet, idioma));
+
+    if (teniaFoco && carnet.accio.firstChild) {
+      try {
+        carnet.accio.firstChild.focus();
+      } catch (e) {
+        // Si no se puede devolver el foco, el orden de tabulación no se ha movido.
+      }
+    }
+  };
+
+  var apuntarDemo = function (carnet) {
+    carnet.nomEl = carnet.linia.querySelector(".estat__nom");
+    carnet.notaEl = carnet.linia.querySelector(".estat__nota");
+    titols[carnet.url] = carnet.nom;
+    carnets.push(carnet);
+    pintarCarnet(carnet);
+  };
+
+  var ferPanell = function () {
+    panell = crear("div", "wake");
+
+    var cos = crear("div", "wake__cos");
+    panellTitol = crear("p", "wake__titol");
+    panellText = crear("p", "wake__text");
+    cos.appendChild(panellTitol);
+    cos.appendChild(panellText);
+
+    var costat = crear("div", "wake__costat");
+    panellBoto = document.createElement("button");
+    panellBoto.type = "button";
+    panellBoto.className = "btn btn--primary wake__boto";
+    panellPista = crear("p", "wake__pista");
+    panellPista.id = "wake-pista";
+    panellBoto.setAttribute("aria-describedby", "wake-pista");
+    costat.appendChild(panellBoto);
+    costat.appendChild(panellPista);
+
+    // Los cambios de estado se cuentan aquí para quien no los ve.
+    panellViu = crear("p", "nomes-lector");
+    panellViu.setAttribute("role", "status");
+    panellViu.setAttribute("aria-live", "polite");
+
+    panellBoto.addEventListener("click", function () {
+      if (panellBoto.getAttribute("aria-disabled") === "true") return;
+      encendre();
+    });
+
+    panell.appendChild(cos);
+    panell.appendChild(costat);
+    panell.appendChild(panellViu);
+    llista.parentNode.insertBefore(panell, llista);
+  };
+
+  var refrescar = function () {
+    var idioma = idiomaActual;
+    var c = comptes();
+
+    if (panell) {
+      panell.hidden = !c.total;
+      panellTitol.textContent = frase(idioma, "wake.title");
+      panellText.textContent = frase(idioma, "wake.text");
+
+      var etiqueta, pista, apagat;
+      if (c.waking) {
+        etiqueta = compte(idioma, "wake.working", c.waking);
+        pista = frase(idioma, "wake.hint.working").replace("{s}", String(c.segons));
+        apagat = true;
+      } else if (c.total && c.on === c.total) {
+        etiqueta = frase(idioma, "wake.done");
+        pista = frase(idioma, "wake.hint.done");
+        apagat = true;
+      } else if (c.fail) {
+        etiqueta = compte(idioma, "wake.retry", c.off + c.fail);
+        pista = frase(idioma, "wake.hint.some");
+        apagat = false;
+      } else {
+        etiqueta = compte(idioma, "wake.on", c.off);
+        pista = frase(idioma, "wake.hint");
+        apagat = false;
+      }
+
+      panellBoto.textContent = etiqueta;
+      panellPista.textContent = pista;
+      panellBoto.setAttribute("aria-disabled", String(apagat));
+      panellBoto.classList.toggle("is-bloquejat", apagat);
+
+      if (c.total && c.on === c.total) {
+        if (!totesLlestes) {
+          totesLlestes = true;
+          panellViu.textContent = frase(idioma, "wake.live.done");
+        }
+      } else {
+        totesLlestes = false;
+      }
+    }
+
+    carnets.forEach(pintarCarnet);
+    ritme();
+  };
+
+  // Cada vez que se repinta la lista hay que volver a mirar qué demos han quedado en
+  // pantalla. El estado de cada una no se pierde: va por dirección, no por tarjeta.
+  var sincronitzarDemos = function () {
+    var vistes = [];
+    carnets.forEach(function (carnet) {
+      if (vistes.indexOf(carnet.url) === -1) vistes.push(carnet.url);
+    });
+    adreces = vistes;
+    if (!panell && adreces.length) ferPanell();
+    refrescar();
+  };
+
+  if (hiHaFetch) recuperarDemos();
 
   var missatge = function (idioma) {
     if (!estat || !estatText) return;
@@ -568,6 +1088,7 @@
     missatge(idioma);
     if (!llista || !repos) return;
 
+    carnets = [];
     var caixa = document.createDocumentFragment();
     repos.forEach(function (repo, i) {
       caixa.appendChild(targeta(projecte(repo, idioma), idioma, i));
@@ -577,6 +1098,7 @@
     llista.appendChild(caixa);
     estrena = false;
     comptar(idioma);
+    sincronitzarDemos();
   };
 
   var carregant = function (si) {
@@ -696,9 +1218,14 @@
       repos = guardats;
       pintar(idiomaActual);
     } else {
+      // Sin copia de la última visita se pintan los proyectos escritos aquí mismo, que
+      // son los mismos que ya están en el HTML. Así las tarjetas salen desde el primer
+      // momento con su estado y su botón, en vez de dejar enlaces vivos a demos
+      // dormidas hasta que conteste GitHub.
       avis = "feed.loading";
+      repos = deCasa();
       carregant(true);
-      missatge(idiomaActual);
+      pintar(idiomaActual);
     }
     oients.push(pintar);
     demanar();

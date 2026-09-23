@@ -18,6 +18,8 @@
   --accent-ink:#125058;
   --accent-bg: #E8F1F2;
   --on-accent: #FFFFFF;
+  --ok:        #3A7D5C;
+  --err:       #A03A33;
   --warn:      #8E6316;
   --shadow:    0 1px 2px rgba(20, 20, 22, .05), 0 8px 24px -12px rgba(20, 20, 22, .14);
   --shadow-up: 0 1px 2px rgba(20, 20, 22, .06), 0 16px 32px -16px rgba(20, 20, 22, .22);
@@ -57,6 +59,8 @@
     --accent-ink:#8CD9E4;
     --accent-bg: #10262A;
     --on-accent: #08252A;
+    --ok:        #6FBF96;
+    --err:       #E0817A;
     --warn:      #C79A52;
     --shadow:    0 1px 2px rgba(0, 0, 0, .5), 0 8px 24px -12px rgba(0, 0, 0, .7);
     --shadow-up: 0 1px 2px rgba(0, 0, 0, .55), 0 16px 32px -16px rgba(0, 0, 0, .8);
@@ -389,6 +393,88 @@ a { color: inherit; }
   50%      { opacity: 1; }
 }
 
+/* ---------- Encendre les demos ---------- */
+
+.wake {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s-3) var(--s-4);
+  margin-bottom: var(--s-4);
+  padding: var(--s-4);
+  background: var(--bg-soft);
+  border: 1px solid var(--line-soft);
+  border-radius: var(--r-lg);
+}
+
+.wake[hidden] { display: none; }
+
+.wake__cos {
+  flex: 1 1 340px;
+  display: grid;
+  gap: var(--s-1);
+}
+
+.wake__titol { font-size: var(--fs-sm); font-weight: 600; }
+
+.wake__text {
+  font-size: var(--fs-xs);
+  color: var(--text-2);
+  line-height: 1.55;
+  max-width: 56ch;
+}
+
+.wake__costat {
+  display: grid;
+  justify-items: start;
+  gap: var(--s-2);
+  max-width: 100%;
+}
+
+.wake__pista {
+  font-size: var(--fs-xs);
+  color: var(--text-2);
+  line-height: 1.5;
+  max-width: 34ch;
+}
+
+/* Els botons que no són enllaços han d'heretar la lletra i la mateixa alçada, perquè
+   el de provar canvia d'un a l'altre segons si la demo ja contesta. */
+button.btn {
+  font-family: inherit;
+  font-size: var(--fs-sm);
+  line-height: 1.55;
+  margin: 0;
+  cursor: pointer;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+/* Apagat, però no mut: al costat sempre hi ha el text que diu per què. */
+.btn.is-bloquejat,
+.btn.is-bloquejat:hover {
+  background: var(--bg-soft);
+  color: var(--text-2);
+  border-color: var(--line);
+  cursor: not-allowed;
+}
+
+.btn.is-bloquejat:active { transform: none; }
+
+/* Els avisos d'estat per a qui fa servir lector de pantalla. */
+.nomes-lector {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
 /* ---------- Targetes de projecte ---------- */
 
 .cards {
@@ -470,6 +556,8 @@ a { color: inherit; }
   z-index: 1;
 }
 
+.card__accio .card__provar { margin: 0; }
+
 /* L'acció que mana a la targeta: obrir l'aplicació. */
 .card__provar {
   padding: 9px 16px;
@@ -539,6 +627,57 @@ a { color: inherit; }
   border: 1px solid var(--line);
   border-radius: var(--r-sm);
   padding: 2px 8px;
+}
+
+/* ---------- Estat de cada demo ---------- */
+
+.card__estat {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 2px var(--s-2);
+  font-size: var(--fs-xs);
+  line-height: 1.5;
+}
+
+.estat__punt {
+  width: 7px;
+  height: 7px;
+  flex: none;
+  border-radius: 50%;
+  background: var(--text-2);
+  opacity: .4;
+}
+
+.estat__nom { font-weight: 500; }
+
+/* La raó va sota el nom de l'estat, alineada amb ell: el punt fa 7 px i el buit 8. */
+.estat__nota {
+  flex: 1 1 100%;
+  padding-left: 15px;
+  color: var(--text-2);
+}
+
+.estat--waking .estat__punt {
+  background: var(--warn);
+  opacity: 1;
+  animation: feed-batec 1.4s var(--ease) infinite;
+}
+
+.estat--on .estat__punt { background: var(--ok); opacity: 1; }
+.estat--fail .estat__punt { background: var(--err); opacity: 1; }
+
+/* Com que el títol cobreix tota la targeta, el que es pot prémer va per damunt. Aquí
+   dins hi ha el botó d'iniciar o l'enllaç de provar, mai tots dos alhora. */
+.card__accio {
+  position: relative;
+  z-index: 1;
+  display: inline-flex;
+}
+
+/* Mateixa mida que el de provar, perquè un ocupa el lloc de l'altre sense saltar res. */
+.card__iniciar {
+  padding: 9px 16px;
 }
 
 /* ---------- Etiquetes de tecnologia ---------- */
@@ -697,12 +836,14 @@ a { color: inherit; }
     transition-duration: .01ms !important;
   }
   .card:hover { transform: none; }
+  .feed.is-loading .feed__dot,
+  .estat--waking .estat__punt { animation: none; opacity: 1; }
   /* Sense l'espera les targetes es quedarien invisibles durant el retard. */
   .card--nou { animation-delay: 0s !important; }
 }
 
 @media (forced-colors: active) {
-  .card, .contact, .chips li, .btn, .badge { border: 1px solid CanvasText; }
+  .card, .contact, .chips li, .btn, .badge, .wake { border: 1px solid CanvasText; }
   .lang__btn[aria-pressed="true"] { border: 1px solid CanvasText; }
   .flag { opacity: 1; forced-color-adjust: none; }
 }
