@@ -527,8 +527,8 @@ a { color: inherit; }
   }
 }
 
-.card--wip { background: transparent; border-style: dashed; }
-.card--wip:hover { transform: none; box-shadow: none; border-color: var(--line); }
+/* Sense demo ni codi públic encara, la targeta no es comporta com un enllaç. */
+.card--fix:hover { transform: none; box-shadow: none; border-color: var(--line); }
 
 .badge {
   font-size: var(--fs-xs);

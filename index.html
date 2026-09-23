@@ -111,7 +111,7 @@
             LinkedIn<svg class="ico" aria-hidden="true" focusable="false"><use href="#i-arrow"/></svg>
           </a>
         </div>
-        <p class="hero__note" data-i18n="hero.note">Siete proyectos publicados y uno en curso</p>
+        <p class="hero__note" data-i18n="hero.note">Cuatro proyectos publicados</p>
       </div>
       <div class="hero__photo">
         <img src="Img/FotoAlex.png" width="253" height="349" alt="Retrato de Alex Aiguadé Alisultánov" data-i18n-alt="hero.alt" fetchpriority="high" decoding="async">
@@ -134,7 +134,7 @@
     <div class="wrap">
       <p class="eyebrow">02</p>
       <h2 id="t-projectes" data-i18n="proj.h">Proyectos</h2>
-      <p class="section__intro" data-i18n="proj.intro">Todo el código es abierto y se puede revisar. Cada tarjeta lleva las tecnologías con las que está hecho.</p>
+      <p class="section__intro" data-i18n="proj.intro">Cada tarjeta lleva las tecnologías con las que está hecho el proyecto y, si ya está desplegado, el enlace para probarlo.</p>
 
       <p class="feed" id="estat-projectes" role="status" hidden>
         <span class="feed__dot" aria-hidden="true"></span>
@@ -145,76 +145,52 @@
            lo hay, script.js las cambia por la lista que devuelve la API de GitHub. -->
       <ul class="cards" id="llista-projectes">
         <li class="card">
-          <h3><a href="https://github.com/AlexAiguadeAlisultanov/GestioEstock" target="_blank" rel="noopener">Gestió Estock</a></h3>
-          <p data-i18n="proj.stock">Aplicación de escritorio para controlar el stock de material de una empresa de informática: entradas, salidas y qué queda en almacén.</p>
-          <ul class="chips" aria-label="Tecnologías" data-i18n-aria-label="chips.aria">
-            <li>VB.NET</li><li data-i18n="chip.desktop">Escritorio</li>
-          </ul>
-          <span class="card__link"><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-github"/></svg><span data-i18n="proj.code">Código en GitHub</span></span>
-        </li>
-
-        <li class="card">
-          <h3><a href="https://github.com/AlexAiguadeAlisultanov/Exploracio" target="_blank" rel="noopener">Exploració</a></h3>
-          <p data-i18n="proj.books">Aplicación de escritorio para gestionar una biblioteca de libros. Permite insertar nuevos, actualizarlos y consultarlos.</p>
-          <ul class="chips" aria-label="Tecnologías" data-i18n-aria-label="chips.aria">
-            <li>VB.NET</li><li data-i18n="chip.desktop">Escritorio</li>
-          </ul>
-          <span class="card__link"><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-github"/></svg><span data-i18n="proj.code">Código en GitHub</span></span>
-        </li>
-
-        <li class="card">
-          <h3><a href="https://github.com/AlexAiguadeAlisultanov/springboot-thymeleaf-web-master" target="_blank" rel="noopener">Biblioteca web</a></h3>
+          <h3><a href="https://inventario-de-libros.onrender.com/llibres" target="_blank" rel="noopener">Gestor de inventario de libros</a></h3>
           <p data-i18n="proj.library">Aplicación web que lleva los libros, los usuarios y los préstamos de una biblioteca, con los datos sobre MySQL.</p>
           <ul class="chips" aria-label="Tecnologías" data-i18n-aria-label="chips.aria">
             <li>Java</li><li>Spring Boot</li><li>Thymeleaf</li><li>MySQL</li>
           </ul>
-          <span class="card__link"><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-github"/></svg><span data-i18n="proj.code">Código en GitHub</span></span>
+          <div class="card__foot">
+            <a class="btn btn--primary card__provar" href="https://inventario-de-libros.onrender.com/llibres" target="_blank" rel="noopener"><span data-i18n="feed.try">Probar la app</span><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-arrow"/></svg></a>
+            <a class="card__codi" href="https://github.com/AlexAiguadeAlisultanov/springboot-thymeleaf-web-master" target="_blank" rel="noopener"><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-github"/></svg><span data-i18n="feed.code">Código</span></a>
+          </div>
         </li>
 
         <li class="card">
-          <h3><a href="https://github.com/AlexAiguadeAlisultanov/qrcodegenerator" target="_blank" rel="noopener">QR d'entrades</a></h3>
+          <h3><a href="https://taquilla-de-futbol.onrender.com" target="_blank" rel="noopener">Taquilla de fútbol</a></h3>
           <p data-i18n="proj.qr">Web que genera y lee códigos QR para entradas de partidos, con cuentas de usuario y el pago de la entrada.</p>
           <ul class="chips" aria-label="Tecnologías" data-i18n-aria-label="chips.aria">
             <li>Java</li><li>Spring Boot</li><li data-i18n="chip.qr">Códigos QR</li>
           </ul>
-          <span class="card__link"><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-github"/></svg><span data-i18n="proj.code">Código en GitHub</span></span>
+          <div class="card__foot">
+            <a class="btn btn--primary card__provar" href="https://taquilla-de-futbol.onrender.com" target="_blank" rel="noopener"><span data-i18n="feed.try">Probar la app</span><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-arrow"/></svg></a>
+            <a class="card__codi" href="https://github.com/AlexAiguadeAlisultanov/qrcodegenerator" target="_blank" rel="noopener"><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-github"/></svg><span data-i18n="feed.code">Código</span></a>
+          </div>
         </li>
 
         <li class="card">
-          <h3><a href="https://github.com/AlexAiguadeAlisultanov/app-gestio-incidencies" target="_blank" rel="noopener">Gestió d'incidències</a></h3>
-          <p data-i18n="proj.issues">Aplicación para registrar incidencias y seguir su estado, organizadas por categorías y con los contactos de cada una.</p>
+          <h3><a href="https://gestor-de-incidencias.onrender.com" target="_blank" rel="noopener">Gestor de incidencias</a></h3>
+          <p data-i18n="proj.issues">Aplicación para registrar las incidencias de un centro educativo y seguir su estado, organizadas por categorías y con los contactos de cada una.</p>
           <ul class="chips" aria-label="Tecnologías" data-i18n-aria-label="chips.aria">
             <li>PHP</li><li>Laravel</li>
           </ul>
-          <span class="card__link"><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-github"/></svg><span data-i18n="proj.code">Código en GitHub</span></span>
+          <div class="card__foot">
+            <a class="btn btn--primary card__provar" href="https://gestor-de-incidencias.onrender.com" target="_blank" rel="noopener"><span data-i18n="feed.try">Probar la app</span><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-arrow"/></svg></a>
+            <a class="card__codi" href="https://github.com/AlexAiguadeAlisultanov/app-gestio-incidencies" target="_blank" rel="noopener"><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-github"/></svg><span data-i18n="feed.code">Código</span></a>
+          </div>
         </li>
 
-        <li class="card">
-          <h3><a href="https://github.com/AlexAiguadeAlisultanov/MVC-AJAX" target="_blank" rel="noopener">CRUD de productes</a></h3>
+        <!-- El repositorio de este todavía es privado y la demo no está levantada, así
+             que la tarjeta se queda sin enlace en vez de llevar a un 404. -->
+        <li class="card card--fix">
+          <h3>Gestor de inventario</h3>
           <p data-i18n="proj.crud">Alta, consulta, edición y borrado de productos con patrón MVC y peticiones AJAX, para que la página no se recargue. Funciona igual en móvil.</p>
           <ul class="chips" aria-label="Tecnologías" data-i18n-aria-label="chips.aria">
             <li>PHP</li><li>MVC</li><li>AJAX</li>
           </ul>
-          <span class="card__link"><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-github"/></svg><span data-i18n="proj.code">Código en GitHub</span></span>
-        </li>
-
-        <li class="card">
-          <h3><a href="https://github.com/AlexAiguadeAlisultanov/App-Gestio-Fichar" target="_blank" rel="noopener">App de fitxar</a></h3>
-          <p data-i18n="proj.clock">Aplicación Android para fichar la entrada y la salida de la jornada desde el móvil.</p>
-          <ul class="chips" aria-label="Tecnologías" data-i18n-aria-label="chips.aria">
-            <li>Java</li><li>Android</li>
-          </ul>
-          <span class="card__link"><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-github"/></svg><span data-i18n="proj.code">Código en GitHub</span></span>
-        </li>
-
-        <!-- La calculadora no tiene repositorio todavía, así que esta tarjeta no sale
-             de GitHub: se queda tal cual al final de la lista viva. -->
-        <li class="card card--wip" data-estatic>
-          <h3>Calculadora Android <span class="badge" data-i18n="proj.wip">En curso</span></h3>
-          <p data-i18n="proj.calc">Calculadora para Android con un conjunto concreto de operaciones. Todavía estoy trabajando en ella, así que de momento no hay nada publicado.</p>
-          <ul class="chips" aria-label="Tecnologías" data-i18n-aria-label="chips.aria">
-            <li>Java</li><li>Android Studio</li>
-          </ul>
+          <div class="card__foot">
+            <span class="badge" data-i18n="feed.soon">Demo en camino</span>
+          </div>
         </li>
       </ul>
     </div>

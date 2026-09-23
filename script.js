@@ -15,15 +15,15 @@
     es: {
       "feed.loading": "Leyendo los repositorios de GitHub",
       "feed.cache": "GitHub no contesta ahora mismo, así que esta es la última lista guardada.",
-      "feed.offline": "GitHub no contesta ahora mismo. Esta es la lista de siempre, con el enlace al código de cada proyecto.",
+      "feed.offline": "GitHub no contesta ahora mismo, así que esta es la lista de siempre, sin la fecha de cada repositorio.",
       "feed.nodesc": "Todavía no tiene descripción en GitHub. El código está publicado y se puede revisar.",
       "feed.updated": "Actualizado {t}",
       "feed.try": "Probar la app",
       "feed.code": "Código",
       "feed.soon": "Demo en camino",
       "feed.onlycode": "Solo código por ahora",
-      "feed.desktop": "Se instala en Windows",
-      "hero.count": "{n} proyectos publicados y uno en curso"
+      "proj.code": "Código en GitHub",
+      "hero.count": "{n} proyectos publicados"
     },
     ca: {
       "doc.title": "Alex Aiguadé Alisultánov · Portafoli",
@@ -39,37 +39,30 @@
       "hero.eyebrow": "Grau superior · La Salle Mollerussa",
       "hero.lead": "Faig aplicacions web, d'escriptori i Android. M'agrada resoldre problemes i escriure codi, i busco una primera feina on aportar-ho tot i seguir aprenent.",
       "hero.cta": "Mira els projectes",
-      "hero.note": "Set projectes publicats i un en curs",
-      "hero.count": "{n} projectes publicats i un en curs",
+      "hero.note": "Quatre projectes publicats",
+      "hero.count": "{n} projectes publicats",
       "hero.alt": "Retrat d'Alex Aiguadé Alisultánov",
       "about.h": "Sobre mi",
       "about.p1": "Sóc estudiant de grau superior a l'institut La Salle Mollerussa. Durant el grau mitjà i el superior he treballat amb MySQL, MongoDB, PHP, HTML, CSS, JavaScript i Java, i he anat fent projectes propis per posar a prova el que anava aprenent.",
       "about.p2": "Sempre intento aportar el cent per cent de la feina que faig. El que busco ara és una posició amb prou repte per créixer com a programador, on hi hagi coses noves per aprendre i gent de qui aprendre-les.",
       "proj.h": "Projectes",
-      "proj.intro": "Tot el codi és obert i es pot revisar. Cada targeta porta les tecnologies amb què està fet.",
-      "proj.stock": "Aplicació d'escriptori per controlar l'estoc de material d'una empresa d'informàtica: entrades, sortides i què queda a magatzem.",
-      "proj.books": "Aplicació d'escriptori per gestionar una biblioteca de llibres. Permet inserir-ne de nous, actualitzar-los i consultar-los.",
+      "proj.intro": "Cada targeta porta les tecnologies amb què està fet el projecte i, si ja està desplegat, l'enllaç per provar-lo.",
       "proj.library": "Aplicació web que porta els llibres, els usuaris i els préstecs d'una biblioteca, amb les dades sobre MySQL.",
       "proj.qr": "Web que genera i llegeix codis QR per a entrades de partits, amb comptes d'usuari i el pagament de l'entrada.",
       "proj.issues": "Aplicació per registrar incidències i seguir-ne l'estat, organitzades per categories i amb els contactes de cadascuna.",
       "proj.crud": "Alta, consulta, edició i esborrat de productes amb patró MVC i peticions AJAX, perquè la pàgina no es recarregui. Funciona igual en mòbil.",
-      "proj.clock": "Aplicació Android per fitxar l'entrada i la sortida de la jornada des del mòbil.",
-      "proj.calc": "Calculadora per a Android amb un conjunt concret d'operacions. Encara hi estic treballant, així que de moment no hi ha res publicat.",
       "proj.code": "Codi a GitHub",
-      "proj.wip": "En curs",
       "chips.aria": "Tecnologies",
-      "chip.desktop": "Escriptori",
       "chip.qr": "Codis QR",
       "feed.loading": "Llegint els repositoris de GitHub",
       "feed.cache": "GitHub no contesta ara mateix, així que aquesta és l'última llista desada.",
-      "feed.offline": "GitHub no contesta ara mateix. Aquesta és la llista de sempre, amb l'enllaç al codi de cada projecte.",
+      "feed.offline": "GitHub no contesta ara mateix, així que aquesta és la llista de sempre, sense la data de cada repositori.",
       "feed.nodesc": "Encara no té descripció a GitHub. El codi està publicat i es pot revisar.",
       "feed.updated": "Actualitzat {t}",
       "feed.try": "Provar l'aplicació",
       "feed.code": "Codi",
       "feed.soon": "Demo en camí",
       "feed.onlycode": "Només codi de moment",
-      "feed.desktop": "S'instal·la a Windows",
       "skills.h": "Habilitats",
       "skills.intro": "Amb el que he treballat durant el grau mitjà, el superior i els projectes de dalt.",
       "skills.langs": "Llenguatges",
@@ -97,37 +90,30 @@
       "hero.eyebrow": "Advanced vocational training · La Salle Mollerussa",
       "hero.lead": "I build web, desktop and Android apps. I like solving problems and writing code, and I'm after a first job where I can give everything I have and keep learning.",
       "hero.cta": "See the projects",
-      "hero.note": "Seven projects published and one in progress",
-      "hero.count": "{n} projects published and one in progress",
+      "hero.note": "Four projects published",
+      "hero.count": "{n} projects published",
       "hero.alt": "Portrait of Alex Aiguadé Alisultánov",
       "about.h": "About me",
       "about.p1": "I'm an advanced vocational training student at La Salle Mollerussa. Across both training levels I've worked with MySQL, MongoDB, PHP, HTML, CSS, JavaScript and Java, and I kept building my own projects to put what I was learning to the test.",
       "about.p2": "I always try to give everything to the work I take on. What I'm looking for now is a role with enough of a challenge to grow as a developer, where there are new things to learn and people to learn them from.",
       "proj.h": "Projects",
-      "proj.intro": "All the code is open and you can go through it. Each card lists the technologies behind it.",
-      "proj.stock": "Desktop app to keep track of the material stock of an IT company: what comes in, what goes out and what is left in the warehouse.",
-      "proj.books": "Desktop app to manage a book library. You can add new books, update them and look them up.",
+      "proj.intro": "Each card lists the technologies behind the project and, once it is deployed, the link to try it.",
       "proj.library": "Web app that handles the books, the users and the loans of a library, with the data on MySQL.",
       "proj.qr": "Site that generates and reads QR codes for match tickets, with user accounts and ticket payment.",
       "proj.issues": "App to log issues and follow how they are going, sorted by category and with the contacts for each one.",
       "proj.crud": "Create, read, update and delete products with an MVC pattern and AJAX requests, so the page never reloads. Works the same on a phone.",
-      "proj.clock": "Android app to clock in and out of the working day from your phone.",
-      "proj.calc": "Android calculator with a specific set of operations. I'm still working on it, so there is nothing published yet.",
       "proj.code": "Code on GitHub",
-      "proj.wip": "In progress",
       "chips.aria": "Technologies",
-      "chip.desktop": "Desktop",
       "chip.qr": "QR codes",
       "feed.loading": "Reading the repositories from GitHub",
       "feed.cache": "GitHub is not answering right now, so this is the last list that was saved.",
-      "feed.offline": "GitHub is not answering right now. This is the usual list, with a link to the code of every project.",
+      "feed.offline": "GitHub is not answering right now, so this is the usual list, without the date of each repository.",
       "feed.nodesc": "No description on GitHub yet. The code is published and you can go through it.",
       "feed.updated": "Updated {t}",
       "feed.try": "Try the app",
       "feed.code": "Code",
       "feed.soon": "Demo on the way",
       "feed.onlycode": "Code only for now",
-      "feed.desktop": "Runs on Windows",
       "skills.h": "Skills",
       "skills.intro": "What I have worked with across both training levels and the projects above.",
       "skills.langs": "Languages",
@@ -238,25 +224,17 @@
   var CLAU_REPOS = "portafoli-repos";
   var NS_SVG = "http://www.w3.org/2000/svg";
 
-  // Lo que ya sabemos de los proyectos de siempre: un título cuidado, el texto escrito
-  // a mano en los tres idiomas, las tecnologías y, en cuanto estén desplegados, la
-  // dirección de la demo. Un repositorio que no esté aquí sale igualmente con lo que
-  // dé GitHub, y una ficha de aquí que la API no devuelva (un repositorio privado, por
-  // ejemplo) simplemente no se pinta.
+  // Lo que ya sabemos de los proyectos que se enseñan: un título cuidado, el texto
+  // escrito a mano en los tres idiomas, las tecnologías y, en cuanto estén desplegados,
+  // la dirección de la demo. Un repositorio que no esté aquí sale igualmente con lo que
+  // dé GitHub, así que subir uno nuevo basta para que aparezca.
   var CONEGUTS = {
-    "AlexAiguadeAlisultanov.github.io": {
-      titol: { es: "Este portafolio", ca: "Aquest portafoli", en: "This portfolio" },
-      tipus: "web",
-      tec: ["HTML", "CSS", "JavaScript"],
-      demo: "https://alexaiguadealisultanov.github.io",
-      text: {
-        es: "La página que estás leyendo. HTML, CSS y JavaScript escritos a mano, sin frameworks ni dependencias, con la lista de proyectos sacada de GitHub.",
-        ca: "La pàgina que estàs llegint. HTML, CSS i JavaScript escrits a mà, sense frameworks ni dependències, amb la llista de projectes treta de GitHub.",
-        en: "The page you are reading. Handwritten HTML, CSS and JavaScript, no frameworks and no dependencies, with the project list pulled from GitHub."
-      }
-    },
     "springboot-thymeleaf-web-master": {
-      titol: { es: "Biblioteca web", ca: "Biblioteca web", en: "Library web app" },
+      titol: {
+        es: "Gestor de inventario de libros",
+        ca: "Gestor d'inventari de llibres",
+        en: "Book inventory manager"
+      },
       tipus: "web",
       tec: ["Java", "Spring Boot", "Thymeleaf", "MySQL"],
       demo: "https://inventario-de-libros.onrender.com/llibres",
@@ -288,31 +266,13 @@
         en: "App to log the issues of a school and follow how they are going, sorted by category and with the contacts for each one."
       }
     },
-    "GestioEstock": {
-      titol: "Gestió Estock",
-      tipus: "escriptori",
-      tec: ["VB.NET", { clau: "chip.desktop" }],
-      demo: "",
-      text: {
-        es: "Aplicación de escritorio para controlar el stock de material de una empresa de informática: entradas, salidas y qué queda en almacén.",
-        ca: "Aplicació d'escriptori per controlar l'estoc de material d'una empresa d'informàtica: entrades, sortides i què queda a magatzem.",
-        en: "Desktop app to keep track of the material stock of an IT company: what comes in, what goes out and what is left in the warehouse."
-      }
-    },
-    "Exploracio": {
-      titol: "Exploració",
-      tipus: "escriptori",
-      tec: ["VB.NET", { clau: "chip.desktop" }],
-      demo: "",
-      text: {
-        es: "Aplicación de escritorio para gestionar una biblioteca de libros. Permite insertar nuevos, actualizarlos y consultarlos.",
-        ca: "Aplicació d'escriptori per gestionar una biblioteca de llibres. Permet inserir-ne de nous, actualitzar-los i consultar-los.",
-        en: "Desktop app to manage a book library. You can add new books, update them and look them up."
-      }
-    },
     "MVC-AJAX": {
-      titol: { es: "Inventario de material", ca: "Inventari de material", en: "Material inventory" },
+      titol: { es: "Gestor de inventario", ca: "Gestor d'inventari", en: "Inventory manager" },
       tipus: "web",
+      // El repositorio todavía es privado: la API pública no lo devuelve y su enlace
+      // daría un 404 a quien no sea el dueño, así que la tarjeta va sin enlace hasta
+      // que se abra el código o esté la demo.
+      privat: true,
       tec: ["PHP", "MVC", "AJAX"],
       demo: "",
       text: {
@@ -323,16 +283,49 @@
     }
   };
 
+  // Fuera de la lista aunque GitHub los devuelva: este mismo portafolio y los dos
+  // proyectos de escritorio. Todo lo demás que haya en la cuenta sí sale.
+  var FORA = ["alexaiguadealisultanov.github.io", "gestioestock", "exploracio"];
+
+  // Y al revés: los que tienen que salir aunque la API no los traiga, porque el
+  // repositorio es privado. Cuando se haga público llegará por la API con su fecha y
+  // su enlace, y este añadido dejará de hacer nada.
+  var SEMPRE = ["MVC-AJAX"];
+
   var fitxes = {};
   Object.keys(CONEGUTS).forEach(function (nom) {
     fitxes[nom.toLowerCase()] = CONEGUTS[nom];
   });
 
+  var esFora = function (nom) {
+    return FORA.indexOf(String(nom).toLowerCase()) !== -1;
+  };
+
+  var urlRepo = function (nom) {
+    var fitxa = fitxes[nom.toLowerCase()];
+    if (fitxa && fitxa.privat) return "";
+    return "https://github.com/" + USUARI + "/" + nom;
+  };
+
+  var deFitxa = function (nom) {
+    return { nom: nom, url: urlRepo(nom), desc: "", llenguatge: "", data: "", web: "" };
+  };
+
+  // Añade al final los que tienen que salir sí o sí y la lista no trae.
+  var ambForcats = function (llistat) {
+    SEMPRE.forEach(function (nom) {
+      var hi = llistat.some(function (repo) {
+        return String(repo.nom).toLowerCase() === nom.toLowerCase();
+      });
+      if (!hi) llistat.push(deFitxa(nom));
+    });
+    return llistat;
+  };
+
   var llista = document.getElementById("llista-projectes");
   var estat = document.getElementById("estat-projectes");
   var estatText = estat ? estat.querySelector(".feed__text") : null;
   var nota = document.querySelector('[data-i18n="hero.note"]');
-  var enCurs = llista ? llista.querySelector("[data-estatic]") : null;
 
   var repos = null;   // la última lista que hemos podido pintar
   var avis = "";      // qué dice la línea de estado, vacío si no hay nada que decir
@@ -430,15 +423,7 @@
 
     // Sin demo que abrir, la tarjeta dice en qué punto está en vez de dejar el hueco.
     // El día que una ficha estrene dirección, esa tarjeta pasa sola a "Probar la app".
-    if (!dades.demo) {
-      if (dades.tipus === "escriptori") {
-        dades.marca = "feed.desktop";
-      } else if (dades.tipus) {
-        dades.marca = "feed.soon";
-      } else {
-        dades.marca = "feed.onlycode";
-      }
-    }
+    if (!dades.demo) dades.marca = dades.tipus ? "feed.soon" : "feed.onlycode";
 
     return dades;
   };
@@ -447,14 +432,22 @@
     var li = crear("li", "card");
 
     var h3 = crear("h3");
-    var enllac = crear("a");
     // El título cubre la tarjeta entera, así que apunta a lo que se quiere abrir al
-    // pulsarla: la aplicación si está en marcha, y si no el código.
-    enllac.href = dades.demo || dades.url;
-    enllac.target = "_blank";
-    enllac.rel = "noopener";
-    enllac.textContent = dades.titol;
-    h3.appendChild(enllac);
+    // pulsarla: la aplicación si está en marcha, y si no el código. Mientras un
+    // repositorio siga siendo privado no hay ninguna de las dos cosas, así que el
+    // título se queda como texto y la tarjeta deja de comportarse como un enlace.
+    var obrir = dades.demo || dades.url;
+    if (obrir) {
+      var enllac = crear("a");
+      enllac.href = obrir;
+      enllac.target = "_blank";
+      enllac.rel = "noopener";
+      enllac.textContent = dades.titol;
+      h3.appendChild(enllac);
+    } else {
+      h3.appendChild(document.createTextNode(dades.titol));
+      li.classList.add("card--fix");
+    }
     li.appendChild(h3);
 
     var descripcio = crear("p");
@@ -506,12 +499,14 @@
     } else {
       // Sin nada que abrir, el código es lo que hay que ver, y al lado una marca que
       // dice por qué no hay aplicación que probar.
-      var codiSol = crear("span", "card__link");
-      codiSol.appendChild(icona("i-github"));
-      var codiText = crear("span");
-      codiText.textContent = frase(idioma, "proj.code");
-      codiSol.appendChild(codiText);
-      peu.appendChild(codiSol);
+      if (dades.url) {
+        var codiSol = crear("span", "card__link");
+        codiSol.appendChild(icona("i-github"));
+        var codiText = crear("span");
+        codiText.textContent = frase(idioma, "proj.code");
+        codiSol.appendChild(codiText);
+        peu.appendChild(codiSol);
+      }
 
       if (dades.marca) {
         var marca = crear("span", "badge");
@@ -558,8 +553,6 @@
     repos.forEach(function (repo, i) {
       caixa.appendChild(targeta(projecte(repo, idioma), idioma, i));
     });
-    // La calculadora todavía no está en GitHub, así que su tarjeta se queda al final.
-    if (enCurs) caixa.appendChild(enCurs);
 
     llista.textContent = "";
     llista.appendChild(caixa);
@@ -580,6 +573,7 @@
   var serveix = function (repo) {
     if (!repo || repo.archived) return false;
     if (typeof repo.name !== "string" || !esWeb(repo.html_url)) return false;
+    if (esFora(repo.name)) return false;
     // Un fork solo pasa si es un proyecto que ya damos por nuestro.
     return !repo.fork || !!fitxes[repo.name.toLowerCase()];
   };
@@ -616,9 +610,9 @@
       var dades = JSON.parse(cru);
       if (!dades || !dades.repos || !dades.repos.length) return null;
       var bons = dades.repos.filter(function (repo) {
-        return repo && typeof repo.nom === "string" && esWeb(repo.url);
+        return repo && typeof repo.nom === "string" && esWeb(repo.url) && !esFora(repo.nom);
       });
-      return bons.length ? bons : null;
+      return bons.length ? ambForcats(bons) : null;
     } catch (e) {
       return null;
     }
@@ -628,14 +622,7 @@
   // lenguaje, pero con su enlace al código, que es lo que hay que poder abrir.
   var deCasa = function () {
     return Object.keys(CONEGUTS).map(function (nom) {
-      return {
-        nom: nom,
-        url: "https://github.com/" + USUARI + "/" + nom,
-        desc: "",
-        llenguatge: "",
-        data: "",
-        web: ""
-      };
+      return deFitxa(nom);
     });
   };
 
@@ -665,7 +652,7 @@
       })
       .then(function (dades) {
         if (!dades || !dades.length) throw new Error("respuesta vacía");
-        var nets = dades.filter(serveix).map(netejar).sort(perData);
+        var nets = ambForcats(dades.filter(serveix).map(netejar).sort(perData));
         if (!nets.length) throw new Error("ningún repositorio que enseñar");
 
         desar(nets);
