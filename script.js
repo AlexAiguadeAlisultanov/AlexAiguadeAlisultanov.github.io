@@ -293,7 +293,7 @@
       // del equipo.
       privat: true,
       tec: ["TypeScript", "React", "Vite", { clau: "chip.equip" }],
-      demo: "",
+      demo: "https://planificador-volkswagen.onrender.com",
       text: {
         es: "Herramienta que planifica la preparación de un Volkswagen: eliges modelo, presupuesto y objetivos, y devuelve las piezas que caben en ese dinero. Proyecto de equipo de nueve personas, con su catálogo, su motor de cálculo y su aplicación de escritorio.",
         ca: "Eina que planifica la preparació d'un Volkswagen: tries model, pressupost i objectius, i retorna les peces que caben en aquells diners. Projecte d'equip de nou persones, amb el seu catàleg, el seu motor de càlcul i la seva aplicació d'escriptori.",
