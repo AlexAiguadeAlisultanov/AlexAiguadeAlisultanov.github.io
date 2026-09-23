@@ -269,12 +269,12 @@
     "MVC-AJAX": {
       titol: { es: "Gestor de inventario", ca: "Gestor d'inventari", en: "Inventory manager" },
       tipus: "web",
-      // El repositorio todavía es privado: la API pública no lo devuelve y su enlace
-      // daría un 404 a quien no sea el dueño, así que la tarjeta va sin enlace hasta
-      // que se abra el código o esté la demo.
+      // El repositorio es privado: la API pública no lo devuelve, así que esta ficha
+      // es la única fuente de la tarjeta, y no se enseña enlace al código porque
+      // daría un 404 a quien no sea el dueño. La demo sí es pública.
       privat: true,
       tec: ["PHP", "MVC", "AJAX"],
-      demo: "",
+      demo: "https://mvc-ajax.onrender.com",
       text: {
         es: "Alta, consulta, edición y borrado de productos con patrón MVC y peticiones AJAX, para que la página no se recargue. Funciona igual en móvil.",
         ca: "Alta, consulta, edició i esborrat de productes amb patró MVC i peticions AJAX, perquè la pàgina no es recarregui. Funciona igual en mòbil.",
