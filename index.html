@@ -7,15 +7,15 @@
 <meta name="theme-color" content="#FAFAF9" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#0F0F11" media="(prefers-color-scheme: dark)">
 <title data-i18n="doc.title">Alex Aiguadé Alisultánov · Portafolio</title>
-<meta name="description" data-i18n-content="doc.desc" content="Portafolio de Alex Aiguadé Alisultánov, técnico IT orientado a sistemas y ciberseguridad. Máster en Ciberseguridad e IA en curso y certificación eJPT v2.">
+<meta name="description" data-i18n-content="doc.desc" content="Portafolio de Alex Aiguadé Alisultánov. Hace falta entrar con una cuenta para verlo.">
 <meta name="author" content="Alex Aiguadé Alisultánov">
+<meta name="robots" content="noindex">
 <meta property="og:type" content="website">
 <meta property="og:title" data-i18n-content="doc.title" content="Alex Aiguadé Alisultánov · Portafolio">
-<meta property="og:description" data-i18n-content="og.desc" content="Técnico IT orientado a sistemas y ciberseguridad, con base en desarrollo de aplicaciones.">
 <meta property="og:image" content="Img/alex.png">
 <link rel="icon" type="image/png" sizes="32x32" href="Img/icono-32.png">
 <link rel="apple-touch-icon" sizes="180x180" href="Img/icono-180.png">
-<link rel="stylesheet" href="styles.css?v=202609231752">
+<link rel="stylesheet" href="styles.css?v=202609232130">
 </head>
 <body>
 
@@ -71,22 +71,10 @@
   </symbol>
 </svg>
 
-<a class="skip" href="#contingut" data-i18n="skip">Salta al contenido</a>
-
-<header class="topbar">
-  <div class="topbar__inner">
-    <a class="topbar__name" href="#dalt">Alex Aiguadé</a>
-
-    <nav class="topbar__nav" aria-label="Secciones" data-i18n-aria-label="nav.aria">
-      <ul>
-        <li><a href="#sobre-mi" data-i18n="nav.about">Sobre mí</a></li>
-        <li><a href="#projectes" data-i18n="nav.projects">Proyectos</a></li>
-        <li><a href="#formacio" data-i18n="nav.edu">Formación</a></li>
-        <li><a href="#habilitats" data-i18n="nav.skills">Aptitudes</a></li>
-        <li><a href="#contacte" data-i18n="nav.contact">Contacto</a></li>
-      </ul>
-    </nav>
-
+<!-- Pantalla de acceso. Es lo único que trae el HTML: el portafolio entero lo monta
+     script.js cuando la API confirma quién entra, así que no está escrito aquí. -->
+<div class="porta" id="porta">
+  <div class="porta__barra">
     <div class="lang" role="group" aria-label="Idioma" data-i18n-aria-label="lang.aria">
       <button class="lang__btn" type="button" data-lang="es" aria-pressed="true">
         <svg class="flag" aria-hidden="true" focusable="false"><use href="#f-es"/></svg>
@@ -102,317 +90,50 @@
       </button>
     </div>
   </div>
-</header>
 
-<main id="contingut">
-
-  <section class="hero" id="dalt">
-    <div class="wrap hero__grid">
-      <div class="hero__text">
-        <p class="eyebrow" data-i18n="hero.eyebrow">Técnico IT · Sistemas · Ciberseguridad</p>
-        <h1>Alex Aiguadé Alisultánov</h1>
-        <p class="lead" data-i18n="hero.lead">Técnico IT centrado en sistemas y ciberseguridad, con base en desarrollo de aplicaciones. Ahora curso el Máster en Ciberseguridad e IA y tengo la certificación eJPT v2. Busco incorporarme al departamento de IT de una empresa del sector.</p>
-        <p class="hero__lloc" data-i18n="hero.where">Anglesola, Cataluña, España</p>
-        <div class="hero__actions">
-          <a class="btn btn--primary" href="#projectes" data-i18n="hero.cta">Mira los proyectos</a>
-          <a class="btn btn--ghost" href="https://www.linkedin.com/in/alex-aiguade-alisultanov-076706230/" target="_blank" rel="noopener">
-            LinkedIn<svg class="ico" aria-hidden="true" focusable="false"><use href="#i-arrow"/></svg>
-          </a>
-        </div>
-        <p class="hero__note" data-i18n="hero.note">Cinco proyectos publicados</p>
-      </div>
-      <div class="hero__photo">
-        <img src="Img/alex.png" width="400" height="400" alt="Retrato de Alex Aiguadé Alisultánov" data-i18n-alt="hero.alt" fetchpriority="high" decoding="async">
-      </div>
-    </div>
-  </section>
-
-  <section class="section" id="sobre-mi" aria-labelledby="t-sobre">
-    <div class="wrap">
-      <p class="eyebrow">01</p>
-      <h2 id="t-sobre" data-i18n="about.h">Sobre mí</h2>
-      <div class="prose">
-        <p data-i18n="about.p1">Soy Técnico Superior en Desarrollo de Aplicaciones y ahora curso el Máster en Ciberseguridad e Inteligencia Artificial de Evolve. La base la traigo de la programación; lo que trabajo ahora es la protección de activos digitales y el uso de la IA para optimizar y asegurar procesos.</p>
-        <p data-i18n="about.p2">Busco incorporarme al departamento de IT de una compañía del sector de la ciberseguridad, donde pueda aportar en la gestión de infraestructura, la automatización de tareas y el desarrollo de soluciones seguras. Tengo un inglés intermedio (B1-B2), suficiente para moverme en entornos técnicos.</p>
-        <p data-i18n="about.p3">Lo que más me interesa: el desarrollo e integración de software seguro, la ciberseguridad operativa y la gestión de sistemas IT, la IA aplicada a entornos tecnológicos y automatizar lo que se repite. Los proyectos de aquí abajo son de desarrollo web, de la etapa del ciclo superior, y siguen explicando cómo trabajo.</p>
-      </div>
-    </div>
-  </section>
-
-  <section class="section" id="projectes" aria-labelledby="t-projectes">
-    <div class="wrap">
-      <p class="eyebrow">02</p>
-      <h2 id="t-projectes" data-i18n="proj.h">Proyectos</h2>
-      <p class="section__intro" data-i18n="proj.intro">Cada tarjeta lleva las tecnologías con las que está hecho el proyecto y, si ya está desplegado, el enlace para probarlo.</p>
-
-      <p class="feed" id="estat-projectes" role="status" hidden>
-        <span class="feed__dot" aria-hidden="true"></span>
-        <span class="feed__text"></span>
-      </p>
-
-      <!-- Estas tarjetas son las de siempre y se ven aunque no haya JavaScript. Cuando
-           lo hay, script.js las cambia por la lista que devuelve la API de GitHub. -->
-      <ul class="cards" id="llista-projectes">
-        <li class="card">
-          <h3><a href="https://inventario-de-libros.onrender.com/llibres" target="_blank" rel="noopener">Gestor de inventario de libros</a></h3>
-          <p data-i18n="proj.library">Aplicación web que lleva los libros, los usuarios y los préstamos de una biblioteca, con los datos sobre MySQL.</p>
-          <ul class="chips" aria-label="Tecnologías" data-i18n-aria-label="chips.aria">
-            <li>Java</li><li>Spring Boot</li><li>Thymeleaf</li><li>MySQL</li>
-          </ul>
-          <div class="card__foot">
-            <a class="btn btn--primary card__provar" href="https://inventario-de-libros.onrender.com/llibres" target="_blank" rel="noopener"><span data-i18n="feed.try">Probar la app</span><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-arrow"/></svg></a>
-            <a class="card__codi" href="https://github.com/AlexAiguadeAlisultanov/springboot-thymeleaf-web-master" target="_blank" rel="noopener"><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-github"/></svg><span data-i18n="feed.code">Código</span></a>
-          </div>
-        </li>
-
-        <li class="card">
-          <h3><a href="https://taquilla-de-futbol.onrender.com" target="_blank" rel="noopener">Taquilla de fútbol</a></h3>
-          <p data-i18n="proj.qr">Web que genera y lee códigos QR para entradas de partidos, con cuentas de usuario y el pago de la entrada.</p>
-          <ul class="chips" aria-label="Tecnologías" data-i18n-aria-label="chips.aria">
-            <li>Java</li><li>Spring Boot</li><li data-i18n="chip.qr">Códigos QR</li>
-          </ul>
-          <div class="card__foot">
-            <a class="btn btn--primary card__provar" href="https://taquilla-de-futbol.onrender.com" target="_blank" rel="noopener"><span data-i18n="feed.try">Probar la app</span><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-arrow"/></svg></a>
-            <a class="card__codi" href="https://github.com/AlexAiguadeAlisultanov/qrcodegenerator" target="_blank" rel="noopener"><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-github"/></svg><span data-i18n="feed.code">Código</span></a>
-          </div>
-        </li>
-
-        <li class="card">
-          <h3><a href="https://gestor-de-incidencias.onrender.com" target="_blank" rel="noopener">Gestor de incidencias</a></h3>
-          <p data-i18n="proj.issues">Aplicación para registrar las incidencias de un centro educativo y seguir su estado, organizadas por categorías y con los contactos de cada una.</p>
-          <ul class="chips" aria-label="Tecnologías" data-i18n-aria-label="chips.aria">
-            <li>PHP</li><li>Laravel</li>
-          </ul>
-          <div class="card__foot">
-            <a class="btn btn--primary card__provar" href="https://gestor-de-incidencias.onrender.com" target="_blank" rel="noopener"><span data-i18n="feed.try">Probar la app</span><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-arrow"/></svg></a>
-            <a class="card__codi" href="https://github.com/AlexAiguadeAlisultanov/app-gestio-incidencies" target="_blank" rel="noopener"><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-github"/></svg><span data-i18n="feed.code">Código</span></a>
-          </div>
-        </li>
-
-        <!-- El repositorio de este todavía es privado y la demo no está levantada, así
-             que la tarjeta se queda sin enlace en vez de llevar a un 404. -->
-        <li class="card">
-          <h3><a href="https://mvc-ajax.onrender.com" target="_blank" rel="noopener">Gestor de inventario</a></h3>
-          <p data-i18n="proj.crud">Alta, consulta, edición y borrado de productos con patrón MVC y peticiones AJAX, para que la página no se recargue. Funciona igual en móvil.</p>
-          <ul class="chips" aria-label="Tecnologías" data-i18n-aria-label="chips.aria">
-            <li>PHP</li><li>MVC</li><li>AJAX</li>
-          </ul>
-          <div class="card__foot">
-            <a class="btn btn--primary card__provar" href="https://mvc-ajax.onrender.com" target="_blank" rel="noopener"><span data-i18n="feed.try">Probar la app</span><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-arrow"/></svg></a>
-          </div>
-        </li>
-
-        <!-- Proyecto de equipo con el repositorio privado: la tarjeta se queda sin
-             enlace en vez de llevar a un 404. -->
-        <li class="card">
-          <h3><a href="https://planificador-volkswagen.onrender.com" target="_blank" rel="noopener">Planificador de preparación Volkswagen</a></h3>
-          <p data-i18n="proj.vw">Herramienta que planifica la preparación de un Volkswagen: eliges modelo, presupuesto y objetivos, y devuelve las piezas que caben en ese dinero. Proyecto de equipo de nueve personas, con su catálogo, su motor de cálculo y su aplicación de escritorio.</p>
-          <ul class="chips" aria-label="Tecnologías" data-i18n-aria-label="chips.aria">
-            <li>TypeScript</li><li>React</li><li>Vite</li><li data-i18n="chip.equip">Proyecto de equipo</li>
-          </ul>
-          <div class="card__foot">
-            <a class="btn btn--primary card__provar" href="https://planificador-volkswagen.onrender.com" target="_blank" rel="noopener"><span data-i18n="feed.try">Probar la app</span><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-arrow"/></svg></a>
-          </div>
-        </li>
-      </ul>
-    </div>
-  </section>
-
-  <section class="section" id="formacio" aria-labelledby="t-formacio">
-    <div class="wrap">
-      <p class="eyebrow">03</p>
-      <h2 id="t-formacio" data-i18n="edu.h">Formación</h2>
-      <p class="section__intro" data-i18n="edu.intro">De dónde vienen la base de desarrollo y la especialización en seguridad.</p>
-
-      <div class="cert">
-        <svg class="ico ico--lead" aria-hidden="true" focusable="false"><use href="#i-shield"/></svg>
-        <div class="cert__cos">
-          <p class="cert__etiqueta" data-i18n="cert.label">Certificación</p>
-          <p class="cert__nom">eJPT v2</p>
-          <p class="cert__org">INE · eLearnSecurity Junior Penetration Tester</p>
-        </div>
+  <div class="porta__centre">
+    <div class="porta__card">
+      <div class="porta__dalt">
+        <p class="eyebrow" data-i18n="porta.eyebrow">Portafolio</p>
+        <h1 class="porta__nom">Alex Aiguadé Alisultánov</h1>
+        <p class="porta__titular" data-i18n="porta.titular">Técnico IT · Sistemas · Ciberseguridad</p>
       </div>
 
-      <ol class="timeline">
-        <li>
-          <div class="timeline__quan">
-            <p data-i18n="edu.ev.when">Abril de 2026 a diciembre de 2026</p>
-            <p class="badge badge--ara" data-i18n="edu.ev.tag">En curso</p>
-          </div>
-          <div class="timeline__cos">
-            <h3 data-i18n="edu.ev.title">Máster en Ciberseguridad e Inteligencia Artificial</h3>
-            <p class="timeline__lloc">Evolve</p>
-            <ul class="chips" aria-label="Contenidos" data-i18n-aria-label="edu.aria">
-              <li data-i18n="edu.ev.c1">Hacking ético y metodología de auditoría</li>
-              <li data-i18n="edu.ev.c2">Reconocimiento pasivo y activo</li>
-              <li data-i18n="edu.ev.c3">OSINT y footprinting</li>
-              <li data-i18n="edu.ev.c4">Protocolos de red, segmentación y arquitecturas de comunicación</li>
-              <li data-i18n="edu.ev.c5">Explotación de vulnerabilidades</li>
-              <li>Metasploit</li>
-              <li data-i18n="edu.ev.c7">Pivoting, movimiento lateral y escalada de privilegios</li>
-              <li data-i18n="edu.ev.c8">Normativa, cumplimiento y marco legal</li>
-              <li data-i18n="edu.ev.c9">Pentesting avanzado en entornos reales</li>
-              <li data-i18n="sk.iacyber">IA aplicada a la ciberseguridad</li>
-              <li data-i18n="edu.ev.c11">Blue Team, SOC y respuesta ante incidentes</li>
-            </ul>
-          </div>
-        </li>
-        <li>
-          <div class="timeline__quan">
-            <p data-i18n="edu.ls.when">Septiembre de 2022 a mayo de 2024</p>
-          </div>
-          <div class="timeline__cos">
-            <h3 data-i18n="edu.ls.title">Ciclo Formativo de Grado Superior en Desarrollo de Aplicaciones</h3>
-            <p class="timeline__lloc">La Salle Mollerussa</p>
-            <p class="timeline__nota" data-i18n="edu.ls.note">Nota media 6,313</p>
-          </div>
-        </li>
-        <li>
-          <div class="timeline__quan">
-            <p data-i18n="edu.eso.when">2020 a 2024</p>
-          </div>
-          <div class="timeline__cos">
-            <h3 data-i18n="edu.eso.title">Educación Secundaria Obligatoria</h3>
-            <p class="timeline__lloc">Ins Alfons Costafreda</p>
-          </div>
-        </li>
-      </ol>
+      <form class="porta__form" id="porta-form" novalidate>
+        <div class="camp">
+          <label for="porta-usuari" data-i18n="porta.user">Usuario</label>
+          <input id="porta-usuari" name="usuario" type="text" value="plebeyo"
+                 autocomplete="username" autocapitalize="none" autocorrect="off" spellcheck="false">
+        </div>
+        <div class="camp">
+          <label for="porta-clau" data-i18n="porta.pass">Contraseña</label>
+          <input id="porta-clau" name="contrasena" type="password" autocomplete="current-password">
+        </div>
+
+        <p class="porta__avis" id="porta-avis" role="alert" hidden></p>
+
+        <!-- El texto del botón y el de la pista los pone script.js, porque cambian
+             según cómo vaya la petición. -->
+        <button class="btn btn--primary porta__boto" type="submit" id="porta-entrar">Entrar</button>
+
+        <p class="porta__pista" id="porta-pista" role="status" hidden>
+          <span class="porta__punt" aria-hidden="true"></span>
+          <span class="porta__pista-text"></span>
+        </p>
+      </form>
+
+      <noscript>
+        <style>.porta__form { display: none; }</style>
+        <p class="porta__sensejs">Esta página necesita JavaScript para entrar y para mostrar el contenido. Actívalo y vuelve a cargarla.</p>
+      </noscript>
     </div>
-  </section>
 
-  <section class="section" id="habilitats" aria-labelledby="t-habilitats">
-    <div class="wrap">
-      <p class="eyebrow">04</p>
-      <h2 id="t-habilitats" data-i18n="skills.h">Aptitudes</h2>
-      <p class="section__intro" data-i18n="skills.intro">Agrupadas por familia, para que se vea de un vistazo de qué va cada parte.</p>
-
-      <div class="stack">
-        <div class="stack__group">
-          <h3 data-i18n="skills.g1">Pentesting y ofensiva</h3>
-          <ul class="chips chips--lg">
-            <li>Kali Linux</li><li>Nmap</li><li>Burp Suite</li><li>SQLMap</li><li>Metasploit</li><li>Wireshark</li><li>OSINT</li>
-            <li data-i18n="sk.explo">Explotación de vulnerabilidades</li>
-            <li data-i18n="sk.esc">Escalada de privilegios</li>
-            <li data-i18n="sk.lat">Movimiento lateral y pivoting</li>
-            <li data-i18n="sk.post">Post-explotación</li>
-            <li>Payloads</li>
-            <li data-i18n="sk.wifi">Auditoría Wi-Fi y móvil</li>
-            <li data-i18n="sk.e2e">Auditoría end-to-end</li>
-            <li data-i18n="sk.info">Informe ejecutivo</li>
-          </ul>
-        </div>
-        <div class="stack__group">
-          <h3 data-i18n="skills.g2">Defensa</h3>
-          <ul class="chips chips--lg">
-            <li>Blue Team</li><li>Purple Team</li><li>SOC</li>
-            <li data-i18n="sk.inc">Respuesta ante incidentes</li>
-            <li>SIEM</li>
-            <li data-i18n="sk.cve">CVE y NVD</li>
-          </ul>
-        </div>
-        <div class="stack__group">
-          <h3 data-i18n="skills.g3">Metodologías y normativa</h3>
-          <ul class="chips chips--lg">
-            <li>OWASP</li><li>PTES</li><li>ENS</li><li>NIS2</li>
-            <li data-i18n="sk.rgpd">RGPD</li>
-          </ul>
-        </div>
-        <div class="stack__group">
-          <h3 data-i18n="skills.g4">Programación y datos</h3>
-          <ul class="chips chips--lg">
-            <li>Python</li><li>Java</li><li>MariaDB</li><li>TCP/IP</li>
-          </ul>
-        </div>
-        <div class="stack__group">
-          <h3 data-i18n="skills.g5">Inteligencia artificial</h3>
-          <ul class="chips chips--lg">
-            <li data-i18n="sk.ag">Agentes con Python</li>
-            <li data-i18n="sk.ml">Aprendizaje automático</li>
-            <li data-i18n="sk.llm">Modelos de lenguaje</li>
-            <li data-i18n="sk.iacyber">IA aplicada a la ciberseguridad</li>
-          </ul>
-        </div>
-        <div class="stack__group">
-          <h3 data-i18n="skills.g6">Aptitudes personales</h3>
-          <p class="stack__nota" data-i18n="skills.soft">De la etapa en La Salle Mollerussa: trabajo en equipo, resolución de problemas, responsabilidad, facilidad de adaptación, escucha activa, proactividad, empatía, respeto y tolerancia.</p>
-        </div>
-        <div class="stack__group">
-          <h3 data-i18n="skills.g7">Idiomas</h3>
-          <ul class="langs">
-            <li>
-              <span class="langs__nom" data-i18n="lg.es">Castellano</span>
-              <span class="langs__niv" data-i18n="lg.es.n">Nativo o bilingüe</span>
-            </li>
-            <li>
-              <span class="langs__nom" data-i18n="lg.ru">Ruso</span>
-              <span class="langs__niv" data-i18n="lg.ru.n">Nativo o bilingüe</span>
-            </li>
-            <li>
-              <span class="langs__nom" data-i18n="lg.ca">Catalán</span>
-              <span class="langs__niv" data-i18n="lg.ca.n">Competencia profesional completa</span>
-            </li>
-            <li>
-              <span class="langs__nom" data-i18n="lg.en">Inglés</span>
-              <span class="langs__niv" data-i18n="lg.en.n">Intermedio, B1-B2</span>
-            </li>
-          </ul>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <section class="section section--last" id="contacte" aria-labelledby="t-contacte">
-    <div class="wrap">
-      <p class="eyebrow">05</p>
-      <h2 id="t-contacte" data-i18n="contact.h">Contacto</h2>
-      <p class="section__intro" data-i18n="contact.intro">Si te encaja mi perfil, escríbeme por donde te vaya mejor. Contesto enseguida.</p>
-
-      <ul class="contact">
-        <li>
-          <a href="mailto:alexaiguade@gmail.com">
-            <svg class="ico ico--lead" aria-hidden="true" focusable="false"><use href="#i-mail"/></svg>
-            <span class="contact__label" data-i18n="contact.mail">Correo</span>
-            <span class="contact__value">alexaiguade@gmail.com</span>
-            <svg class="ico ico--end" aria-hidden="true" focusable="false"><use href="#i-arrow"/></svg>
-          </a>
-        </li>
-        <li>
-          <a href="https://wa.me/34684258353" target="_blank" rel="noopener">
-            <svg class="ico ico--lead" aria-hidden="true" focusable="false"><use href="#i-chat"/></svg>
-            <span class="contact__label">WhatsApp</span>
-            <span class="contact__value">684 258 353</span>
-            <svg class="ico ico--end" aria-hidden="true" focusable="false"><use href="#i-arrow"/></svg>
-          </a>
-        </li>
-        <li>
-          <a href="https://www.linkedin.com/in/alex-aiguade-alisultanov-076706230/" target="_blank" rel="noopener">
-            <svg class="ico ico--lead" aria-hidden="true" focusable="false"><use href="#i-linkedin"/></svg>
-            <span class="contact__label">LinkedIn</span>
-            <span class="contact__value" data-i18n="contact.li">El perfil entero, con más detalle</span>
-            <svg class="ico ico--end" aria-hidden="true" focusable="false"><use href="#i-arrow"/></svg>
-          </a>
-        </li>
-        <li>
-          <a href="https://github.com/AlexAiguadeAlisultanov" target="_blank" rel="noopener">
-            <svg class="ico ico--lead" aria-hidden="true" focusable="false"><use href="#i-github"/></svg>
-            <span class="contact__label">GitHub</span>
-            <span class="contact__value" data-i18n="contact.gh">Todo el código de los proyectos</span>
-            <svg class="ico ico--end" aria-hidden="true" focusable="false"><use href="#i-arrow"/></svg>
-          </a>
-        </li>
-      </ul>
-    </div>
-  </section>
-
-</main>
-
-<footer class="foot">
-  <div class="wrap foot__inner">
-    <p>Alex Aiguadé Alisultánov</p>
-    <p><span data-i18n="foot.made">Portafolio hecho a mano con HTML y CSS</span> · <span id="any">2026</span></p>
+    <p class="porta__nota" data-i18n="porta.nota">La cuenta de invitado ya viene puesta. La contraseña te la pasa Alex.</p>
   </div>
-</footer>
+</div>
 
-<script src="script.js?v=202609231752" defer></script>
+<div id="app" hidden></div>
+
+<script src="script.js?v=202609232130" defer></script>
 </body>
 </html>

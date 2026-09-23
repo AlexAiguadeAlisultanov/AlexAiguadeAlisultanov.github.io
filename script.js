@@ -1,18 +1,44 @@
-// Mejoras pequeñas sobre una página que ya funciona sin JavaScript: el idioma, la
-// lista de proyectos leída de GitHub, la sección donde estás marcada en el menú, la
-// línea de la cabecera al bajar y el año del pie.
+// El portafolio entero se monta desde aquí. El HTML solo trae la pantalla de acceso:
+// hasta que la API dice quién entra no existe ninguna sección, y el rol que devuelve
+// decide qué proyectos se pueden abrir.
 
 (function () {
   "use strict";
 
   /* ---------- Idiomas ---------- */
 
-  // El castellano de las frases que ya están escritas en el HTML sale del propio HTML
-  // al arrancar, así que solo hay una copia de cada una y la página se ve entera
-  // aunque el script falle. En el bloque "es" de aquí abajo solo está el castellano de
-  // lo que se pinta desde JavaScript, que no existe en el HTML.
+  // Todo lo que se ve, menos la pantalla de acceso, se pinta desde JavaScript, así que
+  // el castellano de esas frases vive en el bloque "es" de aquí abajo. El de la pantalla
+  // de acceso sale del propio HTML, que es donde está escrito.
   var TRADUCCIONES = {
     es: {
+      "skip": "Salta al contenido",
+      "nav.aria": "Secciones",
+      "nav.about": "Sobre mí",
+      "nav.projects": "Proyectos",
+      "nav.edu": "Formación",
+      "nav.skills": "Aptitudes",
+      "nav.contact": "Contacto",
+      "sortir": "Salir",
+      "hero.eyebrow": "Técnico IT · Sistemas · Ciberseguridad",
+      "hero.lead": "Técnico IT centrado en sistemas y ciberseguridad, con base en desarrollo de aplicaciones. Ahora curso el Máster en Ciberseguridad e IA y tengo la certificación eJPT v2. Busco incorporarme al departamento de IT de una empresa del sector.",
+      "hero.where": "Anglesola, Cataluña, España",
+      "hero.cta": "Mira los proyectos",
+      "hero.note": "Cinco proyectos publicados",
+      "hero.count": "{n} proyectos publicados",
+      "hero.alt": "Retrato de Alex Aiguadé Alisultánov",
+      "about.h": "Sobre mí",
+      "about.p1": "Soy Técnico Superior en Desarrollo de Aplicaciones y ahora curso el Máster en Ciberseguridad e Inteligencia Artificial de Evolve. La base la traigo de la programación; lo que trabajo ahora es la protección de activos digitales y el uso de la IA para optimizar y asegurar procesos.",
+      "about.p2": "Busco incorporarme al departamento de IT de una compañía del sector de la ciberseguridad, donde pueda aportar en la gestión de infraestructura, la automatización de tareas y el desarrollo de soluciones seguras. Tengo un inglés intermedio (B1-B2), suficiente para moverme en entornos técnicos.",
+      "about.p3": "Lo que más me interesa: el desarrollo e integración de software seguro, la ciberseguridad operativa y la gestión de sistemas IT, la IA aplicada a entornos tecnológicos y automatizar lo que se repite. Los proyectos de aquí abajo son de desarrollo web, de la etapa del ciclo superior, y siguen explicando cómo trabajo.",
+      "proj.h": "Proyectos",
+      "proj.intro": "Cada tarjeta lleva las tecnologías con las que está hecho el proyecto y, si ya está desplegado, el enlace para probarlo.",
+      "proj.code": "Código en GitHub",
+      "chips.aria": "Tecnologías",
+      "chip.qr": "Códigos QR",
+      "chip.equip": "Proyecto de equipo",
+      "obres.nom": "En obras",
+      "obres.why": "Esto todavía está a medias. Mejor no mires debajo de la lona hasta que esté acabado.",
       "feed.loading": "Leyendo los repositorios de GitHub",
       "feed.cache": "GitHub no contesta ahora mismo, así que esta es la última lista guardada.",
       "feed.offline": "GitHub no contesta ahora mismo, así que esta es la lista de siempre, sin la fecha de cada repositorio.",
@@ -22,8 +48,6 @@
       "feed.code": "Código",
       "feed.soon": "Demo en camino",
       "feed.onlycode": "Solo código por ahora",
-      "proj.code": "Código en GitHub",
-      "hero.count": "{n} proyectos publicados",
       "wake.title": "Las demos se duermen solas",
       "wake.text": "Están en un plan gratuito que las apaga a los quince minutos sin visitas. Arráncalas todas de una vez, o una a una desde su tarjeta, y cada una te va diciendo cómo está. Desde aquí solo se puede saber si el servidor contesta, no qué contesta.",
       "wake.on": "Iniciar las {n} demos",
@@ -53,12 +77,80 @@
       "estat.fail": "No ha contestado",
       "estat.fail.why": "Se ha esperado dos minutos y medio sin respuesta. Prueba otra vez.",
       "estat.secs": "{s} s",
-      "estat.again": "Volver a intentarlo"
+      "estat.again": "Volver a intentarlo",
+      "edu.h": "Formación",
+      "edu.intro": "De dónde vienen la base de desarrollo y la especialización en seguridad.",
+      "edu.aria": "Contenidos",
+      "cert.label": "Certificación",
+      "edu.ev.when": "Abril de 2026 a diciembre de 2026",
+      "edu.ev.tag": "En curso",
+      "edu.ev.title": "Máster en Ciberseguridad e Inteligencia Artificial",
+      "edu.ev.c1": "Hacking ético y metodología de auditoría",
+      "edu.ev.c2": "Reconocimiento pasivo y activo",
+      "edu.ev.c3": "OSINT y footprinting",
+      "edu.ev.c4": "Protocolos de red, segmentación y arquitecturas de comunicación",
+      "edu.ev.c5": "Explotación de vulnerabilidades",
+      "edu.ev.c7": "Pivoting, movimiento lateral y escalada de privilegios",
+      "edu.ev.c8": "Normativa, cumplimiento y marco legal",
+      "edu.ev.c9": "Pentesting avanzado en entornos reales",
+      "edu.ev.c11": "Blue Team, SOC y respuesta ante incidentes",
+      "edu.ls.when": "Septiembre de 2022 a mayo de 2024",
+      "edu.ls.title": "Ciclo Formativo de Grado Superior en Desarrollo de Aplicaciones",
+      "edu.ls.note": "Nota media 6,313",
+      "edu.eso.when": "2020 a 2024",
+      "edu.eso.title": "Educación Secundaria Obligatoria",
+      "skills.h": "Aptitudes",
+      "skills.intro": "Agrupadas por familia, para que se vea de un vistazo de qué va cada parte.",
+      "skills.g1": "Pentesting y ofensiva",
+      "skills.g2": "Defensa",
+      "skills.g3": "Metodologías y normativa",
+      "skills.g4": "Programación y datos",
+      "skills.g5": "Inteligencia artificial",
+      "skills.g6": "Aptitudes personales",
+      "skills.g7": "Idiomas",
+      "sk.explo": "Explotación de vulnerabilidades",
+      "sk.esc": "Escalada de privilegios",
+      "sk.lat": "Movimiento lateral y pivoting",
+      "sk.post": "Post-explotación",
+      "sk.wifi": "Auditoría Wi-Fi y móvil",
+      "sk.e2e": "Auditoría end-to-end",
+      "sk.info": "Informe ejecutivo",
+      "sk.inc": "Respuesta ante incidentes",
+      "sk.cve": "CVE y NVD",
+      "sk.rgpd": "RGPD",
+      "sk.ag": "Agentes con Python",
+      "sk.ml": "Aprendizaje automático",
+      "sk.llm": "Modelos de lenguaje",
+      "sk.iacyber": "IA aplicada a la ciberseguridad",
+      "skills.soft": "De la etapa en La Salle Mollerussa: trabajo en equipo, resolución de problemas, responsabilidad, facilidad de adaptación, escucha activa, proactividad, empatía, respeto y tolerancia.",
+      "lg.es": "Castellano",
+      "lg.es.n": "Nativo o bilingüe",
+      "lg.ru": "Ruso",
+      "lg.ru.n": "Nativo o bilingüe",
+      "lg.ca": "Catalán",
+      "lg.ca.n": "Competencia profesional completa",
+      "lg.en": "Inglés",
+      "lg.en.n": "Intermedio, B1-B2",
+      "contact.h": "Contacto",
+      "contact.intro": "Si te encaja mi perfil, escríbeme por donde te vaya mejor. Contesto enseguida.",
+      "contact.mail": "Correo",
+      "contact.li": "El perfil entero, con más detalle",
+      "contact.gh": "Todo el código de los proyectos",
+      "foot.made": "Portafolio hecho a mano con HTML y CSS",
+      "porta.enter": "Entrar",
+      "porta.sending": "Entrando",
+      "porta.retry": "Volver a intentarlo",
+      "porta.checking": "Comprobando la sesión guardada.",
+      "porta.slow": "El servidor estaba dormido y está arrancando. Cerca de un minuto es lo normal.",
+      "porta.err.empty": "Escribe el usuario y la contraseña.",
+      "porta.err.creds": "El usuario o la contraseña no cuadran.",
+      "porta.err.net": "No se ha podido contactar con el servidor. Mira la conexión y vuelve a intentarlo.",
+      "porta.err.time": "El servidor no ha contestado a tiempo. Vuelve a intentarlo.",
+      "porta.err.server": "El servidor ha contestado con un error. Prueba otra vez dentro de un momento."
     },
     ca: {
       "doc.title": "Alex Aiguadé Alisultánov · Portafoli",
-      "doc.desc": "Portafoli d'Alex Aiguadé Alisultánov, tècnic IT orientat a sistemes i ciberseguretat. Màster en Ciberseguretat i IA en curs i certificació eJPT v2.",
-      "og.desc": "Tècnic IT orientat a sistemes i ciberseguretat, amb base en desenvolupament d'aplicacions.",
+      "doc.desc": "Portafoli d'Alex Aiguadé Alisultánov. Cal entrar amb un compte per veure'l.",
       "skip": "Salta al contingut",
       "nav.aria": "Seccions",
       "nav.about": "Sobre mi",
@@ -66,6 +158,7 @@
       "nav.edu": "Formació",
       "nav.skills": "Aptituds",
       "nav.contact": "Contacte",
+      "sortir": "Sortir",
       "lang.aria": "Idioma",
       "hero.eyebrow": "Tècnic IT · Sistemes · Ciberseguretat",
       "hero.lead": "Tècnic IT centrat en sistemes i ciberseguretat, amb base en desenvolupament d'aplicacions. Ara curso el Màster en Ciberseguretat i IA i tinc la certificació eJPT v2. Busco incorporar-me al departament d'IT d'una empresa del sector.",
@@ -80,15 +173,12 @@
       "about.p3": "El que més m'interessa: el desenvolupament i la integració de programari segur, la ciberseguretat operativa i la gestió de sistemes IT, la IA aplicada a entorns tecnològics i automatitzar el que es repeteix. Els projectes d'aquí sota són de desenvolupament web, de l'etapa del cicle superior, i segueixen explicant com treballo.",
       "proj.h": "Projectes",
       "proj.intro": "Cada targeta porta les tecnologies amb què està fet el projecte i, si ja està desplegat, l'enllaç per provar-lo.",
-      "proj.library": "Aplicació web que porta els llibres, els usuaris i els préstecs d'una biblioteca, amb les dades sobre MySQL.",
-      "proj.qr": "Web que genera i llegeix codis QR per a entrades de partits, amb comptes d'usuari i el pagament de l'entrada.",
-      "proj.issues": "Aplicació per registrar incidències i seguir-ne l'estat, organitzades per categories i amb els contactes de cadascuna.",
-      "proj.crud": "Alta, consulta, edició i esborrat de productes amb patró MVC i peticions AJAX, perquè la pàgina no es recarregui. Funciona igual en mòbil.",
       "proj.code": "Codi a GitHub",
       "chips.aria": "Tecnologies",
       "chip.qr": "Codis QR",
       "chip.equip": "Projecte d'equip",
-      "proj.vw": "Eina que planifica la preparació d'un Volkswagen: tries model, pressupost i objectius, i retorna les peces que caben en aquells diners. Projecte d'equip de nou persones, amb el seu catàleg, el seu motor de càlcul i la seva aplicació d'escriptori.",
+      "obres.nom": "En obres",
+      "obres.why": "Això encara està a mitges. Val més no mirar sota la lona fins que estigui acabat.",
       "feed.loading": "Llegint els repositoris de GitHub",
       "feed.cache": "GitHub no contesta ara mateix, així que aquesta és l'última llista desada.",
       "feed.offline": "GitHub no contesta ara mateix, així que aquesta és la llista de sempre, sense la data de cada repositori.",
@@ -128,8 +218,6 @@
       "estat.fail.why": "S'han esperat dos minuts i mig sense resposta. Prova-ho un altre cop.",
       "estat.secs": "{s} s",
       "estat.again": "Tornar-ho a provar",
-      "skills.h": "Aptituds",
-      "skills.intro": "Agrupades per família, perquè es vegi d'un cop d'ull de què va cada part.",
       "edu.h": "Formació",
       "edu.intro": "D'on venen la base de desenvolupament i l'especialització en seguretat.",
       "edu.aria": "Continguts",
@@ -151,6 +239,8 @@
       "edu.ls.note": "Nota mitjana 6,313",
       "edu.eso.when": "2020 a 2024",
       "edu.eso.title": "Educació Secundària Obligatòria",
+      "skills.h": "Aptituds",
+      "skills.intro": "Agrupades per família, perquè es vegi d'un cop d'ull de què va cada part.",
       "skills.g1": "Pentesting i ofensiva",
       "skills.g2": "Defensa",
       "skills.g3": "Metodologies i normativa",
@@ -186,12 +276,26 @@
       "contact.mail": "Correu",
       "contact.li": "El perfil sencer, amb més detall",
       "contact.gh": "Tot el codi dels projectes",
-      "foot.made": "Portafoli fet a mà amb HTML i CSS"
+      "foot.made": "Portafoli fet a mà amb HTML i CSS",
+      "porta.eyebrow": "Portafoli",
+      "porta.titular": "Tècnic IT · Sistemes · Ciberseguretat",
+      "porta.user": "Usuari",
+      "porta.pass": "Contrasenya",
+      "porta.nota": "El compte de convidat ja ve posat. La contrasenya te la passa l'Alex.",
+      "porta.enter": "Entrar",
+      "porta.sending": "Entrant",
+      "porta.retry": "Tornar-ho a provar",
+      "porta.checking": "Comprovant la sessió desada.",
+      "porta.slow": "El servidor estava adormit i s'està engegant. Prop d'un minut és el normal.",
+      "porta.err.empty": "Escriu l'usuari i la contrasenya.",
+      "porta.err.creds": "L'usuari o la contrasenya no quadren.",
+      "porta.err.net": "No s'ha pogut contactar amb el servidor. Mira la connexió i torna-ho a provar.",
+      "porta.err.time": "El servidor no ha contestat a temps. Torna-ho a provar.",
+      "porta.err.server": "El servidor ha contestat amb un error. Prova-ho un altre cop d'aquí a un moment."
     },
     en: {
       "doc.title": "Alex Aiguadé Alisultánov · Portfolio",
-      "doc.desc": "Portfolio of Alex Aiguadé Alisultánov, an IT technician focused on systems and cybersecurity. Master's degree in Cybersecurity and AI under way, plus the eJPT v2 certification.",
-      "og.desc": "IT technician focused on systems and cybersecurity, with a background in application development.",
+      "doc.desc": "Portfolio of Alex Aiguadé Alisultánov. You need an account to see it.",
       "skip": "Skip to content",
       "nav.aria": "Sections",
       "nav.about": "About me",
@@ -199,6 +303,7 @@
       "nav.edu": "Education",
       "nav.skills": "Skills",
       "nav.contact": "Contact",
+      "sortir": "Sign out",
       "lang.aria": "Language",
       "hero.eyebrow": "IT technician · Systems · Cybersecurity",
       "hero.lead": "IT technician focused on systems and cybersecurity, with a background in application development. I'm taking the Master's in Cybersecurity and AI right now and I hold the eJPT v2 certification. I'm looking to join the IT department of a company in the field.",
@@ -213,15 +318,12 @@
       "about.p3": "What interests me most: developing and integrating secure software, hands-on cybersecurity and IT systems management, AI applied to technical environments, and automating whatever repeats. The projects below are web development, from my vocational training years, and they still say how I work.",
       "proj.h": "Projects",
       "proj.intro": "Each card lists the technologies behind the project and, once it is deployed, the link to try it.",
-      "proj.library": "Web app that handles the books, the users and the loans of a library, with the data on MySQL.",
-      "proj.qr": "Site that generates and reads QR codes for match tickets, with user accounts and ticket payment.",
-      "proj.issues": "App to log issues and follow how they are going, sorted by category and with the contacts for each one.",
-      "proj.crud": "Create, read, update and delete products with an MVC pattern and AJAX requests, so the page never reloads. Works the same on a phone.",
       "proj.code": "Code on GitHub",
       "chips.aria": "Technologies",
       "chip.qr": "QR codes",
       "chip.equip": "Team project",
-      "proj.vw": "A tool that plans a Volkswagen build: pick the model, the budget and what you are after, and it returns the parts that fit the money. A nine-person team project, with its own catalogue, calculation engine and desktop app.",
+      "obres.nom": "Under construction",
+      "obres.why": "This one is still halfway there. Better not to peek under the tarp until it is finished.",
       "feed.loading": "Reading the repositories from GitHub",
       "feed.cache": "GitHub is not answering right now, so this is the last list that was saved.",
       "feed.offline": "GitHub is not answering right now, so this is the usual list, without the date of each repository.",
@@ -261,8 +363,6 @@
       "estat.fail.why": "Two and a half minutes went by with no answer. Give it another go.",
       "estat.secs": "{s} s",
       "estat.again": "Try again",
-      "skills.h": "Skills",
-      "skills.intro": "Grouped by family, so you can tell at a glance what each part is about.",
       "edu.h": "Education",
       "edu.intro": "Where the development base and the security specialisation come from.",
       "edu.aria": "Contents",
@@ -284,6 +384,8 @@
       "edu.ls.note": "Average grade 6.313",
       "edu.eso.when": "2020 to 2024",
       "edu.eso.title": "Compulsory secondary education",
+      "skills.h": "Skills",
+      "skills.intro": "Grouped by family, so you can tell at a glance what each part is about.",
       "skills.g1": "Pentesting and offensive security",
       "skills.g2": "Defence",
       "skills.g3": "Methodologies and regulation",
@@ -319,12 +421,27 @@
       "contact.mail": "Email",
       "contact.li": "The full profile, in more detail",
       "contact.gh": "All the code from the projects",
-      "foot.made": "Portfolio handmade with HTML and CSS"
+      "foot.made": "Portfolio handmade with HTML and CSS",
+      "porta.eyebrow": "Portfolio",
+      "porta.titular": "IT technician · Systems · Cybersecurity",
+      "porta.user": "Username",
+      "porta.pass": "Password",
+      "porta.nota": "The guest account is already filled in. Alex gives you the password.",
+      "porta.enter": "Sign in",
+      "porta.sending": "Signing in",
+      "porta.retry": "Try again",
+      "porta.checking": "Checking the saved session.",
+      "porta.slow": "The server was asleep and is starting up. Close to a minute is normal.",
+      "porta.err.empty": "Type the username and the password.",
+      "porta.err.creds": "That username and password do not match.",
+      "porta.err.net": "Could not reach the server. Check your connection and try again.",
+      "porta.err.time": "The server did not answer in time. Try again.",
+      "porta.err.server": "The server answered with an error. Give it another go in a moment."
     }
   };
 
   var ATRIBUTS = ["alt", "title", "aria-label", "content"];
-  var CLAU_DESAT = "portafoli-idioma";
+  var CLAU_IDIOMA = "portafoli-idioma";
   var castella = {};
   var idiomaActual = "es";
   var oients = [];
@@ -342,7 +459,7 @@
     });
   };
 
-  // El castellano de partida sale del HTML, que es donde está escrito.
+  // El castellano de la pantalla de acceso sale del HTML, que es donde está escrito.
   cadaText(function (el) {
     var clau = el.getAttribute("data-i18n");
     if (!(clau in castella)) castella[clau] = el.textContent;
@@ -354,10 +471,9 @@
   var frase = function (idioma, clau) {
     var diccionari = TRADUCCIONES[idioma];
     if (diccionari && typeof diccionari[clau] === "string") return diccionari[clau];
+    if (typeof TRADUCCIONES.es[clau] === "string") return TRADUCCIONES.es[clau];
     return castella[clau] != null ? castella[clau] : "";
   };
-
-  var botons = Array.prototype.slice.call(document.querySelectorAll(".lang__btn"));
 
   var aplicar = function (idioma) {
     idiomaActual = idioma;
@@ -368,7 +484,9 @@
     cadaAtribut(function (el, attr, clau) {
       el.setAttribute(attr, frase(idioma, clau));
     });
-    botons.forEach(function (boto) {
+    // Los botones se buscan cada vez porque los hay en la pantalla de acceso y, después,
+    // en la cabecera del portafolio.
+    Array.prototype.forEach.call(document.querySelectorAll(".lang__btn"), function (boto) {
       boto.setAttribute("aria-pressed", String(boto.getAttribute("data-lang") === idioma));
     });
     // Lo que se pinta desde JavaScript no lleva data-i18n, así que se avisa aparte
@@ -382,34 +500,321 @@
     });
   };
 
-  var recordar = function (idioma) {
+  var recordarIdioma = function (idioma) {
     try {
-      window.localStorage.setItem(CLAU_DESAT, idioma);
+      window.localStorage.setItem(CLAU_IDIOMA, idioma);
     } catch (e) {
       // Ventana privada o almacenamiento bloqueado: la elección solo dura esta visita.
     }
   };
 
-  var recordat = function () {
+  var idiomaRecordat = function () {
     try {
-      return window.localStorage.getItem(CLAU_DESAT);
+      return window.localStorage.getItem(CLAU_IDIOMA);
     } catch (e) {
       return null;
     }
   };
 
-  if (botons.length) {
-    botons.forEach(function (boto) {
-      boto.addEventListener("click", function () {
-        var idioma = boto.getAttribute("data-lang");
-        aplicar(idioma);
-        recordar(idioma);
-      });
-    });
+  document.addEventListener("click", function (event) {
+    var boto = event.target && event.target.closest ? event.target.closest(".lang__btn") : null;
+    if (!boto) return;
+    var idioma = boto.getAttribute("data-lang");
+    if (!idioma || idioma === idiomaActual) return;
+    aplicar(idioma);
+    recordarIdioma(idioma);
+  });
 
-    var desat = recordat();
-    aplicar(desat === "ca" || desat === "en" ? desat : "es");
-  }
+  var desatIdioma = idiomaRecordat();
+  aplicar(desatIdioma === "ca" || desatIdioma === "en" ? desatIdioma : "es");
+
+  /* ---------- El portafolio, montado desde aquí ---------- */
+
+  // Todo esto estaba en index.html. Se mueve al script porque el contenido solo tiene
+  // que existir cuando la API ha dicho quién entra: dejarlo en el HTML significaría que
+  // se lee entero sin pasar por la pantalla de acceso.
+  var PLANTILLA = `
+<a class="skip" href="#contingut" data-i18n="skip">Salta al contenido</a>
+
+<header class="topbar">
+  <div class="topbar__inner">
+    <a class="topbar__name" href="#dalt">Alex Aiguadé</a>
+
+    <nav class="topbar__nav" aria-label="Secciones" data-i18n-aria-label="nav.aria">
+      <ul>
+        <li><a href="#sobre-mi" data-i18n="nav.about">Sobre mí</a></li>
+        <li><a href="#projectes" data-i18n="nav.projects">Proyectos</a></li>
+        <li><a href="#formacio" data-i18n="nav.edu">Formación</a></li>
+        <li><a href="#habilitats" data-i18n="nav.skills">Aptitudes</a></li>
+        <li><a href="#contacte" data-i18n="nav.contact">Contacto</a></li>
+      </ul>
+    </nav>
+
+    <div class="topbar__eines">
+      <div class="lang" role="group" aria-label="Idioma" data-i18n-aria-label="lang.aria">
+        <button class="lang__btn" type="button" data-lang="es" aria-pressed="true">
+          <svg class="flag" aria-hidden="true" focusable="false"><use href="#f-es"/></svg>
+          <span>Castellano</span>
+        </button>
+        <button class="lang__btn" type="button" data-lang="ca" aria-pressed="false">
+          <svg class="flag" aria-hidden="true" focusable="false"><use href="#f-ca"/></svg>
+          <span>Català</span>
+        </button>
+        <button class="lang__btn" type="button" data-lang="en" aria-pressed="false">
+          <svg class="flag" aria-hidden="true" focusable="false"><use href="#f-gb"/></svg>
+          <span>English</span>
+        </button>
+      </div>
+      <button class="sortir" type="button" id="sortir" data-i18n="sortir">Salir</button>
+    </div>
+  </div>
+</header>
+
+<main id="contingut">
+
+  <section class="hero" id="dalt">
+    <div class="wrap hero__grid">
+      <div class="hero__text">
+        <p class="eyebrow" data-i18n="hero.eyebrow">Técnico IT · Sistemas · Ciberseguridad</p>
+        <h1>Alex Aiguadé Alisultánov</h1>
+        <p class="lead" data-i18n="hero.lead"></p>
+        <p class="hero__lloc" data-i18n="hero.where">Anglesola, Cataluña, España</p>
+        <div class="hero__actions">
+          <a class="btn btn--primary" href="#projectes" data-i18n="hero.cta">Mira los proyectos</a>
+          <a class="btn btn--ghost" href="https://www.linkedin.com/in/alex-aiguade-alisultanov-076706230/" target="_blank" rel="noopener">
+            LinkedIn<svg class="ico" aria-hidden="true" focusable="false"><use href="#i-arrow"/></svg>
+          </a>
+        </div>
+        <p class="hero__note" data-i18n="hero.note">Cinco proyectos publicados</p>
+      </div>
+      <div class="hero__photo">
+        <img src="Img/alex.png" width="400" height="400" alt="" data-i18n-alt="hero.alt" fetchpriority="high" decoding="async">
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="sobre-mi" aria-labelledby="t-sobre">
+    <div class="wrap">
+      <p class="eyebrow">01</p>
+      <h2 id="t-sobre" data-i18n="about.h">Sobre mí</h2>
+      <div class="prose">
+        <p data-i18n="about.p1"></p>
+        <p data-i18n="about.p2"></p>
+        <p data-i18n="about.p3"></p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="projectes" aria-labelledby="t-projectes">
+    <div class="wrap">
+      <p class="eyebrow">02</p>
+      <h2 id="t-projectes" data-i18n="proj.h">Proyectos</h2>
+      <p class="section__intro" data-i18n="proj.intro"></p>
+
+      <p class="feed" id="estat-projectes" role="status" hidden>
+        <span class="feed__dot" aria-hidden="true"></span>
+        <span class="feed__text"></span>
+      </p>
+
+      <ul class="cards" id="llista-projectes"></ul>
+    </div>
+  </section>
+
+  <section class="section" id="formacio" aria-labelledby="t-formacio">
+    <div class="wrap">
+      <p class="eyebrow">03</p>
+      <h2 id="t-formacio" data-i18n="edu.h">Formación</h2>
+      <p class="section__intro" data-i18n="edu.intro"></p>
+
+      <div class="cert">
+        <svg class="ico ico--lead" aria-hidden="true" focusable="false"><use href="#i-shield"/></svg>
+        <div class="cert__cos">
+          <p class="cert__etiqueta" data-i18n="cert.label">Certificación</p>
+          <p class="cert__nom">eJPT v2</p>
+          <p class="cert__org">INE · eLearnSecurity Junior Penetration Tester</p>
+        </div>
+      </div>
+
+      <ol class="timeline">
+        <li>
+          <div class="timeline__quan">
+            <p data-i18n="edu.ev.when"></p>
+            <p class="badge badge--ara" data-i18n="edu.ev.tag">En curso</p>
+          </div>
+          <div class="timeline__cos">
+            <h3 data-i18n="edu.ev.title"></h3>
+            <p class="timeline__lloc">Evolve</p>
+            <ul class="chips" aria-label="Contenidos" data-i18n-aria-label="edu.aria">
+              <li data-i18n="edu.ev.c1"></li>
+              <li data-i18n="edu.ev.c2"></li>
+              <li data-i18n="edu.ev.c3"></li>
+              <li data-i18n="edu.ev.c4"></li>
+              <li data-i18n="edu.ev.c5"></li>
+              <li>Metasploit</li>
+              <li data-i18n="edu.ev.c7"></li>
+              <li data-i18n="edu.ev.c8"></li>
+              <li data-i18n="edu.ev.c9"></li>
+              <li data-i18n="sk.iacyber"></li>
+              <li data-i18n="edu.ev.c11"></li>
+            </ul>
+          </div>
+        </li>
+        <li>
+          <div class="timeline__quan">
+            <p data-i18n="edu.ls.when"></p>
+          </div>
+          <div class="timeline__cos">
+            <h3 data-i18n="edu.ls.title"></h3>
+            <p class="timeline__lloc">La Salle Mollerussa</p>
+            <p class="timeline__nota" data-i18n="edu.ls.note"></p>
+          </div>
+        </li>
+        <li>
+          <div class="timeline__quan">
+            <p data-i18n="edu.eso.when"></p>
+          </div>
+          <div class="timeline__cos">
+            <h3 data-i18n="edu.eso.title"></h3>
+            <p class="timeline__lloc">Ins Alfons Costafreda</p>
+          </div>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <section class="section" id="habilitats" aria-labelledby="t-habilitats">
+    <div class="wrap">
+      <p class="eyebrow">04</p>
+      <h2 id="t-habilitats" data-i18n="skills.h">Aptitudes</h2>
+      <p class="section__intro" data-i18n="skills.intro"></p>
+
+      <div class="stack">
+        <div class="stack__group">
+          <h3 data-i18n="skills.g1">Pentesting y ofensiva</h3>
+          <ul class="chips chips--lg">
+            <li>Kali Linux</li><li>Nmap</li><li>Burp Suite</li><li>SQLMap</li><li>Metasploit</li><li>Wireshark</li><li>OSINT</li>
+            <li data-i18n="sk.explo"></li>
+            <li data-i18n="sk.esc"></li>
+            <li data-i18n="sk.lat"></li>
+            <li data-i18n="sk.post"></li>
+            <li>Payloads</li>
+            <li data-i18n="sk.wifi"></li>
+            <li data-i18n="sk.e2e"></li>
+            <li data-i18n="sk.info"></li>
+          </ul>
+        </div>
+        <div class="stack__group">
+          <h3 data-i18n="skills.g2">Defensa</h3>
+          <ul class="chips chips--lg">
+            <li>Blue Team</li><li>Purple Team</li><li>SOC</li>
+            <li data-i18n="sk.inc"></li>
+            <li>SIEM</li>
+            <li data-i18n="sk.cve"></li>
+          </ul>
+        </div>
+        <div class="stack__group">
+          <h3 data-i18n="skills.g3">Metodologías y normativa</h3>
+          <ul class="chips chips--lg">
+            <li>OWASP</li><li>PTES</li><li>ENS</li><li>NIS2</li>
+            <li data-i18n="sk.rgpd"></li>
+          </ul>
+        </div>
+        <div class="stack__group">
+          <h3 data-i18n="skills.g4">Programación y datos</h3>
+          <ul class="chips chips--lg">
+            <li>Python</li><li>Java</li><li>MariaDB</li><li>TCP/IP</li>
+          </ul>
+        </div>
+        <div class="stack__group">
+          <h3 data-i18n="skills.g5">Inteligencia artificial</h3>
+          <ul class="chips chips--lg">
+            <li data-i18n="sk.ag"></li>
+            <li data-i18n="sk.ml"></li>
+            <li data-i18n="sk.llm"></li>
+            <li data-i18n="sk.iacyber"></li>
+          </ul>
+        </div>
+        <div class="stack__group">
+          <h3 data-i18n="skills.g6">Aptitudes personales</h3>
+          <p class="stack__nota" data-i18n="skills.soft"></p>
+        </div>
+        <div class="stack__group">
+          <h3 data-i18n="skills.g7">Idiomas</h3>
+          <ul class="langs">
+            <li>
+              <span class="langs__nom" data-i18n="lg.es">Castellano</span>
+              <span class="langs__niv" data-i18n="lg.es.n"></span>
+            </li>
+            <li>
+              <span class="langs__nom" data-i18n="lg.ru">Ruso</span>
+              <span class="langs__niv" data-i18n="lg.ru.n"></span>
+            </li>
+            <li>
+              <span class="langs__nom" data-i18n="lg.ca">Catalán</span>
+              <span class="langs__niv" data-i18n="lg.ca.n"></span>
+            </li>
+            <li>
+              <span class="langs__nom" data-i18n="lg.en">Inglés</span>
+              <span class="langs__niv" data-i18n="lg.en.n"></span>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--last" id="contacte" aria-labelledby="t-contacte">
+    <div class="wrap">
+      <p class="eyebrow">05</p>
+      <h2 id="t-contacte" data-i18n="contact.h">Contacto</h2>
+      <p class="section__intro" data-i18n="contact.intro"></p>
+
+      <ul class="contact">
+        <li>
+          <a href="mailto:alexaiguade@gmail.com">
+            <svg class="ico ico--lead" aria-hidden="true" focusable="false"><use href="#i-mail"/></svg>
+            <span class="contact__label" data-i18n="contact.mail">Correo</span>
+            <span class="contact__value">alexaiguade@gmail.com</span>
+            <svg class="ico ico--end" aria-hidden="true" focusable="false"><use href="#i-arrow"/></svg>
+          </a>
+        </li>
+        <li>
+          <a href="https://wa.me/34684258353" target="_blank" rel="noopener">
+            <svg class="ico ico--lead" aria-hidden="true" focusable="false"><use href="#i-chat"/></svg>
+            <span class="contact__label">WhatsApp</span>
+            <span class="contact__value">684 258 353</span>
+            <svg class="ico ico--end" aria-hidden="true" focusable="false"><use href="#i-arrow"/></svg>
+          </a>
+        </li>
+        <li>
+          <a href="https://www.linkedin.com/in/alex-aiguade-alisultanov-076706230/" target="_blank" rel="noopener">
+            <svg class="ico ico--lead" aria-hidden="true" focusable="false"><use href="#i-linkedin"/></svg>
+            <span class="contact__label">LinkedIn</span>
+            <span class="contact__value" data-i18n="contact.li"></span>
+            <svg class="ico ico--end" aria-hidden="true" focusable="false"><use href="#i-arrow"/></svg>
+          </a>
+        </li>
+        <li>
+          <a href="https://github.com/AlexAiguadeAlisultanov" target="_blank" rel="noopener">
+            <svg class="ico ico--lead" aria-hidden="true" focusable="false"><use href="#i-github"/></svg>
+            <span class="contact__label">GitHub</span>
+            <span class="contact__value" data-i18n="contact.gh"></span>
+            <svg class="ico ico--end" aria-hidden="true" focusable="false"><use href="#i-arrow"/></svg>
+          </a>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+</main>
+
+<footer class="foot">
+  <div class="wrap foot__inner">
+    <p>Alex Aiguadé Alisultánov</p>
+    <p><span data-i18n="foot.made">Portafolio hecho a mano con HTML y CSS</span> · <span id="any">2026</span></p>
+  </div>
+</footer>
+`;
 
   /* ---------- Proyectos, leídos de GitHub ---------- */
 
@@ -417,6 +822,17 @@
   var API = "https://api.github.com/users/" + USUARI + "/repos?sort=updated&per_page=100";
   var CLAU_REPOS = "portafoli-repos";
   var NS_SVG = "http://www.w3.org/2000/svg";
+
+  // Quién ha entrado. Lo dice la API al validar, nunca el navegador.
+  var rol = "invitado";
+
+  // Proyectos que solo puede abrir quien entra como admin. Al resto se le enseña la
+  // tarjeta con el aviso de que está a medias, sin enlace ni botón de arrancar.
+  var NOMES_ADMIN = ["jondasiviz"];
+
+  var bloquejat = function (nom) {
+    return rol !== "admin" && NOMES_ADMIN.indexOf(String(nom).toLowerCase()) !== -1;
+  };
 
   // Lo que ya sabemos de los proyectos que se enseñan: un título cuidado, el texto
   // escrito a mano en los tres idiomas, las tecnologías y, en cuanto estén desplegados,
@@ -531,10 +947,10 @@
     return llistat;
   };
 
-  var llista = document.getElementById("llista-projectes");
-  var estat = document.getElementById("estat-projectes");
-  var estatText = estat ? estat.querySelector(".feed__text") : null;
-  var nota = document.querySelector('[data-i18n="hero.note"]');
+  var llista = null;
+  var estat = null;
+  var estatText = null;
+  var nota = null;
 
   var repos = null;   // la última lista que hemos podido pintar
   var avis = "";      // qué dice la línea de estado, vacío si no hay nada que decir
@@ -618,6 +1034,7 @@
   var projecte = function (repo, idioma) {
     var fitxa = fitxes[repo.nom.toLowerCase()];
     var dades = {
+      nom: repo.nom,
       titol: repo.nom,
       url: repo.url,
       text: "",
@@ -625,6 +1042,7 @@
       demo: adrecaDemo(repo),
       tipus: "",
       marca: "",
+      tancat: bloquejat(repo.nom),
       data: repo.data
     };
 
@@ -638,9 +1056,15 @@
       if (repo.llenguatge) dades.tec = [repo.llenguatge];
     }
 
+    // Sin el rol que toca no hay nada que abrir: ni demo ni código.
+    if (dades.tancat) {
+      dades.demo = "";
+      dades.url = "";
+    }
+
     // Sin demo que abrir, la tarjeta dice en qué punto está en vez de dejar el hueco.
     // El día que una ficha estrene dirección, esa tarjeta pasa sola a "Probar la app".
-    if (!dades.demo) dades.marca = dades.tipus ? "feed.soon" : "feed.onlycode";
+    if (!dades.demo && !dades.tancat) dades.marca = dades.tipus ? "feed.soon" : "feed.onlycode";
 
     return dades;
   };
@@ -683,6 +1107,28 @@
         chips.appendChild(chip);
       });
       li.appendChild(chips);
+    }
+
+    // Proyecto que este rol no puede abrir: la tarjeta se queda sin peu, con la línea
+    // que dice que está a medias ocupando ese sitio.
+    if (dades.tancat) {
+      var obres = crear("p", "card__estat card__estat--obres estat--obres");
+      var puntObres = crear("span", "estat__punt");
+      puntObres.setAttribute("aria-hidden", "true");
+      var nomObres = crear("span", "estat__nom");
+      nomObres.textContent = frase(idioma, "obres.nom");
+      var notaObres = crear("span", "estat__nota");
+      notaObres.textContent = frase(idioma, "obres.why");
+      obres.appendChild(puntObres);
+      obres.appendChild(nomObres);
+      obres.appendChild(notaObres);
+      li.appendChild(obres);
+
+      if (estrena) {
+        li.classList.add("card--nou");
+        li.style.animationDelay = Math.min(ordre, 4) * 40 + "ms";
+      }
+      return li;
     }
 
     var quan = dades.data ? quanFa(idioma, dades.data) : "";
@@ -1179,7 +1625,7 @@
   };
 
   var comptar = function (idioma) {
-    // Con un solo proyecto la frase quedaría mal escrita, así que se deja la del HTML.
+    // Con un solo proyecto la frase quedaría mal escrita, así que se deja la de siempre.
     if (!nota || !repos || repos.length < 2) return;
     nota.textContent = frase(idioma, "hero.count").replace("{n}", String(repos.length));
   };
@@ -1310,7 +1756,13 @@
       .catch(fallar);
   };
 
-  if (llista) {
+  var muntarProjectes = function () {
+    llista = document.getElementById("llista-projectes");
+    estat = document.getElementById("estat-projectes");
+    estatText = estat ? estat.querySelector(".feed__text") : null;
+    nota = document.querySelector('[data-i18n="hero.note"]');
+    if (!llista) return;
+
     var guardats = desats();
     if (guardats) {
       // Con la copia de la última visita la sección se ve al momento, y la lista de
@@ -1318,10 +1770,9 @@
       repos = guardats;
       pintar(idiomaActual);
     } else {
-      // Sin copia de la última visita se pintan los proyectos escritos aquí mismo, que
-      // son los mismos que ya están en el HTML. Así las tarjetas salen desde el primer
-      // momento con su estado y su botón, en vez de dejar enlaces vivos a demos
-      // dormidas hasta que conteste GitHub.
+      // Sin copia de la última visita se pintan los proyectos escritos aquí mismo. Así
+      // las tarjetas salen desde el primer momento con su estado y su botón, en vez de
+      // dejar enlaces vivos a demos dormidas hasta que conteste GitHub.
       avis = "feed.loading";
       repos = deCasa();
       carregant(true);
@@ -1329,85 +1780,389 @@
     }
     oients.push(pintar);
     demanar();
-  }
+  };
 
   /* ---------- Cabecera y navegación ---------- */
 
-  var topbar = document.querySelector(".topbar");
-  var links = Array.prototype.slice.call(
-    document.querySelectorAll('.topbar__nav a[href^="#"]')
-  );
-
-  // Línea bajo la cabecera solo cuando el contenido pasa por debajo.
-  if (topbar) {
-    var pending = false;
-    var paintTopbar = function () {
-      topbar.classList.toggle("is-stuck", window.scrollY > 8);
-      pending = false;
-    };
-    window.addEventListener(
-      "scroll",
-      function () {
-        if (!pending) {
-          pending = true;
-          window.requestAnimationFrame(paintTopbar);
-        }
-      },
-      { passive: true }
+  var muntarCapcalera = function () {
+    var topbar = document.querySelector(".topbar");
+    var links = Array.prototype.slice.call(
+      document.querySelectorAll('.topbar__nav a[href^="#"]')
     );
-    paintTopbar();
-  }
 
-  // Sección activa en el menú.
-  if (links.length && "IntersectionObserver" in window) {
-    var byId = {};
-    var targets = [];
+    // Línea bajo la cabecera solo cuando el contenido pasa por debajo.
+    if (topbar) {
+      var pending = false;
+      var paintTopbar = function () {
+        topbar.classList.toggle("is-stuck", window.scrollY > 8);
+        pending = false;
+      };
+      window.addEventListener(
+        "scroll",
+        function () {
+          if (!pending) {
+            pending = true;
+            window.requestAnimationFrame(paintTopbar);
+          }
+        },
+        { passive: true }
+      );
+      paintTopbar();
+    }
 
-    links.forEach(function (link) {
-      var section = document.getElementById(link.hash.slice(1));
-      if (section) {
-        byId[section.id] = link;
-        targets.push(section);
-      }
-    });
+    // Sección activa en el menú.
+    if (links.length && "IntersectionObserver" in window) {
+      var byId = {};
+      var targets = [];
 
-    var setActive = function (id) {
       links.forEach(function (link) {
-        if (byId[id] === link) {
-          link.setAttribute("aria-current", "true");
-        } else {
-          link.removeAttribute("aria-current");
+        var section = document.getElementById(link.hash.slice(1));
+        if (section) {
+          byId[section.id] = link;
+          targets.push(section);
         }
       });
-    };
 
-    var header = topbar ? topbar.offsetHeight : 60;
-    var visible = new Set();
-
-    var observer = new IntersectionObserver(
-      function (entries) {
-        entries.forEach(function (entry) {
-          if (entry.isIntersecting) {
-            visible.add(entry.target.id);
+      var setActive = function (id) {
+        links.forEach(function (link) {
+          if (byId[id] === link) {
+            link.setAttribute("aria-current", "true");
           } else {
-            visible.delete(entry.target.id);
+            link.removeAttribute("aria-current");
           }
         });
+      };
 
-        var current = "";
-        targets.forEach(function (section) {
-          if (visible.has(section.id)) current = current || section.id;
-        });
-        setActive(current);
-      },
-      { rootMargin: "-" + (header + 1) + "px 0px -55% 0px", threshold: 0 }
-    );
+      var header = topbar ? topbar.offsetHeight : 60;
+      var visible = new Set();
 
-    targets.forEach(function (section) {
-      observer.observe(section);
+      var observer = new IntersectionObserver(
+        function (entries) {
+          entries.forEach(function (entry) {
+            if (entry.isIntersecting) {
+              visible.add(entry.target.id);
+            } else {
+              visible.delete(entry.target.id);
+            }
+          });
+
+          var current = "";
+          targets.forEach(function (section) {
+            if (visible.has(section.id)) current = current || section.id;
+          });
+          setActive(current);
+        },
+        { rootMargin: "-" + (header + 1) + "px 0px -55% 0px", threshold: 0 }
+      );
+
+      targets.forEach(function (section) {
+        observer.observe(section);
+      });
+    }
+
+    var any = document.getElementById("any");
+    if (any) any.textContent = String(new Date().getFullYear());
+  };
+
+  /* ---------- Pantalla de acceso ---------- */
+
+  // Quién puede entrar lo decide la API, no esta página: aquí no hay ninguna
+  // contraseña, ni en claro ni cifrada. El navegador manda usuario y contraseña, y lo
+  // que vuelve es un token y el rol.
+  var API_ACCES = "https://portfolio-acceso.onrender.com";
+  var CLAU_SESSIO = "portafoli-sessio";
+  var ESPERA = 120000;   // el servidor duerme en un plan gratuito: hay que darle margen
+  var AVIS_LENT = 5000;  // a partir de aquí se dice en voz alta que está arrancando
+
+  var porta = document.getElementById("porta");
+  var app = document.getElementById("app");
+  var formulari = document.getElementById("porta-form");
+  var campUsuari = document.getElementById("porta-usuari");
+  var campClau = document.getElementById("porta-clau");
+  var botoPorta = document.getElementById("porta-entrar");
+  var avisPorta = document.getElementById("porta-avis");
+  var pistaPorta = document.getElementById("porta-pista");
+  var pistaText = pistaPorta ? pistaPorta.querySelector(".porta__pista-text") : null;
+
+  var enviant = false;    // hay una petición de entrada en marcha
+  var errorPorta = "";    // clave del último fallo, vacío si no hay ninguno
+  var pistaClau = "";     // clave de la línea de debajo del botón
+  var rellotgeLent = null;
+  var sessioViva = false; // se está comprobando el token guardado
+
+  var desarSessio = function (token, expira) {
+    try {
+      window.localStorage.setItem(CLAU_SESSIO, JSON.stringify({
+        token: token,
+        expira: Number(expira) || 0
+      }));
+    } catch (e) {
+      // Ventana privada o almacenamiento bloqueado: la sesión dura lo que la pestaña.
+    }
+  };
+
+  var oblidarSessio = function () {
+    try {
+      window.localStorage.removeItem(CLAU_SESSIO);
+    } catch (e) {
+      // Si no se puede borrar, el token caduca solo en el servidor.
+    }
+  };
+
+  var sessioDesada = function () {
+    try {
+      var cru = window.localStorage.getItem(CLAU_SESSIO);
+      if (!cru) return null;
+      var dades = JSON.parse(cru);
+      if (!dades || typeof dades.token !== "string" || !dades.token) return null;
+      // Si ya sabemos que ha caducado, ni se pregunta.
+      if (dades.expira && Date.now() > Number(dades.expira)) return null;
+      return dades;
+    } catch (e) {
+      return null;
+    }
+  };
+
+  // Una llamada a la API con su propio límite de tiempo, porque el servidor puede estar
+  // dormido y tardar cerca de un minuto en despertar.
+  var cridarAcces = function (cami, opcions) {
+    var config = opcions || {};
+    var control = window.AbortController ? new window.AbortController() : null;
+    var perTemps = false;
+
+    if (control) config.signal = control.signal;
+    var limit = window.setTimeout(function () {
+      perTemps = true;
+      if (control) control.abort();
+    }, ESPERA);
+
+    return window.fetch(API_ACCES + cami, config).then(function (resposta) {
+      window.clearTimeout(limit);
+      return resposta;
+    }, function (error) {
+      window.clearTimeout(limit);
+      throw perTemps ? new Error("temps") : error;
     });
-  }
+  };
 
-  var any = document.getElementById("any");
-  if (any) any.textContent = String(new Date().getFullYear());
+  var rolValid = function (valor) {
+    return String(valor) === "admin" ? "admin" : "invitado";
+  };
+
+  var pintarPorta = function () {
+    if (!porta || !botoPorta) return;
+    var idioma = idiomaActual;
+    var reintent = errorPorta === "net" || errorPorta === "time" || errorPorta === "server";
+
+    botoPorta.textContent = frase(idioma, enviant
+      ? "porta.sending"
+      : (reintent ? "porta.retry" : "porta.enter"));
+    botoPorta.setAttribute("aria-disabled", String(enviant));
+    botoPorta.classList.toggle("is-bloquejat", enviant);
+
+    if (errorPorta) {
+      avisPorta.hidden = false;
+      avisPorta.textContent = frase(idioma, "porta.err." + errorPorta);
+    } else {
+      avisPorta.hidden = true;
+      avisPorta.textContent = "";
+    }
+
+    if (pistaClau) {
+      pistaPorta.hidden = false;
+      pistaText.textContent = frase(idioma, pistaClau);
+    } else {
+      pistaPorta.hidden = true;
+      pistaText.textContent = "";
+    }
+  };
+
+  var marcarCamps = function (malament) {
+    [campUsuari, campClau].forEach(function (camp) {
+      if (malament) {
+        camp.setAttribute("aria-invalid", "true");
+      } else {
+        camp.removeAttribute("aria-invalid");
+      }
+    });
+  };
+
+  var pararRellotgeLent = function () {
+    if (rellotgeLent) window.clearTimeout(rellotgeLent);
+    rellotgeLent = null;
+  };
+
+  // El portafolio entra en escena. La pantalla de acceso se va del documento entera:
+  // ya no hace falta y así no queda un formulario colgando detrás.
+  var obrir = function (nouRol, animar) {
+    rol = rolValid(nouRol);
+    pararRellotgeLent();
+
+    if (porta && porta.parentNode) porta.parentNode.removeChild(porta);
+    porta = null;
+
+    app.innerHTML = PLANTILLA;
+    app.hidden = false;
+    if (animar) app.className = "app--entra";
+
+    aplicar(idiomaActual);
+    muntarProjectes();
+    muntarCapcalera();
+
+    var boto = document.getElementById("sortir");
+    if (boto) {
+      boto.addEventListener("click", function () {
+        oblidarSessio();
+        // Recargar deja la página como recién abierta: sin listas, sin relojes y con la
+        // pantalla de acceso delante. El idioma elegido se mantiene, que va aparte.
+        window.location.replace(window.location.pathname + window.location.search);
+      });
+    }
+  };
+
+  var acabarEnviament = function (clau) {
+    enviant = false;
+    errorPorta = clau || "";
+    pistaClau = "";
+    pararRellotgeLent();
+    formulari.removeAttribute("aria-busy");
+    marcarCamps(!!clau);
+    pintarPorta();
+    if (clau) campClau.focus();
+  };
+
+  var enviar = function (event) {
+    event.preventDefault();
+    if (enviant) return;
+
+    // Si había una comprobación del token guardado en marcha, manda lo que se escribe.
+    sessioViva = false;
+
+    var usuari = campUsuari.value.trim();
+    var clau = campClau.value;
+
+    if (!usuari || !clau) {
+      acabarEnviament("empty");
+      return;
+    }
+
+    enviant = true;
+    errorPorta = "";
+    pistaClau = "";
+    formulari.setAttribute("aria-busy", "true");
+    marcarCamps(false);
+    pintarPorta();
+
+    pararRellotgeLent();
+    rellotgeLent = window.setTimeout(function () {
+      if (!enviant) return;
+      pistaClau = "porta.slow";
+      pintarPorta();
+    }, AVIS_LENT);
+
+    cridarAcces("/api/entrar", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "Accept": "application/json" },
+      body: JSON.stringify({ usuario: usuari, contrasena: clau }),
+      cache: "no-store",
+      credentials: "omit"
+    }).then(function (resposta) {
+      if (resposta.status === 401) return { fallada: "creds" };
+      if (!resposta.ok) return { fallada: "server" };
+      return resposta.json().then(function (dades) {
+        if (!dades || dades.ok !== true || typeof dades.token !== "string" || !dades.token) {
+          return { fallada: "server" };
+        }
+        return { rol: dades.rol, token: dades.token, expira: dades.expira };
+      }, function () {
+        return { fallada: "server" };
+      });
+    }, function (error) {
+      return { fallada: error && error.message === "temps" ? "time" : "net" };
+    }).then(function (resultat) {
+      if (resultat.fallada) {
+        acabarEnviament(resultat.fallada);
+        return;
+      }
+      desarSessio(resultat.token, resultat.expira);
+      enviant = false;
+      campClau.value = "";
+      obrir(resultat.rol, true);
+    });
+  };
+
+  // Al cargar, si hay un token guardado se le pregunta a la API si todavía vale. No se
+  // bloquea el formulario mientras tanto: quien quiera entrar a mano puede hacerlo y
+  // esta comprobación se deja de lado.
+  var mirarSessio = function () {
+    var desada = sessioDesada();
+    if (!desada) return;
+
+    sessioViva = true;
+    pistaClau = "porta.checking";
+    pintarPorta();
+
+    rellotgeLent = window.setTimeout(function () {
+      if (!sessioViva) return;
+      pistaClau = "porta.slow";
+      pintarPorta();
+    }, AVIS_LENT);
+
+    cridarAcces("/api/yo", {
+      headers: { "Authorization": "Bearer " + desada.token, "Accept": "application/json" },
+      cache: "no-store",
+      credentials: "omit"
+    }).then(function (resposta) {
+      if (!sessioViva) return null;
+      if (resposta.status === 401) {
+        // El token ya no vale: se tira y se pide entrar otra vez.
+        oblidarSessio();
+        return null;
+      }
+      if (!resposta.ok) return null;
+      return resposta.json().then(function (dades) {
+        return dades && dades.ok === true ? dades : null;
+      }, function () {
+        return null;
+      });
+    }, function () {
+      // Sin red o sin respuesta a tiempo se deja el token donde está: puede valer en la
+      // próxima visita. Aquí solo se aparta el aviso y se deja entrar a mano.
+      return null;
+    }).then(function (dades) {
+      if (!sessioViva) return;
+      sessioViva = false;
+      pararRellotgeLent();
+      if (dades) {
+        obrir(dades.rol, false);
+        return;
+      }
+      pistaClau = "";
+      pintarPorta();
+    });
+  };
+
+  if (porta && formulari) {
+    oients.push(pintarPorta);
+    formulari.addEventListener("submit", enviar);
+
+    // Al escribir se retira el aviso: el mensaje de antes ya no describe lo que hay.
+    [campUsuari, campClau].forEach(function (camp) {
+      camp.addEventListener("input", function () {
+        if (!errorPorta) return;
+        errorPorta = "";
+        marcarCamps(false);
+        pintarPorta();
+      });
+    });
+
+    pintarPorta();
+    // El usuario ya viene puesto, así que el foco va donde queda algo por escribir.
+    try {
+      campClau.focus({ preventScroll: true });
+    } catch (e) {
+      campClau.focus();
+    }
+    mirarSessio();
+  }
 })();

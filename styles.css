@@ -139,6 +139,148 @@ a { color: inherit; }
 }
 .skip:focus { transform: translateY(0); }
 
+/* ---------- Pantalla d'accés ---------- */
+
+/* És l'única cosa que porta el HTML. El portafoli entra quan l'API diu qui és qui, i
+   aquesta capa marxa del document sencera. */
+
+.porta {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg);
+  overflow-y: auto;
+}
+
+.porta__barra {
+  flex: none;
+  display: flex;
+  justify-content: flex-end;
+  padding: calc(var(--s-3) + env(safe-area-inset-top, 0px)) var(--s-4) 0;
+}
+
+/* Amb "1 0 auto" la columna creix amb el contingut, així que centrar-lo mai el talla:
+   quan no hi cap, qui es desplaça és .porta. */
+.porta__centre {
+  flex: 1 0 auto;
+  display: grid;
+  align-content: center;
+  justify-items: center;
+  gap: var(--s-3);
+  padding: var(--s-6) var(--s-4) calc(var(--s-6) + env(safe-area-inset-bottom, 0px));
+}
+
+.porta__card {
+  width: 100%;
+  max-width: 384px;
+  display: grid;
+  gap: var(--s-3);
+  padding: var(--s-5);
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+  box-shadow: var(--shadow);
+}
+
+.porta__dalt { display: grid; gap: var(--s-1); }
+
+.porta__dalt .eyebrow { margin-bottom: 0; }
+
+.porta__nom {
+  font-size: var(--fs-xl);
+  letter-spacing: -.022em;
+  text-wrap: balance;
+}
+
+.porta__titular { font-size: var(--fs-sm); color: var(--text-2); }
+
+.porta__form { display: grid; gap: var(--s-3); }
+
+.camp { display: grid; gap: 6px; }
+
+.camp label {
+  font-size: var(--fs-xs);
+  font-weight: 500;
+  color: var(--text-2);
+}
+
+.camp input {
+  width: 100%;
+  margin: 0;
+  padding: 10px 12px;
+  font-family: inherit;
+  font-size: var(--fs-sm);
+  line-height: 1.5;
+  color: var(--text);
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-radius: var(--r-sm);
+  -webkit-appearance: none;
+  appearance: none;
+  transition: border-color .16s var(--ease), box-shadow .16s var(--ease);
+}
+
+.camp input:focus-visible {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-bg);
+}
+
+.camp input[aria-invalid="true"] { border-color: var(--err); }
+
+.porta__avis {
+  font-size: var(--fs-xs);
+  line-height: 1.5;
+  color: var(--err);
+}
+
+.porta__boto { justify-content: center; width: 100%; }
+
+.porta__pista {
+  display: flex;
+  align-items: baseline;
+  gap: var(--s-2);
+  font-size: var(--fs-xs);
+  line-height: 1.5;
+  color: var(--text-2);
+}
+
+/* El punt batega mentre s'espera: diu que allò segueix viu sense afegir text. */
+.porta__punt {
+  width: 7px;
+  height: 7px;
+  flex: none;
+  border-radius: 50%;
+  background: var(--accent);
+  animation: feed-batec 1.4s var(--ease) infinite;
+}
+
+.porta__avis[hidden],
+.porta__pista[hidden] { display: none; }
+
+.porta__nota,
+.porta__sensejs {
+  max-width: 384px;
+  font-size: var(--fs-xs);
+  line-height: 1.55;
+  color: var(--text-2);
+}
+
+.porta__nota { text-align: center; }
+
+.porta__sensejs { font-size: var(--fs-sm); }
+
+/* L'entrada del portafoli: només opacitat, perquè una transformació damunt de tot
+   trencaria la capçalera enganxada. */
+#app.app--entra { animation: app-entra .24s var(--ease); }
+
+@keyframes app-entra {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
 /* ---------- Capçalera ---------- */
 
 .topbar {
@@ -199,7 +341,40 @@ a { color: inherit; }
 .topbar__nav a:hover { color: var(--text); background: var(--line-soft); }
 .topbar__nav a[aria-current="true"] { color: var(--accent); background: var(--accent-bg); }
 
-/* ---------- Selector de idioma ---------- */
+/* ---------- Idioma i sortida ---------- */
+
+.topbar__eines {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: var(--s-2);
+}
+
+/* La sortida no compta com a acció principal de cap secció: es queda en to menor, al
+   costat de l'idioma, però sempre visible. */
+.sortir {
+  display: inline-flex;
+  align-items: center;
+  margin: 0;
+  padding: 6px 12px;
+  border: 1px solid var(--line);
+  border-radius: var(--r-sm);
+  background: var(--surface);
+  color: var(--text-2);
+  font-family: inherit;
+  font-size: var(--fs-xs);
+  font-weight: 500;
+  line-height: 1.2;
+  letter-spacing: -.005em;
+  white-space: nowrap;
+  cursor: pointer;
+  -webkit-appearance: none;
+  appearance: none;
+  transition: color .16s var(--ease), border-color .16s var(--ease);
+}
+
+.sortir:hover { color: var(--text); border-color: var(--text-2); }
 
 .lang {
   display: flex;
@@ -674,6 +849,11 @@ button.btn {
 .estat--on .estat__punt { background: var(--ok); opacity: 1; }
 .estat--fail .estat__punt { background: var(--err); opacity: 1; }
 
+/* Projecte que aquest rol no pot obrir: no hi ha peu, així que és aquesta línia la que
+   ocupa el final de la targeta. */
+.card__estat--obres { margin-top: auto; }
+.estat--obres .estat__punt { background: var(--warn); opacity: 1; }
+
 /* Com que el títol cobreix tota la targeta, el que es pot prémer va per damunt. Aquí
    dins hi ha el botó d'iniciar o l'enllaç de provar, mai tots dos alhora. */
 .card__accio {
@@ -907,12 +1087,16 @@ button.btn {
   .hero__photo { order: -1; }
   .hero__photo img { width: 132px; }
 
-  /* El nombre y el idioma comparten fila; el menú cae debajo. Si el móvil es muy
-     estrecho, el idioma baja solo a su propia fila y sigue legible. */
+  /* El nombre, el idioma y la salida comparten fila; el menú cae debajo. Si el móvil es
+     muy estrecho, ese grupo baja solo a su propia fila y sigue legible. */
   .topbar__inner { justify-content: center; gap: var(--s-2); padding-inline: var(--s-3); }
   .topbar__name { order: 1; }
-  .lang { order: 2; margin-left: auto; }
+  .topbar__eines { order: 2; margin-left: auto; }
   .topbar__nav { order: 3; width: 100%; }
+
+  .porta__barra { padding-inline: var(--s-3); }
+  .porta__centre { padding-inline: var(--s-3); }
+  .porta__card { padding: var(--s-4); }
   .topbar__nav ul { justify-content: center; flex-wrap: wrap; gap: 2px; }
   .topbar__nav a { padding: 6px 9px; font-size: var(--fs-xs); }
 
@@ -932,6 +1116,7 @@ button.btn {
   .lang { gap: 0; padding: 2px; }
   .lang__btn { padding: 5px 6px; gap: 5px; font-size: 12px; }
   .flag { width: 17px; height: 11px; }
+  .sortir { padding: 6px 9px; font-size: 12px; }
 }
 
 @media (max-width: 380px) {
@@ -946,6 +1131,7 @@ button.btn {
   }
   .card:hover { transform: none; }
   .feed.is-loading .feed__dot,
+  .porta__punt,
   .estat--waking .estat__punt { animation: none; opacity: 1; }
   /* Sense l'espera les targetes es quedarien invisibles durant el retard. */
   .card--nou { animation-delay: 0s !important; }
@@ -953,7 +1139,7 @@ button.btn {
 
 @media (forced-colors: active) {
   .card, .contact, .chips li, .btn, .badge, .wake,
-  .cert, .langs li { border: 1px solid CanvasText; }
+  .cert, .langs li, .porta__card, .camp input, .sortir { border: 1px solid CanvasText; }
   .lang__btn[aria-pressed="true"] { border: 1px solid CanvasText; }
   .flag { opacity: 1; forced-color-adjust: none; }
 }
