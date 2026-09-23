@@ -1,0 +1,177 @@
+@import "tailwindcss";
+
+/* ---------- Tokens ----------
+   Una sola familia (Inter variable), un solo acento (el azul petroleo que ya venia del
+   portafolio anterior, en su version clara para que respire sobre el negro), grid de
+   8 px y radios fijos de 8 / 12 / 20 px mas uno de 40 reservado a la seccion clara. */
+
+@theme {
+  --color-fons:      #0C0C0C;
+  --color-fons-2:    #131315;
+  --color-fons-3:    #1A1A1D;
+  --color-linia:     #26262A;
+  --color-linia-suau:#1E1E21;
+  --color-tinta:     #F5F5F7;
+  --color-tinta-2:   #A1A1A8;
+  /* Subido un punto desde #6E6E76. Con la escena detras, el texto secundario se quedaba
+     en 3,7 a 1 sobre el fondo y hace falta 4,5. Asi llega a 4,7 y sigue leyendose como lo
+     que es, el escalon mas apagado de los tres. */
+  --color-tinta-3:   #7E7E86;
+
+  --color-accent:    #5FC6D4;
+  --color-accent-2:  #8CD9E4;
+  --color-accent-bg: #10262A;
+  --color-sobre-accent: #08252A;
+
+  --color-clar:      #FAFAF9;
+  --color-clar-2:    #FFFFFF;
+  --color-clar-linia:#E4E3DF;
+  --color-clar-tinta:#1D1D1F;
+  --color-clar-tinta-2:#56565B;
+  --color-clar-accent: #1C6B75;
+
+  --color-be:        #6FBF96;
+  --color-malament:  #E0817A;
+  --color-espera:    #C79A52;
+
+  --font-sans: "Inter", "Segoe UI Variable Text", -apple-system, BlinkMacSystemFont,
+               "SF Pro Text", "Segoe UI", Roboto, sans-serif;
+
+  /* Un escalon mas que 2xl: a partir de aqui cabe una cuarta columna de tarjetas.
+     Va declarado en el tema y no como variante suelta, porque Tailwind ordena las
+     variantes por el valor que leen, y mezclando px con rem el corte se colaba antes de
+     sm y xl le acababa ganando. En rem queda donde toca, detras de 2xl. */
+  --breakpoint-3xl: 112.5rem;
+
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 20px;
+  --radius-xl: 40px;
+
+  --ease-suau: cubic-bezier(.22, .61, .36, 1);
+}
+
+:root {
+  color-scheme: dark;
+  --degradat: linear-gradient(180deg, #646973 0%, #BBCCD7 100%);
+  --barra: 56px;
+
+  /* Margen lateral de toda la pagina. Crece con la ventana en vez de dejar el contenido
+     encerrado en una columna fija: a 1920 son unos 65 px de margen y a 2560 unos 87, asi
+     que la composicion llega casi al borde. Lo que no se estira es el texto: cada bloque
+     conserva su medida de linea y el espacio que sobra se reparte en la composicion. */
+  --marc: clamp(1.5rem, 3.4vw, 7rem);
+  --ample-max: 2560px;
+}
+
+/* Contenedor de todas las secciones. */
+.ample {
+  width: 100%;
+  max-width: var(--ample-max);
+  margin-inline: auto;
+  padding-inline: var(--marc);
+}
+
+* { min-width: 0; }
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: calc(var(--barra) + 16px);
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--color-fons);
+  color: var(--color-tinta);
+  font-family: var(--font-sans);
+  font-size: 1rem;
+  line-height: 1.6;
+  font-synthesis-weight: none;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: clip;
+}
+
+img { max-width: 100%; display: block; }
+[hidden] { display: none !important; }
+
+::selection { background: var(--color-accent-bg); color: var(--color-accent-2); }
+
+:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+/* ---------- Titulares con degradado ----------
+   El degradado se recorta sobre el texto. Si el navegador no sabe recortarlo, queda el
+   color de siempre, que es lo que hace el fallback de color. */
+
+.titular {
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: -0.03em;
+  line-height: 0.92;
+  /* El degradado se pinta sobre la caja del elemento, y con el interlineado tan pegado
+     esa caja se queda por debajo de las tildes de las mayusculas: sin este respiro
+     arriba, la tilde de FORMACIÓN se queda sin pintar. */
+  padding-block-start: 0.14em;
+  color: #BBCCD7;
+  background: var(--degradat);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-wrap: balance;
+}
+
+.titular--clar {
+  background: linear-gradient(180deg, #8A909B 0%, #2B3138 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: #2B3138;
+}
+
+/* Tamanos en vw con tope. Los topes suben con el contenedor nuevo: en 1920 y 2560 el
+   titular de la portada ocupa de verdad su columna en vez de quedarse pequeno en medio
+   de un hueco. */
+.titular--xxl { font-size: clamp(2.75rem, 10.5vw, 15rem); }
+.titular--xl  { font-size: clamp(2.25rem, 7.5vw, 7.5rem); }
+.titular--l   { font-size: clamp(1.75rem, 4.2vw, 4.5rem); }
+
+/* ---------- Numeracion de seccion ---------- */
+
+.num {
+  font-weight: 800;
+  font-size: clamp(2.5rem, 7vw, 6rem);
+  line-height: 0.8;
+  letter-spacing: -0.04em;
+  color: transparent;
+  -webkit-text-stroke: 1px #3C3C44;
+}
+
+.num--clar { -webkit-text-stroke-color: #CFCEC9; }
+
+/* ---------- Tira de palabras ---------- */
+
+.tira {
+  display: flex;
+  width: max-content;
+  gap: 0;
+  white-space: nowrap;
+  will-change: transform;
+}
+
+/* ---------- Movimiento reducido ----------
+   Todo lo que se mueve se queda quieto, no lento. Lo que depende de framer-motion se
+   apaga desde JavaScript; esto cubre lo que es CSS puro. */
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  .tira { transform: none !important; }
+}

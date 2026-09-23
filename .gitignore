@@ -1,0 +1,16 @@
+# Dependencias
+node_modules/
+web/node_modules/
+api/node_modules/
+
+# Compilacion de la web nueva, que es de usar y tirar.
+# Lo que se publica en la raiz (index.html y assets/) si va al repositorio: es lo que
+# sirve GitHub Pages.
+web/dist/
+
+# Restos del sistema y de los editores
+.DS_Store
+Thumbs.db
+*.log
+.vscode/
+.idea/
