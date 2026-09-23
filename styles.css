@@ -18,6 +18,7 @@
   --accent-ink:#125058;
   --accent-bg: #E8F1F2;
   --on-accent: #FFFFFF;
+  --warn:      #8E6316;
   --shadow:    0 1px 2px rgba(20, 20, 22, .05), 0 8px 24px -12px rgba(20, 20, 22, .14);
   --shadow-up: 0 1px 2px rgba(20, 20, 22, .06), 0 16px 32px -16px rgba(20, 20, 22, .22);
   --topbar-bg: rgba(250, 250, 249, .78);
@@ -56,6 +57,7 @@
     --accent-ink:#8CD9E4;
     --accent-bg: #10262A;
     --on-accent: #08252A;
+    --warn:      #C79A52;
     --shadow:    0 1px 2px rgba(0, 0, 0, .5), 0 8px 24px -12px rgba(0, 0, 0, .7);
     --shadow-up: 0 1px 2px rgba(0, 0, 0, .55), 0 16px 32px -16px rgba(0, 0, 0, .8);
     --topbar-bg: rgba(15, 15, 17, .74);
@@ -356,13 +358,47 @@ a { color: inherit; }
   line-height: 1.6;
 }
 
+/* ---------- Estat de la llista ---------- */
+
+/* El marge negatiu compensa el del paràgraf d'introducció, així la línia queda a 24 px
+   per sota. Quan no hi ha res a dir la línia està amagada i el marge no compta. */
+.feed {
+  margin: calc(var(--s-4) - var(--s-6)) 0 var(--s-4);
+  display: flex;
+  align-items: center;
+  gap: var(--s-2);
+  font-size: var(--fs-sm);
+  color: var(--text-2);
+}
+
+.feed[hidden] { display: none; }
+
+.feed__dot {
+  width: 7px;
+  height: 7px;
+  flex: none;
+  border-radius: 50%;
+  background: var(--accent);
+}
+
+.feed--avis .feed__dot { background: var(--warn); }
+.feed.is-loading .feed__dot { animation: feed-batec 1.4s var(--ease) infinite; }
+
+@keyframes feed-batec {
+  0%, 100% { opacity: .25; }
+  50%      { opacity: 1; }
+}
+
 /* ---------- Targetes de projecte ---------- */
 
 .cards {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(288px, 1fr));
   gap: var(--s-3);
+  transition: opacity .2s var(--ease);
 }
+
+.cards.is-loading { opacity: .5; }
 
 .card {
   position: relative;
@@ -399,6 +435,11 @@ a { color: inherit; }
   line-height: 1.6;
 }
 
+.card p.card__meta {
+  font-size: var(--fs-xs);
+  color: var(--text-2);
+}
+
 .card__link {
   margin-top: auto;
   display: inline-flex;
@@ -408,6 +449,54 @@ a { color: inherit; }
   font-weight: 500;
   color: var(--accent);
   transition: gap .18s var(--ease);
+}
+
+.card__foot {
+  margin-top: auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--s-2);
+}
+
+.card__foot .card__link { margin-top: 0; }
+
+/* El títol cobreix tota la targeta per poder-la clicar sencera, així que el que hi ha
+   al peu ha d'anar per damunt d'aquesta capa per poder-se clicar. */
+.card__provar,
+.card__codi {
+  position: relative;
+  z-index: 1;
+}
+
+/* L'acció que mana a la targeta: obrir l'aplicació. */
+.card__provar {
+  padding: 9px 16px;
+  gap: 6px;
+}
+
+.card__provar .ico { width: 15px; height: 15px; }
+
+/* Amb l'aplicació oberta a un clic, el codi passa a ser una nota al peu. */
+.card__codi {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: var(--fs-xs);
+  color: var(--text-2);
+  text-decoration: none;
+  transition: color .16s var(--ease);
+}
+
+.card__codi:hover { color: var(--text); }
+.card__codi .ico { width: 14px; height: 14px; }
+
+.card--nou { animation: card-entra .26s var(--ease) both; }
+
+@keyframes card-entra {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: none; }
 }
 
 .card:hover {
@@ -608,10 +697,12 @@ a { color: inherit; }
     transition-duration: .01ms !important;
   }
   .card:hover { transform: none; }
+  /* Sense l'espera les targetes es quedarien invisibles durant el retard. */
+  .card--nou { animation-delay: 0s !important; }
 }
 
 @media (forced-colors: active) {
-  .card, .contact, .chips li, .btn { border: 1px solid CanvasText; }
+  .card, .contact, .chips li, .btn, .badge { border: 1px solid CanvasText; }
   .lang__btn[aria-pressed="true"] { border: 1px solid CanvasText; }
   .flag { opacity: 1; forced-color-adjust: none; }
 }

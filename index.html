@@ -136,7 +136,14 @@
       <h2 id="t-projectes" data-i18n="proj.h">Proyectos</h2>
       <p class="section__intro" data-i18n="proj.intro">Todo el código es abierto y se puede revisar. Cada tarjeta lleva las tecnologías con las que está hecho.</p>
 
-      <ul class="cards">
+      <p class="feed" id="estat-projectes" role="status" hidden>
+        <span class="feed__dot" aria-hidden="true"></span>
+        <span class="feed__text"></span>
+      </p>
+
+      <!-- Estas tarjetas son las de siempre y se ven aunque no haya JavaScript. Cuando
+           lo hay, script.js las cambia por la lista que devuelve la API de GitHub. -->
+      <ul class="cards" id="llista-projectes">
         <li class="card">
           <h3><a href="https://github.com/AlexAiguadeAlisultanov/GestioEstock" target="_blank" rel="noopener">Gestió Estock</a></h3>
           <p data-i18n="proj.stock">Aplicación de escritorio para controlar el stock de material de una empresa de informática: entradas, salidas y qué queda en almacén.</p>
@@ -200,7 +207,9 @@
           <span class="card__link"><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-github"/></svg><span data-i18n="proj.code">Código en GitHub</span></span>
         </li>
 
-        <li class="card card--wip">
+        <!-- La calculadora no tiene repositorio todavía, así que esta tarjeta no sale
+             de GitHub: se queda tal cual al final de la lista viva. -->
+        <li class="card card--wip" data-estatic>
           <h3>Calculadora Android <span class="badge" data-i18n="proj.wip">En curso</span></h3>
           <p data-i18n="proj.calc">Calculadora para Android con un conjunto concreto de operaciones. Todavía estoy trabajando en ella, así que de momento no hay nada publicado.</p>
           <ul class="chips" aria-label="Tecnologías" data-i18n-aria-label="chips.aria">
