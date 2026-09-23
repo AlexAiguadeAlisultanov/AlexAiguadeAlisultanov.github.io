@@ -332,10 +332,11 @@ a { color: inherit; }
 
 .hero__photo img {
   width: 200px;
-  border-radius: var(--r-lg);
-  border: 1px solid var(--line);
+  aspect-ratio: 1;
+  /* La foto ya viene recortada en circulo sobre fondo transparente, asi que el
+     marco tambien es redondo: un cuadrado dejaria las esquinas vacias. */
+  border-radius: 50%;
   box-shadow: var(--shadow);
-  background: var(--bg-soft);
 }
 
 /* ---------- Seccions ---------- */
@@ -904,7 +905,7 @@ button.btn {
   }
 
   .hero__photo { order: -1; }
-  .hero__photo img { width: 132px; border-radius: var(--r-md); }
+  .hero__photo img { width: 132px; }
 
   /* El nombre y el idioma comparten fila; el menú cae debajo. Si el móvil es muy
      estrecho, el idioma baja solo a su propia fila y sigue legible. */
