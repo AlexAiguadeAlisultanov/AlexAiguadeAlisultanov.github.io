@@ -418,7 +418,7 @@
       "nav.contact": "Contacto",
       "sortir": "Salir",
       "hero.eyebrow": "Técnico IT · Sistemas · Ciberseguridad",
-      "hero.lead": "Técnico IT centrado en sistemas y ciberseguridad, con base en desarrollo de aplicaciones. Ahora curso el Máster en Ciberseguridad e IA y tengo la certificación eJPT v2. Busco incorporarme al departamento de IT de una empresa del sector.",
+      "hero.lead": "Técnico IT centrado en sistemas y ciberseguridad, con base en desarrollo de aplicaciones. Ahora curso el Máster en Ciberseguridad e IA. Busco incorporarme al departamento de IT de una empresa del sector.",
       "hero.where": "Anglesola, Cataluña, España",
       "hero.cta": "Mira los proyectos",
       "hero.note": "Cinco proyectos publicados",
@@ -478,7 +478,6 @@
       "edu.h": "Formación",
       "edu.intro": "De dónde vienen la base de desarrollo y la especialización en seguridad.",
       "edu.aria": "Contenidos",
-      "cert.label": "Certificación",
       "edu.ev.when": "Abril de 2026 a diciembre de 2026",
       "edu.ev.tag": "En curso",
       "edu.ev.title": "Máster en Ciberseguridad e Inteligencia Artificial",
@@ -558,7 +557,7 @@
       "sortir": "Sortir",
       "lang.aria": "Idioma",
       "hero.eyebrow": "Tècnic IT · Sistemes · Ciberseguretat",
-      "hero.lead": "Tècnic IT centrat en sistemes i ciberseguretat, amb base en desenvolupament d'aplicacions. Ara curso el Màster en Ciberseguretat i IA i tinc la certificació eJPT v2. Busco incorporar-me al departament d'IT d'una empresa del sector.",
+      "hero.lead": "Tècnic IT centrat en sistemes i ciberseguretat, amb base en desenvolupament d'aplicacions. Ara curso el Màster en Ciberseguretat i IA. Busco incorporar-me al departament d'IT d'una empresa del sector.",
       "hero.where": "Anglesola, Catalunya, Espanya",
       "hero.cta": "Mira els projectes",
       "hero.note": "Cinc projectes publicats",
@@ -618,7 +617,6 @@
       "edu.h": "Formació",
       "edu.intro": "D'on venen la base de desenvolupament i l'especialització en seguretat.",
       "edu.aria": "Continguts",
-      "cert.label": "Certificació",
       "edu.ev.when": "Abril de 2026 a desembre de 2026",
       "edu.ev.tag": "En curs",
       "edu.ev.title": "Màster en Ciberseguretat i Intel·ligència Artificial",
@@ -703,7 +701,7 @@
       "sortir": "Sign out",
       "lang.aria": "Language",
       "hero.eyebrow": "IT technician · Systems · Cybersecurity",
-      "hero.lead": "IT technician focused on systems and cybersecurity, with a background in application development. I'm taking the Master's in Cybersecurity and AI right now and I hold the eJPT v2 certification. I'm looking to join the IT department of a company in the field.",
+      "hero.lead": "IT technician focused on systems and cybersecurity, with a background in application development. I'm taking the Master's in Cybersecurity and AI right now. I'm looking to join the IT department of a company in the field.",
       "hero.where": "Anglesola, Catalonia, Spain",
       "hero.cta": "See the projects",
       "hero.note": "Five projects published",
@@ -763,7 +761,6 @@
       "edu.h": "Education",
       "edu.intro": "Where the development base and the security specialisation come from.",
       "edu.aria": "Contents",
-      "cert.label": "Certification",
       "edu.ev.when": "April 2026 to December 2026",
       "edu.ev.tag": "In progress",
       "edu.ev.title": "Master's in Cybersecurity and Artificial Intelligence",
@@ -1025,15 +1022,6 @@
       <p class="eyebrow">03</p>
       <h2 id="t-formacio" data-i18n="edu.h">Formación</h2>
       <p class="section__intro" data-i18n="edu.intro"></p>
-
-      <div class="cert">
-        <svg class="ico ico--lead" aria-hidden="true" focusable="false"><use href="#i-shield"/></svg>
-        <div class="cert__cos">
-          <p class="cert__etiqueta" data-i18n="cert.label">Certificación</p>
-          <p class="cert__nom">eJPT v2</p>
-          <p class="cert__org">INE · eLearnSecurity Junior Penetration Tester</p>
-        </div>
-      </div>
 
       <ol class="timeline">
         <li>
