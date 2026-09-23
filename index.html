@@ -1,93 +1,297 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
-    <link rel="icon" href="Img/FotoAlex.ico"/>
-    <link rel="stylesheet" href="styles.css">
-    <title>Alex Aiguade Alisultanov</title>
-    <meta charset="UTF-8">
-    <meta name="keywords" content="Portafoli,github">
-    <meta name="description" content="Aquest es el meu Portafoli">
-    <meta name="author" content="Alex Aiguade">
-    <meta name="copyright" content="PortafoliAlex">
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#FAFAF9" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0F0F11" media="(prefers-color-scheme: dark)">
+<title data-i18n="doc.title">Alex Aiguadé Alisultánov · Portafolio</title>
+<meta name="description" data-i18n-content="doc.desc" content="Portafolio de Alex Aiguadé Alisultánov, estudiante de grado superior en La Salle Mollerussa. Proyectos en Java, PHP, VB.NET y bases de datos.">
+<meta name="author" content="Alex Aiguadé Alisultánov">
+<meta property="og:type" content="website">
+<meta property="og:title" data-i18n-content="doc.title" content="Alex Aiguadé Alisultánov · Portafolio">
+<meta property="og:description" data-i18n-content="og.desc" content="Estudiante de grado superior en La Salle Mollerussa. Aplicaciones web, de escritorio y Android.">
+<meta property="og:image" content="Img/FotoAlex.png">
+<link rel="icon" href="Img/FotoAlex.ico">
+<link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <header class="menu">
-        <h1>El Meu Portafoli</h1>
-        <nav>
-            <ul class="flex-container">
-                <li><a href="#about">Sobre Mi</a></li>
-                <li><a href="#skills">Habilitats</a></li>
-                <li><a href="#projects">Projectes</a></li>
-                <li><a href="#contact">Contacte</a></li>
-            </ul>
-        </nav>
-    </header>
-    <img src="Img/FotoAlex.png" alt="" id = "yo">
-    <main>
-        <section class="about" id="about" >
-            <h2>Sobre Mi</h2>
-            <div>
-                <p>Sóc un estudiant de grau superior del institut LaSalleMollerusa. M'agrada resoldre problemes i codificar. Intenta sempre aportar el 100% de la feina que faig. He treballat en tecnologies com MySQL, MongoDB, PHP, HTML5, CSS,javascript , Java durant el grau superior i mitja.</p>
-            </div>
-            <h3>Idiomes: </h3>
-            <div>
-                <p>Java, JavaScript, HTML/CSS, Python, PHP</p>
-            </div>
-            <h3>Bases de dades: </h3>
-            <div>
-                <p>MySQL, MongoDB</p>
-            </div>
-            <h3>Eines i Tecnologies: </h3>
-            <div>
-                <p>Github</p><br><br>
-            </div>
-            <p>Busco una oportunitat per treballar en una posició desafiant combinant les meves habilitats en Enginyeria de Programari, que ofereix desenvolupament professional, experiències interessants i creixement personal.</p>
-        </section>
-        <section id="skills">
-            <h2>Habilitats</h2>
-            <div class="skills">
-                <h3>Llenguatges de Programació</h3>
-                <img id="Imatgejava" src="Img/Java.png" alt="">
-                <img id="Imatgejavascript" src="Img/javascript.png" alt="">
-                <img id="Imatgehtml" src="Img/html.jpg" alt="">
-                <img id="Imatgecss" src="Img/css.png" alt="">
-            </div>
-            <div class="skills">
-                <h3>Bases de dades</h3>
-                <img id="ImatgePHP" src="Img/php.png" alt="">
-                <img id="ImatgeMySQL" src="Img/mysql.png" alt="">
-                <img id="Imatgemongo" src="Img/mongodb.png" alt="">
-            </div>
-        </section>
-    
-        <section id="projects">
-            <h2>Projectes</h2>
-            <div class="project">
-                <h3>Gestio Stock</h3>
-                <p>Es una aplicació que he fet, per gestionar els productes de una empresa de informatica la cual tracta de una empresa de venta de aparells electronics i tecnologics</p>
-                <a id="enllaç" href="https://github.com/aleixbafl/GestioEstock.git">Entra Aqui</a>
-            </div>
-            <div class="project">
-                <h3>Calculadora Android Studio</h3>
-                <p>Es una calculadora que té un numero especific de operacions en el qual pots interactuar i fer les teves operacions</p>
-                <p>Es un Projecte en curs</p>
-                <img id="imgcas" src="Img/imgcas.png" alt="">
-            </div>
-        </section>
-    
-        <section class="contact" id="contact">
-            <h2>Contacte</h2>
-            <p>Pots contactarme per correu electronic ==> [alexaiguade@email.com]</p>
-            <p>Pots contactarme per wahtsapp ==> [684258353]</p>
-            <p>Pots buscar mes informacio sobre mi aqui <a id="enllaç" href="https://www.linkedin.com/in/alex-aiguade-alisultanov-076706230/">Entra Aqui</a></p>
-        </section>
-    
-        <footer>
-            <p>&copy; 2023 - El Meu Portafoli</p>
-        </footer>
-        <script src="script.js"></script>
-    </main>
+
+<svg class="sprite" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg">
+  <symbol id="i-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M7 17 17 7"/><path d="M8 7h9v9"/>
+  </symbol>
+  <symbol id="i-github" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 2-2.64-.5-5.36-.5-8 0-2-2-3-2-3-2-.3 1.15-.3 2.35 0 3.5A5.4 5.4 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"/>
+    <path d="M9 18c-4.51 2-5-2-7-2"/>
+  </symbol>
+  <symbol id="i-linkedin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-4 0v7h-4v-10h4v1.8A6 6 0 0 1 16 8z"/>
+    <rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/>
+  </symbol>
+  <symbol id="i-mail" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="2" y="4" width="20" height="16" rx="2"/><path d="m2 7 8.97 5.7a2 2 0 0 0 2.06 0L22 7"/>
+  </symbol>
+  <symbol id="i-chat" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M7.9 20A9 9 0 1 0 4 16.1L2 22z"/>
+  </symbol>
+
+  <!-- Banderas dibujadas a mano: Windows no pinta los emoji de bandera y la senyera ni siquiera existe como emoji. -->
+  <symbol id="f-es" viewBox="0 0 24 16">
+    <path fill="#C60B1E" d="M0 0h24v16H0z"/>
+    <path fill="#FFC400" d="M0 4h24v8H0z"/>
+  </symbol>
+  <symbol id="f-ca" viewBox="0 0 24 16">
+    <path fill="#FCDD09" d="M0 0h24v16H0z"/>
+    <g fill="#DA121A">
+      <path d="M0 1.778h24v1.778H0z"/>
+      <path d="M0 5.333h24v1.778H0z"/>
+      <path d="M0 8.889h24v1.778H0z"/>
+      <path d="M0 12.444h24v1.778H0z"/>
+    </g>
+  </symbol>
+  <symbol id="f-gb" viewBox="0 0 24 16">
+    <clipPath id="f-gb-quarters">
+      <path d="M12 8 24 8 24 16Z M12 8 12 16 0 16Z M12 8 0 8 0 0Z M12 8 12 0 24 0Z"/>
+    </clipPath>
+    <path fill="#012169" d="M0 0h24v16H0z"/>
+    <g fill="none">
+      <path stroke="#FFFFFF" stroke-width="3.2" d="M0 0 24 16M24 0 0 16"/>
+      <path stroke="#C8102E" stroke-width="1.6" clip-path="url(#f-gb-quarters)" d="M0 0 24 16M24 0 0 16"/>
+      <path stroke="#FFFFFF" stroke-width="5.333" d="M12 0v16M0 8h24"/>
+      <path stroke="#C8102E" stroke-width="3.2" d="M12 0v16M0 8h24"/>
+    </g>
+  </symbol>
+</svg>
+
+<a class="skip" href="#contingut" data-i18n="skip">Salta al contenido</a>
+
+<header class="topbar">
+  <div class="topbar__inner">
+    <a class="topbar__name" href="#dalt">Alex Aiguadé</a>
+
+    <nav class="topbar__nav" aria-label="Secciones" data-i18n-aria-label="nav.aria">
+      <ul>
+        <li><a href="#sobre-mi" data-i18n="nav.about">Sobre mí</a></li>
+        <li><a href="#projectes" data-i18n="nav.projects">Proyectos</a></li>
+        <li><a href="#habilitats" data-i18n="nav.skills">Habilidades</a></li>
+        <li><a href="#contacte" data-i18n="nav.contact">Contacto</a></li>
+      </ul>
+    </nav>
+
+    <div class="lang" role="group" aria-label="Idioma" data-i18n-aria-label="lang.aria">
+      <button class="lang__btn" type="button" data-lang="es" aria-pressed="true">
+        <svg class="flag" aria-hidden="true" focusable="false"><use href="#f-es"/></svg>
+        <span>Castellano</span>
+      </button>
+      <button class="lang__btn" type="button" data-lang="ca" aria-pressed="false">
+        <svg class="flag" aria-hidden="true" focusable="false"><use href="#f-ca"/></svg>
+        <span>Català</span>
+      </button>
+      <button class="lang__btn" type="button" data-lang="en" aria-pressed="false">
+        <svg class="flag" aria-hidden="true" focusable="false"><use href="#f-gb"/></svg>
+        <span>English</span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<main id="contingut">
+
+  <section class="hero" id="dalt">
+    <div class="wrap hero__grid">
+      <div class="hero__text">
+        <p class="eyebrow" data-i18n="hero.eyebrow">Grado superior · La Salle Mollerussa</p>
+        <h1>Alex Aiguadé Alisultánov</h1>
+        <p class="lead" data-i18n="hero.lead">Hago aplicaciones web, de escritorio y Android. Me gusta resolver problemas y escribir código, y busco un primer trabajo donde aportarlo todo y seguir aprendiendo.</p>
+        <div class="hero__actions">
+          <a class="btn btn--primary" href="#projectes" data-i18n="hero.cta">Mira los proyectos</a>
+          <a class="btn btn--ghost" href="https://www.linkedin.com/in/alex-aiguade-alisultanov-076706230/" target="_blank" rel="noopener">
+            LinkedIn<svg class="ico" aria-hidden="true" focusable="false"><use href="#i-arrow"/></svg>
+          </a>
+        </div>
+        <p class="hero__note" data-i18n="hero.note">Siete proyectos publicados y uno en curso</p>
+      </div>
+      <div class="hero__photo">
+        <img src="Img/FotoAlex.png" width="253" height="349" alt="Retrato de Alex Aiguadé Alisultánov" data-i18n-alt="hero.alt" fetchpriority="high" decoding="async">
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="sobre-mi" aria-labelledby="t-sobre">
+    <div class="wrap">
+      <p class="eyebrow">01</p>
+      <h2 id="t-sobre" data-i18n="about.h">Sobre mí</h2>
+      <div class="prose">
+        <p data-i18n="about.p1">Soy estudiante de grado superior en el instituto La Salle Mollerussa. Durante el grado medio y el superior he trabajado con MySQL, MongoDB, PHP, HTML, CSS, JavaScript y Java, y he ido haciendo proyectos propios para poner a prueba lo que iba aprendiendo.</p>
+        <p data-i18n="about.p2">Siempre intento aportar el cien por cien del trabajo que hago. Lo que busco ahora es un puesto con suficiente reto para crecer como programador, donde haya cosas nuevas que aprender y gente de quien aprenderlas.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="projectes" aria-labelledby="t-projectes">
+    <div class="wrap">
+      <p class="eyebrow">02</p>
+      <h2 id="t-projectes" data-i18n="proj.h">Proyectos</h2>
+      <p class="section__intro" data-i18n="proj.intro">Todo el código es abierto y se puede revisar. Cada tarjeta lleva las tecnologías con las que está hecho.</p>
+
+      <ul class="cards">
+        <li class="card">
+          <h3><a href="https://github.com/AlexAiguadeAlisultanov/GestioEstock" target="_blank" rel="noopener">Gestió Estock</a></h3>
+          <p data-i18n="proj.stock">Aplicación de escritorio para controlar el stock de material de una empresa de informática: entradas, salidas y qué queda en almacén.</p>
+          <ul class="chips" aria-label="Tecnologías" data-i18n-aria-label="chips.aria">
+            <li>VB.NET</li><li data-i18n="chip.desktop">Escritorio</li>
+          </ul>
+          <span class="card__link"><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-github"/></svg><span data-i18n="proj.code">Código en GitHub</span></span>
+        </li>
+
+        <li class="card">
+          <h3><a href="https://github.com/AlexAiguadeAlisultanov/Exploracio" target="_blank" rel="noopener">Exploració</a></h3>
+          <p data-i18n="proj.books">Aplicación de escritorio para gestionar una biblioteca de libros. Permite insertar nuevos, actualizarlos y consultarlos.</p>
+          <ul class="chips" aria-label="Tecnologías" data-i18n-aria-label="chips.aria">
+            <li>VB.NET</li><li data-i18n="chip.desktop">Escritorio</li>
+          </ul>
+          <span class="card__link"><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-github"/></svg><span data-i18n="proj.code">Código en GitHub</span></span>
+        </li>
+
+        <li class="card">
+          <h3><a href="https://github.com/AlexAiguadeAlisultanov/springboot-thymeleaf-web-master" target="_blank" rel="noopener">Biblioteca web</a></h3>
+          <p data-i18n="proj.library">Aplicación web que lleva los libros, los usuarios y los préstamos de una biblioteca, con los datos sobre MySQL.</p>
+          <ul class="chips" aria-label="Tecnologías" data-i18n-aria-label="chips.aria">
+            <li>Java</li><li>Spring Boot</li><li>Thymeleaf</li><li>MySQL</li>
+          </ul>
+          <span class="card__link"><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-github"/></svg><span data-i18n="proj.code">Código en GitHub</span></span>
+        </li>
+
+        <li class="card">
+          <h3><a href="https://github.com/AlexAiguadeAlisultanov/qrcodegenerator" target="_blank" rel="noopener">QR d'entrades</a></h3>
+          <p data-i18n="proj.qr">Web que genera y lee códigos QR para entradas de partidos, con cuentas de usuario y el pago de la entrada.</p>
+          <ul class="chips" aria-label="Tecnologías" data-i18n-aria-label="chips.aria">
+            <li>Java</li><li>Spring Boot</li><li data-i18n="chip.qr">Códigos QR</li>
+          </ul>
+          <span class="card__link"><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-github"/></svg><span data-i18n="proj.code">Código en GitHub</span></span>
+        </li>
+
+        <li class="card">
+          <h3><a href="https://github.com/AlexAiguadeAlisultanov/app-gestio-incidencies" target="_blank" rel="noopener">Gestió d'incidències</a></h3>
+          <p data-i18n="proj.issues">Aplicación para registrar incidencias y seguir su estado, organizadas por categorías y con los contactos de cada una.</p>
+          <ul class="chips" aria-label="Tecnologías" data-i18n-aria-label="chips.aria">
+            <li>PHP</li><li>Laravel</li>
+          </ul>
+          <span class="card__link"><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-github"/></svg><span data-i18n="proj.code">Código en GitHub</span></span>
+        </li>
+
+        <li class="card">
+          <h3><a href="https://github.com/AlexAiguadeAlisultanov/MVC-AJAX" target="_blank" rel="noopener">CRUD de productes</a></h3>
+          <p data-i18n="proj.crud">Alta, consulta, edición y borrado de productos con patrón MVC y peticiones AJAX, para que la página no se recargue. Funciona igual en móvil.</p>
+          <ul class="chips" aria-label="Tecnologías" data-i18n-aria-label="chips.aria">
+            <li>PHP</li><li>MVC</li><li>AJAX</li>
+          </ul>
+          <span class="card__link"><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-github"/></svg><span data-i18n="proj.code">Código en GitHub</span></span>
+        </li>
+
+        <li class="card">
+          <h3><a href="https://github.com/AlexAiguadeAlisultanov/App-Gestio-Fichar" target="_blank" rel="noopener">App de fitxar</a></h3>
+          <p data-i18n="proj.clock">Aplicación Android para fichar la entrada y la salida de la jornada desde el móvil.</p>
+          <ul class="chips" aria-label="Tecnologías" data-i18n-aria-label="chips.aria">
+            <li>Java</li><li>Android</li>
+          </ul>
+          <span class="card__link"><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-github"/></svg><span data-i18n="proj.code">Código en GitHub</span></span>
+        </li>
+
+        <li class="card card--wip">
+          <h3>Calculadora Android <span class="badge" data-i18n="proj.wip">En curso</span></h3>
+          <p data-i18n="proj.calc">Calculadora para Android con un conjunto concreto de operaciones. Todavía estoy trabajando en ella, así que de momento no hay nada publicado.</p>
+          <ul class="chips" aria-label="Tecnologías" data-i18n-aria-label="chips.aria">
+            <li>Java</li><li>Android Studio</li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="section" id="habilitats" aria-labelledby="t-habilitats">
+    <div class="wrap">
+      <p class="eyebrow">03</p>
+      <h2 id="t-habilitats" data-i18n="skills.h">Habilidades</h2>
+      <p class="section__intro" data-i18n="skills.intro">Con lo que he trabajado durante el grado medio, el superior y los proyectos de arriba.</p>
+
+      <div class="stack">
+        <div class="stack__group">
+          <h3 data-i18n="skills.langs">Lenguajes</h3>
+          <ul class="chips chips--lg">
+            <li>Java</li><li>JavaScript</li><li>PHP</li><li>Python</li><li>HTML</li><li>CSS</li><li>VB.NET</li>
+          </ul>
+        </div>
+        <div class="stack__group">
+          <h3 data-i18n="skills.db">Bases de datos</h3>
+          <ul class="chips chips--lg">
+            <li>MySQL</li><li>MongoDB</li>
+          </ul>
+        </div>
+        <div class="stack__group">
+          <h3 data-i18n="skills.tools">Herramientas y entornos</h3>
+          <ul class="chips chips--lg">
+            <li data-i18n="skill.git">Git y GitHub</li><li>Spring Boot</li><li>Thymeleaf</li><li>Laravel</li><li>Android Studio</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--last" id="contacte" aria-labelledby="t-contacte">
+    <div class="wrap">
+      <p class="eyebrow">04</p>
+      <h2 id="t-contacte" data-i18n="contact.h">Contacto</h2>
+      <p class="section__intro" data-i18n="contact.intro">Si te encaja mi perfil, escríbeme por donde te vaya mejor. Contesto enseguida.</p>
+
+      <ul class="contact">
+        <li>
+          <a href="mailto:alexaiguade@email.com">
+            <svg class="ico ico--lead" aria-hidden="true" focusable="false"><use href="#i-mail"/></svg>
+            <span class="contact__label" data-i18n="contact.mail">Correo</span>
+            <span class="contact__value">alexaiguade@email.com</span>
+            <svg class="ico ico--end" aria-hidden="true" focusable="false"><use href="#i-arrow"/></svg>
+          </a>
+        </li>
+        <li>
+          <a href="https://wa.me/34684258353" target="_blank" rel="noopener">
+            <svg class="ico ico--lead" aria-hidden="true" focusable="false"><use href="#i-chat"/></svg>
+            <span class="contact__label">WhatsApp</span>
+            <span class="contact__value">684 258 353</span>
+            <svg class="ico ico--end" aria-hidden="true" focusable="false"><use href="#i-arrow"/></svg>
+          </a>
+        </li>
+        <li>
+          <a href="https://www.linkedin.com/in/alex-aiguade-alisultanov-076706230/" target="_blank" rel="noopener">
+            <svg class="ico ico--lead" aria-hidden="true" focusable="false"><use href="#i-linkedin"/></svg>
+            <span class="contact__label">LinkedIn</span>
+            <span class="contact__value" data-i18n="contact.li">El perfil entero, con más detalle</span>
+            <svg class="ico ico--end" aria-hidden="true" focusable="false"><use href="#i-arrow"/></svg>
+          </a>
+        </li>
+        <li>
+          <a href="https://github.com/AlexAiguadeAlisultanov" target="_blank" rel="noopener">
+            <svg class="ico ico--lead" aria-hidden="true" focusable="false"><use href="#i-github"/></svg>
+            <span class="contact__label">GitHub</span>
+            <span class="contact__value" data-i18n="contact.gh">Todo el código de los proyectos</span>
+            <svg class="ico ico--end" aria-hidden="true" focusable="false"><use href="#i-arrow"/></svg>
+          </a>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+</main>
+
+<footer class="foot">
+  <div class="wrap foot__inner">
+    <p>Alex Aiguadé Alisultánov</p>
+    <p><span data-i18n="foot.made">Portafolio hecho a mano con HTML y CSS</span> · <span id="any">2026</span></p>
+  </div>
+</footer>
+
+<script src="script.js" defer></script>
 </body>
 </html>
