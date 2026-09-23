@@ -259,7 +259,7 @@
       titol: { es: "Biblioteca web", ca: "Biblioteca web", en: "Library web app" },
       tipus: "web",
       tec: ["Java", "Spring Boot", "Thymeleaf", "MySQL"],
-      demo: "",
+      demo: "https://inventario-de-libros.onrender.com/llibres",
       text: {
         es: "Aplicación web que lleva los libros, los usuarios y los préstamos de una biblioteca, con los datos sobre MySQL.",
         ca: "Aplicació web que porta els llibres, els usuaris i els préstecs d'una biblioteca, amb les dades sobre MySQL.",
@@ -270,7 +270,7 @@
       titol: { es: "Taquilla de fútbol", ca: "Taquilla de futbol", en: "Football ticket office" },
       tipus: "web",
       tec: ["Java", "Spring Boot", { clau: "chip.qr" }],
-      demo: "",
+      demo: "https://taquilla-de-futbol.onrender.com",
       text: {
         es: "Web que genera y lee códigos QR para entradas de partidos, con cuentas de usuario y el pago de la entrada.",
         ca: "Web que genera i llegeix codis QR per a entrades de partits, amb comptes d'usuari i el pagament de l'entrada.",
@@ -281,7 +281,7 @@
       titol: { es: "Gestor de incidencias", ca: "Gestor d'incidències", en: "Issue tracker" },
       tipus: "web",
       tec: ["PHP", "Laravel"],
-      demo: "",
+      demo: "https://gestor-de-incidencias.onrender.com",
       text: {
         es: "Aplicación para registrar las incidencias de un centro educativo y seguir su estado, organizadas por categorías y con los contactos de cada una.",
         ca: "Aplicació per registrar les incidències d'un centre educatiu i seguir-ne l'estat, organitzades per categories i amb els contactes de cadascuna.",
