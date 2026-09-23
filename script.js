@@ -39,7 +39,7 @@
       "hero.eyebrow": "Grau superior · La Salle Mollerussa",
       "hero.lead": "Faig aplicacions web, d'escriptori i Android. M'agrada resoldre problemes i escriure codi, i busco una primera feina on aportar-ho tot i seguir aprenent.",
       "hero.cta": "Mira els projectes",
-      "hero.note": "Quatre projectes publicats",
+      "hero.note": "Cinc projectes publicats",
       "hero.count": "{n} projectes publicats",
       "hero.alt": "Retrat d'Alex Aiguadé Alisultánov",
       "about.h": "Sobre mi",
@@ -54,6 +54,8 @@
       "proj.code": "Codi a GitHub",
       "chips.aria": "Tecnologies",
       "chip.qr": "Codis QR",
+      "chip.equip": "Projecte d'equip",
+      "proj.vw": "Eina que planifica la preparació d'un Volkswagen: tries model, pressupost i objectius, i retorna les peces que caben en aquells diners. Projecte d'equip de nou persones, amb el seu catàleg, el seu motor de càlcul i la seva aplicació d'escriptori.",
       "feed.loading": "Llegint els repositoris de GitHub",
       "feed.cache": "GitHub no contesta ara mateix, així que aquesta és l'última llista desada.",
       "feed.offline": "GitHub no contesta ara mateix, així que aquesta és la llista de sempre, sense la data de cada repositori.",
@@ -90,7 +92,7 @@
       "hero.eyebrow": "Advanced vocational training · La Salle Mollerussa",
       "hero.lead": "I build web, desktop and Android apps. I like solving problems and writing code, and I'm after a first job where I can give everything I have and keep learning.",
       "hero.cta": "See the projects",
-      "hero.note": "Four projects published",
+      "hero.note": "Five projects published",
       "hero.count": "{n} projects published",
       "hero.alt": "Portrait of Alex Aiguadé Alisultánov",
       "about.h": "About me",
@@ -105,6 +107,8 @@
       "proj.code": "Code on GitHub",
       "chips.aria": "Technologies",
       "chip.qr": "QR codes",
+      "chip.equip": "Team project",
+      "proj.vw": "A tool that plans a Volkswagen build: pick the model, the budget and what you are after, and it returns the parts that fit the money. A nine-person team project, with its own catalogue, calculation engine and desktop app.",
       "feed.loading": "Reading the repositories from GitHub",
       "feed.cache": "GitHub is not answering right now, so this is the last list that was saved.",
       "feed.offline": "GitHub is not answering right now, so this is the usual list, without the date of each repository.",
@@ -280,6 +284,21 @@
         ca: "Alta, consulta, edició i esborrat de productes amb patró MVC i peticions AJAX, perquè la pàgina no es recarregui. Funciona igual en mòbil.",
         en: "Create, read, update and delete products with an MVC pattern and AJAX requests, so the page never reloads. Works the same on a phone."
       }
+    },
+    "jondasiviz": {
+      titol: { es: "Planificador de preparación Volkswagen", ca: "Planificador de preparació Volkswagen", en: "Volkswagen build planner" },
+      tipus: "web",
+      // Proyecto de equipo, con el repositorio privado. La ficha es la única fuente
+      // de la tarjeta y no se enseña enlace al código: daría un 404 a quien no sea
+      // del equipo.
+      privat: true,
+      tec: ["TypeScript", "React", "Vite", { clau: "chip.equip" }],
+      demo: "",
+      text: {
+        es: "Herramienta que planifica la preparación de un Volkswagen: eliges modelo, presupuesto y objetivos, y devuelve las piezas que caben en ese dinero. Proyecto de equipo de nueve personas, con su catálogo, su motor de cálculo y su aplicación de escritorio.",
+        ca: "Eina que planifica la preparació d'un Volkswagen: tries model, pressupost i objectius, i retorna les peces que caben en aquells diners. Projecte d'equip de nou persones, amb el seu catàleg, el seu motor de càlcul i la seva aplicació d'escriptori.",
+        en: "A tool that plans a Volkswagen build: pick the model, the budget and what you are after, and it returns the parts that fit the money. A nine-person team project, with its own catalogue, calculation engine and desktop app."
+      }
     }
   };
 
@@ -290,7 +309,7 @@
   // Y al revés: los que tienen que salir aunque la API no los traiga, porque el
   // repositorio es privado. Cuando se haga público llegará por la API con su fecha y
   // su enlace, y este añadido dejará de hacer nada.
-  var SEMPRE = ["MVC-AJAX"];
+  var SEMPRE = ["MVC-AJAX", "jondasiviz"];
 
   var fitxes = {};
   Object.keys(CONEGUTS).forEach(function (nom) {
