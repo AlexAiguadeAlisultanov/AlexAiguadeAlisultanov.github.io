@@ -302,6 +302,12 @@ a { color: inherit; }
   color: var(--text-2);
 }
 
+.hero__lloc {
+  margin-top: var(--s-3);
+  font-size: var(--fs-sm);
+  color: var(--text-2);
+}
+
 .btn {
   display: inline-flex;
   align-items: center;
@@ -721,6 +727,106 @@ button.btn {
   margin-bottom: var(--s-3);
 }
 
+/* Les aptituds personals van en una línia i prou: pesen menys que les tècniques. */
+.stack__nota {
+  font-size: var(--fs-sm);
+  color: var(--text-2);
+  line-height: 1.6;
+  max-width: 56em;
+}
+
+.langs {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(212px, 1fr));
+  gap: var(--s-2);
+  max-width: 56em;
+}
+
+.langs li {
+  display: grid;
+  gap: 2px;
+  padding: var(--s-3) var(--s-4);
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--r-md);
+}
+
+.langs__nom { font-size: var(--fs-sm); font-weight: 500; }
+.langs__niv { font-size: var(--fs-xs); color: var(--text-2); }
+
+/* ---------- Formació ---------- */
+
+/* La certificació és l'única peça de la secció que ha de cridar l'atenció, així que és
+   l'única que porta l'accent. */
+.cert {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--s-3);
+  max-width: 56em;
+  margin-bottom: var(--s-6);
+  padding: var(--s-4);
+  background: var(--bg-soft);
+  border: 1px solid var(--line-soft);
+  border-radius: var(--r-lg);
+}
+
+.cert .ico--lead { margin-top: 2px; }
+
+.cert__cos { display: grid; gap: var(--s-1); }
+
+.cert__etiqueta {
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color: var(--text-2);
+}
+
+.cert__nom { font-size: var(--fs-lg); font-weight: 600; letter-spacing: -.02em; }
+.cert__org { font-size: var(--fs-sm); color: var(--text-2); }
+
+/* Les dates a l'esquerra i el que va passar a la dreta. En mòbil cau tot en una
+   columna, amb la data a dalt. */
+.timeline {
+  display: grid;
+  gap: var(--s-5);
+  max-width: 56em;
+}
+
+.timeline > li {
+  display: grid;
+  grid-template-columns: 200px minmax(0, 1fr);
+  gap: var(--s-3) var(--s-5);
+  padding-top: var(--s-5);
+  border-top: 1px solid var(--line-soft);
+}
+
+.timeline > li:first-child { padding-top: 0; border-top: 0; }
+
+.timeline__quan {
+  display: grid;
+  justify-items: start;
+  align-content: start;
+  gap: var(--s-2);
+  font-size: var(--fs-sm);
+  color: var(--text-2);
+}
+
+.timeline__cos { display: grid; gap: var(--s-2); }
+
+.timeline__cos h3 { font-size: var(--fs-lg); }
+
+.timeline__lloc,
+.timeline__nota { font-size: var(--fs-sm); color: var(--text-2); }
+
+.timeline .chips { margin-top: var(--s-1); }
+
+.badge--ara {
+  color: var(--accent);
+  background: var(--accent-bg);
+  border-color: transparent;
+}
+
 /* ---------- Contacte ---------- */
 
 .contact {
@@ -811,6 +917,8 @@ button.btn {
 
   .wrap { padding-inline: var(--s-3); }
 
+  .timeline > li { grid-template-columns: minmax(0, 1fr); gap: var(--s-2); }
+
   .contact a { flex-wrap: wrap; row-gap: var(--s-1); }
   .contact__label { min-width: 0; }
   .contact__value { flex-basis: 100%; padding-left: 36px; }
@@ -843,12 +951,13 @@ button.btn {
 }
 
 @media (forced-colors: active) {
-  .card, .contact, .chips li, .btn, .badge, .wake { border: 1px solid CanvasText; }
+  .card, .contact, .chips li, .btn, .badge, .wake,
+  .cert, .langs li { border: 1px solid CanvasText; }
   .lang__btn[aria-pressed="true"] { border: 1px solid CanvasText; }
   .flag { opacity: 1; forced-color-adjust: none; }
 }
 
 @media print {
   .topbar, .skip { display: none; }
-  .card, .contact { break-inside: avoid; box-shadow: none; }
+  .card, .contact, .cert, .timeline > li { break-inside: avoid; box-shadow: none; }
 }
