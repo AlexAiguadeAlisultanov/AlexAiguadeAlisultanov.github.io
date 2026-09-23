@@ -17,7 +17,16 @@ import mysql from "mysql2/promise";
 
 const PUERTO = Number(process.env.PORT ?? 3000);
 const FIRMA = process.env.FIRMA ?? "";
-const ORIGEN = process.env.ORIGEN ?? "https://alexaiguadealisultanov.github.io";
+// Puede haber varios, separados por comas: el sitio publicado y, cuando hace falta
+// mirar un cambio antes de publicarlo, el servidor local.
+const ORIGENES = (process.env.ORIGEN ?? "https://alexaiguadealisultanov.github.io")
+  .split(",").map((o) => o.trim()).filter(Boolean);
+
+/** Devuelve el origen que hay que responder, o el primero si no reconocemos el que pide. */
+function origenDe(req) {
+  const pide = String(req.headers.origin ?? "");
+  return ORIGENES.includes(pide) ? pide : ORIGENES[0];
+}
 const HORAS = 12;
 
 if (!FIRMA) {
@@ -108,11 +117,12 @@ setInterval(() => {
 
 /* ---------- Servidor ---------- */
 
-function responder(res, codigo, cuerpo) {
+function responder(res, codigo, cuerpo, origen) {
   const texto = JSON.stringify(cuerpo);
   res.writeHead(codigo, {
     "content-type": "application/json; charset=utf-8",
-    "access-control-allow-origin": ORIGEN,
+    "access-control-allow-origin": origen ?? ORIGENES[0],
+    "vary": "Origin",
     "access-control-allow-headers": "content-type, authorization",
     "access-control-allow-methods": "GET, POST, OPTIONS",
     "access-control-max-age": "86400",
@@ -135,25 +145,26 @@ async function leerCuerpo(req) {
 
 const servidor = createServer(async (req, res) => {
   const ruta = (req.url ?? "/").split("?")[0];
+  const origen = origenDe(req);
 
-  if (req.method === "OPTIONS") return responder(res, 204, {});
-  if (ruta === "/api/salud") return responder(res, 200, { ok: true });
+  if (req.method === "OPTIONS") return responder(res, 204, {}, origen);
+  if (ruta === "/api/salud") return responder(res, 200, { ok: true }, origen);
 
   if (ruta === "/api/entrar" && req.method === "POST") {
     const ip = String(req.headers["x-forwarded-for"] ?? req.socket.remoteAddress ?? "").split(",")[0].trim();
     if (demasiados(ip)) {
-      return responder(res, 429, { error: "Demasiados intentos. Prueba dentro de un rato." });
+      return responder(res, 429, { error: "Demasiados intentos. Prueba dentro de un rato." }, origen);
     }
     let cuerpo;
     try {
       cuerpo = await leerCuerpo(req);
     } catch {
-      return responder(res, 400, { error: "Petición mal formada." });
+      return responder(res, 400, { error: "Petición mal formada." }, origen);
     }
     const usuario = String(cuerpo.usuario ?? "").trim().toLowerCase();
     const contrasena = String(cuerpo.contrasena ?? "");
     if (!usuario || !contrasena) {
-      return responder(res, 400, { error: "Faltan el usuario o la contraseña." });
+      return responder(res, 400, { error: "Faltan el usuario o la contraseña." }, origen);
     }
     try {
       const [filas] = await base.query("SELECT hash, rol FROM usuarios WHERE usuario = ? LIMIT 1", [usuario]);
@@ -162,13 +173,13 @@ const servidor = createServer(async (req, res) => {
       // decir cuál de los dos ha fallado es regalar la mitad del trabajo.
       if (!fila || !contrasenaCorrecta(contrasena, fila.hash)) {
         anotarFallo(ip);
-        return responder(res, 401, { error: "El usuario o la contraseña no son correctos." });
+        return responder(res, 401, { error: "El usuario o la contraseña no son correctos." }, origen);
       }
       const { pase, caduca } = crearPase(usuario, fila.rol);
-      return responder(res, 200, { ok: true, rol: fila.rol, token: pase, expira: caduca });
+      return responder(res, 200, { ok: true, rol: fila.rol, token: pase, expira: caduca }, origen);
     } catch (e) {
       console.error("Error consultando la base:", e.message);
-      return responder(res, 503, { error: "No se ha podido comprobar el acceso." });
+      return responder(res, 503, { error: "No se ha podido comprobar el acceso." }, origen);
     }
   }
 
@@ -176,14 +187,14 @@ const servidor = createServer(async (req, res) => {
     const cabecera = String(req.headers.authorization ?? "");
     const pase = cabecera.startsWith("Bearer ") ? cabecera.slice(7) : "";
     const cuerpo = leerPase(pase);
-    if (!cuerpo) return responder(res, 401, { error: "La sesión no vale o ha caducado." });
-    return responder(res, 200, { ok: true, rol: cuerpo.rol, usuario: cuerpo.usuario });
+    if (!cuerpo) return responder(res, 401, { error: "La sesión no vale o ha caducado." }, origen);
+    return responder(res, 200, { ok: true, rol: cuerpo.rol, usuario: cuerpo.usuario }, origen);
   }
 
-  responder(res, 404, { error: "No encontrado." });
+  responder(res, 404, { error: "No encontrado." }, origen);
 });
 
 servidor.listen(PUERTO, "0.0.0.0", () => {
   console.log(`Acceso del portfolio escuchando en el puerto ${PUERTO}`);
-  console.log(`Aceptando peticiones de ${ORIGEN}`);
+  console.log(`Aceptando peticiones de ${ORIGENES.join(", ")}`);
 });
