@@ -15,7 +15,7 @@
 <meta property="og:image" content="Img/alex.png">
 <link rel="icon" type="image/png" sizes="32x32" href="Img/icono-32.png">
 <link rel="apple-touch-icon" sizes="180x180" href="Img/icono-180.png">
-<link rel="stylesheet" href="styles.css?v=202609240030">
+<link rel="stylesheet" href="styles.css?v=202609240930">
 </head>
 <body>
 
@@ -83,17 +83,22 @@
 <div class="porta" id="porta">
   <div class="porta__barra">
     <div class="lang" role="group" aria-label="Idioma" data-i18n-aria-label="lang.aria">
+      <!-- El nombre largo se lee siempre en voz alta; en pantallas estrechas lo que se ve
+           es el código de dos letras, para que los tres botones quepan en una fila. -->
       <button class="lang__btn" type="button" data-lang="es" aria-pressed="true">
         <svg class="flag" aria-hidden="true" focusable="false"><use href="#f-es"/></svg>
-        <span>Castellano</span>
+        <span class="lang__llarg">Castellano</span>
+        <span class="lang__curt" aria-hidden="true">ES</span>
       </button>
       <button class="lang__btn" type="button" data-lang="ca" aria-pressed="false">
         <svg class="flag" aria-hidden="true" focusable="false"><use href="#f-ca"/></svg>
-        <span>Català</span>
+        <span class="lang__llarg">Català</span>
+        <span class="lang__curt" aria-hidden="true">CA</span>
       </button>
       <button class="lang__btn" type="button" data-lang="en" aria-pressed="false">
         <svg class="flag" aria-hidden="true" focusable="false"><use href="#f-gb"/></svg>
-        <span>English</span>
+        <span class="lang__llarg">English</span>
+        <span class="lang__curt" aria-hidden="true">EN</span>
       </button>
     </div>
   </div>
@@ -146,6 +151,6 @@
 
 <div id="app" hidden></div>
 
-<script src="script.js?v=202609240030" defer></script>
+<script src="script.js?v=202609240930" defer></script>
 </body>
 </html>

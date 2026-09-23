@@ -213,15 +213,20 @@ a { color: inherit; }
 /* És l'única cosa que porta el HTML. El portafoli entra quan l'API diu qui és qui, i
    aquesta capa marxa del document sencera. */
 
-/* Sin color propio: la tarjeta ya es opaca y el fondo de detrás se ve también aquí. */
+/* Sin color propio: la tarjeta ya es opaca y el fondo de detrás se ve también aquí.
+   El alto va en dvh porque con inset: 0 la capa se queda del alto de siempre cuando
+   sale el teclado del móvil, y la tarjeta acaba debajo de las teclas. Con dvh la capa
+   encoge con el hueco que queda y se puede desplazar hasta el botón. */
 .porta {
   position: fixed;
   inset: 0;
+  height: 100dvh;
   z-index: 60;
   display: flex;
   flex-direction: column;
   background: transparent;
   overflow-y: auto;
+  overscroll-behavior: contain;
 }
 
 .porta__barra {
@@ -276,12 +281,15 @@ a { color: inherit; }
   color: var(--text-2);
 }
 
+/* El tamaño de letra no baja de 16 px a propósito: por debajo de eso Safari en iPhone
+   amplía la página sola al tocar el campo y ya no vuelve. */
 .camp input {
   width: 100%;
+  min-height: 44px;
   margin: 0;
   padding: 10px 12px;
   font-family: inherit;
-  font-size: var(--fs-sm);
+  font-size: var(--fs-base);
   line-height: 1.5;
   color: var(--text);
   background: var(--bg);
@@ -478,6 +486,10 @@ a { color: inherit; }
 }
 
 .lang__btn:hover { color: var(--text); }
+
+/* En pantalla ancha se lee el nombre del idioma; el código de dos letras solo sale
+   cuando no cabe (más abajo, en las adaptaciones). */
+.lang__curt { display: none; }
 
 .lang__btn[aria-pressed="true"] {
   color: var(--text);
@@ -731,7 +743,7 @@ button.btn {
 
 .cards {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(288px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(min(288px, 100%), 1fr));
   gap: var(--s-3);
   transition: opacity .2s var(--ease);
 }
@@ -964,10 +976,17 @@ button.btn {
 
 /* ---------- Habilitats ---------- */
 
+/* La columna se declara a mano con minmax(0, 1fr) y cada grupo lleva min-width: 0.
+   Sin eso un hijo de rejilla nunca baja de su ancho mínimo de contenido, y la rejilla
+   de idiomas de aquí abajo pedía 872 px: la página entera se desbordaba a lo ancho en
+   cualquier móvil. */
 .stack {
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   gap: var(--s-6);
 }
+
+.stack__group { min-width: 0; }
 
 .stack__group h3 {
   font-size: var(--fs-sm);
@@ -986,9 +1005,11 @@ button.btn {
   max-width: 56em;
 }
 
+/* El min() es lo que deja que la ficha baje de 212 px cuando la pantalla es más
+   estrecha que eso, en vez de empujar la fila entera fuera. */
 .langs {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(212px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(212px, 100%), 1fr));
   gap: var(--s-2);
   max-width: 56em;
 }
@@ -1168,6 +1189,123 @@ button.btn {
 
 /* ---------- Adaptacions ---------- */
 
+/* En cuanto la cabecera deja de caber en una fila crece de alto, y de ese alto sale el
+   hueco que se deja al saltar a una sección. Si no se actualiza, el título de la
+   sección aterriza debajo de la cabecera y no se ve. */
+@media (max-width: 1000px) {
+  :root { --topbar-h: 104px; }
+}
+
+/* Táctil: hasta 860 px se da por hecho que se toca con el dedo, no con un ratón. Todo
+   lo que se pulsa pasa a 44 px de lado y el escalón más pequeño de la tipografía sube a
+   14 px, que es donde deja de hacer falta ampliar para leer. */
+@media (max-width: 860px) {
+  :root { --fs-xs: .875rem; --topbar-h: 112px; }
+
+  /* La cabecera se reparte en dos filas y solo dos: arriba el nombre con el idioma y la
+     salida, y debajo el menú de secciones. Va en rejilla y no en flex porque el flex
+     partía la fila de arriba en cuanto no cabía, y la cabecera llegaba a 198 px de alto
+     en un móvil estrecho. Con la rejilla el nombre encoge y el resto se queda donde
+     estaba. */
+  .topbar__inner {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-areas:
+      "nom eines"
+      "nav nav";
+    align-items: center;
+    gap: var(--s-1) var(--s-2);
+    padding: 6px var(--s-3);
+    min-height: 0;
+  }
+
+  .topbar__name {
+    grid-area: nom;
+    min-width: 0;
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    padding: 0;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+
+  .topbar__eines { grid-area: eines; flex-wrap: nowrap; }
+
+  /* El menú vive en una tira que se desplaza sola a lo ancho. El desbordamiento se
+     queda dentro de la tira, así que la página no se mueve de lado. */
+  .topbar__nav {
+    grid-area: nav;
+    width: 100%;
+    min-width: 0;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+
+  .topbar__nav::-webkit-scrollbar { display: none; }
+
+  .topbar__nav ul {
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    width: max-content;
+    min-width: 100%;
+    gap: var(--s-1);
+  }
+
+  .topbar__nav a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    padding: 0 12px;
+    font-size: var(--fs-xs);
+  }
+
+  .lang { gap: 2px; padding: 2px; }
+
+  .lang__btn {
+    position: relative;   /* ancla del nombre largo, que aquí solo lo lee el lector */
+    min-height: 44px;
+    min-width: 44px;
+    justify-content: center;
+    padding: 0 10px;
+    gap: 6px;
+  }
+
+  /* El nombre del idioma se lo queda el lector de pantalla y en su sitio se ve el
+     código: tres botones con "Castellano" no caben en una fila de móvil. */
+  .lang__llarg {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    padding: 0;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  .lang__curt { display: inline; font-weight: 600; letter-spacing: .02em; }
+
+  .sortir {
+    min-height: 44px;
+    padding: 0 12px;
+    justify-content: center;
+  }
+
+  /* Los botones llegan a 44 px de alto. Sin esto se quedaban en 43,3 y el dedo falla. */
+  .btn { min-height: 44px; justify-content: center; }
+  .card__provar, .card__iniciar { min-height: 44px; padding: 0 16px; }
+
+  /* El enlace al código medía 20 px de alto: se le da la altura de un botón sin
+     cambiar cómo se ve, que sigue siendo una nota al pie. */
+  .card__codi { min-height: 44px; padding-inline: 2px; }
+
+  .contact a { min-height: 44px; }
+}
+
 @media (max-width: 760px) {
   :root { --s-8: 64px; --s-7: 48px; }
 
@@ -1177,24 +1315,22 @@ button.btn {
   }
 
   .hero__photo { order: -1; }
-  .hero__photo img { width: 132px; }
-
-  /* El nombre, el idioma y la salida comparten fila; el menú cae debajo. Si el móvil es
-     muy estrecho, ese grupo baja solo a su propia fila y sigue legible. */
-  .topbar__inner { justify-content: center; gap: var(--s-2); padding-inline: var(--s-3); }
-  .topbar__name { order: 1; }
-  .topbar__eines { order: 2; margin-left: auto; }
-  .topbar__nav { order: 3; width: 100%; }
+  .hero__photo img { width: 128px; }
 
   .porta__barra { padding-inline: var(--s-3); }
   .porta__centre { padding-inline: var(--s-3); }
   .porta__card { padding: var(--s-4); }
-  .topbar__nav ul { justify-content: center; flex-wrap: wrap; gap: 2px; }
-  .topbar__nav a { padding: 6px 9px; font-size: var(--fs-xs); }
 
   .wrap { padding-inline: var(--s-3); }
 
   .timeline > li { grid-template-columns: minmax(0, 1fr); gap: var(--s-2); }
+
+  /* El panel de arrancar las demos deja de ser dos columnas: el botón pasa a ocupar
+     todo el ancho, que es la acción que manda en ese bloque. */
+  .wake { gap: var(--s-3); padding: var(--s-3); }
+  .wake__cos { flex: 1 1 100%; }
+  .wake__costat { width: 100%; justify-items: stretch; }
+  .wake__pista { max-width: none; }
 
   .contact a { flex-wrap: wrap; row-gap: var(--s-1); }
   .contact__label { min-width: 0; }
@@ -1202,17 +1338,37 @@ button.btn {
   .ico--end { margin-left: auto; }
 }
 
-/* En móvil el nombre y el selector comparten fila. Se aprieta lo justo para que
-   quepan; por debajo de 360 px el selector baja solo y se sigue leyendo entero. */
-@media (max-width: 440px) {
-  .lang { gap: 0; padding: 2px; }
-  .lang__btn { padding: 5px 6px; gap: 5px; font-size: 12px; }
-  .flag { width: 17px; height: 11px; }
-  .sortir { padding: 6px 9px; font-size: 12px; }
+/* Por debajo de 420 px el código de dos letras se come el sitio del nombre de arriba:
+   se queda la bandera sola, con el nombre del idioma todavía en el lector de pantalla y
+   el recuadro del idioma elegido diciendo cuál está puesto. */
+@media (max-width: 420px) {
+  .lang__btn { min-width: 44px; padding: 0 6px; }
+  .lang__curt { display: none; }
+  .sortir { padding: 0 10px; }
 }
 
 @media (max-width: 380px) {
   .cards { grid-template-columns: minmax(0, 1fr); }
+}
+
+/* A 320 px el nombre de la cabecera se quedaba cortado a la mitad. Se retira: justo
+   debajo está la portada, que lo lleva entero y a tamaño grande. */
+@media (max-width: 340px) {
+  .topbar__name { display: none; }
+  .topbar__inner { grid-template-columns: minmax(0, 1fr); grid-template-areas: "eines" "nav"; }
+  .topbar__eines { justify-content: space-between; }
+}
+
+/* Pantalla baja, que es lo que queda cuando sale el teclado del móvil: la tarjeta de
+   acceso se pega arriba y se aprieta, en vez de quedarse centrada y medio tapada. */
+@media (max-height: 600px) {
+  .porta__centre {
+    align-content: start;
+    padding-block: var(--s-4) calc(var(--s-4) + env(safe-area-inset-bottom, 0px));
+  }
+  .porta__barra { padding-top: calc(var(--s-2) + env(safe-area-inset-top, 0px)); }
+  .porta__card { gap: var(--s-2); padding: var(--s-4); }
+  .porta__nom { font-size: var(--fs-lg); }
 }
 
 @media (prefers-reduced-motion: reduce) {

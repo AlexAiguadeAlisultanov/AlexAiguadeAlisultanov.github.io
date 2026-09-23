@@ -951,15 +951,18 @@
       <div class="lang" role="group" aria-label="Idioma" data-i18n-aria-label="lang.aria">
         <button class="lang__btn" type="button" data-lang="es" aria-pressed="true">
           <svg class="flag" aria-hidden="true" focusable="false"><use href="#f-es"/></svg>
-          <span>Castellano</span>
+          <span class="lang__llarg">Castellano</span>
+          <span class="lang__curt" aria-hidden="true">ES</span>
         </button>
         <button class="lang__btn" type="button" data-lang="ca" aria-pressed="false">
           <svg class="flag" aria-hidden="true" focusable="false"><use href="#f-ca"/></svg>
-          <span>Català</span>
+          <span class="lang__llarg">Català</span>
+          <span class="lang__curt" aria-hidden="true">CA</span>
         </button>
         <button class="lang__btn" type="button" data-lang="en" aria-pressed="false">
           <svg class="flag" aria-hidden="true" focusable="false"><use href="#f-gb"/></svg>
-          <span>English</span>
+          <span class="lang__llarg">English</span>
+          <span class="lang__curt" aria-hidden="true">EN</span>
         </button>
       </div>
       <button class="sortir" type="button" id="sortir" data-i18n="sortir">Salir</button>
@@ -2222,6 +2225,27 @@
         }
       });
 
+      // En móvil el menú es una tira que se desplaza a lo ancho, así que la sección en
+      // la que estás puede quedar fuera de la vista. Se arrastra la tira hasta dejarla
+      // en medio; en pantalla ancha no hay nada que desplazar y esto no hace nada.
+      var tira = document.querySelector(".topbar__nav");
+      var suau = !(window.matchMedia &&
+        window.matchMedia("(prefers-reduced-motion: reduce)").matches);
+
+      var acostar = function (link) {
+        if (!tira || !link || tira.scrollWidth <= tira.clientWidth + 1) return;
+        var rt = tira.getBoundingClientRect();
+        var rl = link.getBoundingClientRect();
+        var desti = tira.scrollLeft + (rl.left - rt.left) - (rt.width - rl.width) / 2;
+        desti = Math.max(0, Math.min(desti, tira.scrollWidth - tira.clientWidth));
+        if (Math.abs(desti - tira.scrollLeft) < 8) return;
+        try {
+          tira.scrollTo({ left: desti, behavior: suau ? "smooth" : "auto" });
+        } catch (e) {
+          tira.scrollLeft = desti;
+        }
+      };
+
       var setActive = function (id) {
         links.forEach(function (link) {
           if (byId[id] === link) {
@@ -2230,6 +2254,7 @@
             link.removeAttribute("aria-current");
           }
         });
+        if (byId[id]) acostar(byId[id]);
       };
 
       var header = topbar ? topbar.offsetHeight : 60;
