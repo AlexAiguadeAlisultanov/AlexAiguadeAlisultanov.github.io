@@ -80,6 +80,48 @@ const CONEGUTS: Record<string, Fitxa> = {
       en: "Create, read, update and delete products with an MVC pattern and AJAX requests, so the page never reloads. Works the same on a phone."
     }
   },
+  // Las cuatro herramientas de empresa de septiembre de 2026. Todavia sin demo publicada:
+  // cuando esten en Render, se anade aqui su `demo`.
+  "gestor-ausencias": {
+    titol: { es: "Gestor de ausencias", ca: "Gestor d'absències", en: "Time-off manager" },
+    tipus: "web",
+    tec: ["TypeScript", "React", "Node", "SQLite"],
+    text: {
+      es: "Vacaciones, permisos y bajas de una plantilla. El saldo cuenta solo días laborables, sin fines de semana ni festivos, y el responsable ve cuánta gente de su equipo falta esos días antes de aprobar.",
+      ca: "Vacances, permisos i baixes d'una plantilla. El saldo compta només dies laborables, sense caps de setmana ni festius, i el responsable veu quanta gent del seu equip falta aquells dies abans d'aprovar.",
+      en: "Holidays, leave and sick days for a whole staff. The balance counts working days only, skipping weekends and bank holidays, and managers see who else on the team is off before they approve."
+    }
+  },
+  "reserva-espacios": {
+    titol: { es: "Reserva de espacios", ca: "Reserva d'espais", en: "Desk and room booking" },
+    tipus: "web",
+    tec: ["TypeScript", "React", "Node", "SQLite"],
+    text: {
+      es: "Salas y puestos de una oficina híbrida sobre el plano de cada planta. Reservas que se repiten cada semana, check-in que libera el sitio si nadie aparece y un panel con la ocupación real.",
+      ca: "Sales i llocs d'una oficina híbrida sobre el plànol de cada planta. Reserves que es repeteixen cada setmana, check-in que allibera el lloc si ningú no apareix i un tauler amb l'ocupació real.",
+      en: "Rooms and desks in a hybrid office, booked on the floor plan. Weekly repeating bookings, a check-in that frees the spot when nobody shows up, and a panel with real occupancy."
+    }
+  },
+  "notas-de-gasto": {
+    titol: { es: "Notas de gasto", ca: "Notes de despesa", en: "Expense reports" },
+    tipus: "web",
+    tec: ["TypeScript", "React", "Node", "SQLite"],
+    text: {
+      es: "Gastos de empleados con la foto del ticket, kilometraje y topes por categoría. Pasan por el responsable, finanzas los paga por lotes y los exporta en CSV para contabilidad, con el IVA desglosado.",
+      ca: "Despeses d'empleats amb la foto del tiquet, quilometratge i límits per categoria. Passen pel responsable, finances les paga per lots i les exporta en CSV per a comptabilitat, amb l'IVA desglossat.",
+      en: "Employee expenses with a photo of the receipt, mileage and per-category limits. Managers review them, finance pays them in batches and exports a CSV for the books, with VAT broken down."
+    }
+  },
+  "crm-ventas": {
+    titol: { es: "CRM de ventas", ca: "CRM de vendes", en: "Sales CRM" },
+    tipus: "web",
+    tec: ["TypeScript", "React", "Node", "SQLite"],
+    text: {
+      es: "Clientes, contactos y oportunidades de un equipo comercial. Tablero por etapas con arrastrar y soltar, lo que toca hacer hoy, previsión de ventas ponderada y buscador con Ctrl+K.",
+      ca: "Clients, contactes i oportunitats d'un equip comercial. Tauler per etapes amb arrossegar i deixar anar, el que toca fer avui, previsió de vendes ponderada i cercador amb Ctrl+K.",
+      en: "Customers, contacts and deals for a sales team. A drag-and-drop stage board, what needs doing today, a weighted sales forecast and Ctrl+K search."
+    }
+  },
   "jondasiviz": {
     titol: {
       es: "Planificador de preparación Volkswagen",
