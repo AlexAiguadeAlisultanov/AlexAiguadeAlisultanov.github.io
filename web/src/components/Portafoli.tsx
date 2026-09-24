@@ -188,7 +188,7 @@ function Portada({ compte }: { compte: number }) {
               initial={quiet ? false : { opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5 }}
-              className="text-[14px] font-medium uppercase tracking-[0.18em] text-accent"
+              className="text-[15px] font-medium uppercase tracking-[0.16em] text-accent sm:text-[16px]"
             >
               {t("hero.eyebrow")}
             </motion.p>
@@ -334,7 +334,7 @@ function Cinta() {
   );
 }
 
-/* ---------- Formacion, la seccion clara ---------- */
+/* ---------- Formacion ---------- */
 
 type Estudi = {
   quan: Clau;
@@ -378,26 +378,23 @@ function Formacio() {
   const { t } = useIdioma();
 
   return (
-    <section
-      id="formacio"
-      className="scroll-mt-28 rounded-t-[40px] bg-clar py-20 text-clar-tinta lg:py-28"
-    >
+    <section id="formacio" className="scroll-mt-28 py-20 lg:py-28">
       <div className={AMPLE}>
-        <Titol numero="03" text={t("edu.h")} clar />
-        <p className="mt-6 max-w-[62ch] text-[15px] leading-relaxed text-clar-tinta-2 sm:text-[16px]">
+        <Titol numero="03" text={t("edu.h")} />
+        <p className="mt-6 max-w-[62ch] text-[15px] leading-relaxed text-tinta-2 sm:text-[16px]">
           {t("edu.intro")}
         </p>
 
         <ol className="mt-12 space-y-6">
           {ESTUDIS.map((estudi, i) => (
             <Apilada key={estudi.titol} index={i} total={ESTUDIS.length}>
-                <article className="rounded-[20px] border border-clar-linia bg-clar-2 p-6 shadow-[0_1px_2px_rgba(20,20,22,.05),0_16px_32px_-24px_rgba(20,20,22,.25)] sm:p-8 lg:p-10">
+                <article className="rounded-[20px] border border-linia bg-fons-2/60 p-6 sm:p-8 lg:p-10">
                   <div className="grid gap-6 lg:grid-cols-[minmax(200px,280px)_minmax(0,1fr)] lg:gap-12 2xl:gap-16">
                     <div>
-                      <p className="text-[14px] text-clar-tinta-2">{t(estudi.quan)}</p>
+                      <p className="text-[14px] text-tinta-2">{t(estudi.quan)}</p>
                       {estudi.tag ? (
-                        <p className="mt-3 inline-flex items-center gap-2 rounded-[8px] bg-clar-accent/10 px-2.5 py-1 text-[14px] font-medium text-clar-accent">
-                          <span aria-hidden className="size-1.5 rounded-full bg-clar-accent" />
+                        <p className="mt-3 inline-flex items-center gap-2 rounded-[8px] bg-accent-bg px-2.5 py-1 text-[14px] font-medium text-accent-2">
+                          <span aria-hidden className="size-1.5 rounded-full bg-accent-2" />
                           {t(estudi.tag)}
                         </p>
                       ) : null}
@@ -414,9 +411,9 @@ function Formacio() {
                         <h3 className="text-[19px] font-semibold leading-snug tracking-tight sm:text-[22px]">
                           {t(estudi.titol)}
                         </h3>
-                        <p className="mt-2 text-[14px] text-clar-tinta-2">{estudi.lloc}</p>
+                        <p className="mt-2 text-[14px] text-tinta-2">{estudi.lloc}</p>
                         {estudi.nota ? (
-                          <p className="mt-3 text-[14px] text-clar-tinta-2">{t(estudi.nota)}</p>
+                          <p className="mt-3 text-[14px] text-tinta-2">{t(estudi.nota)}</p>
                         ) : null}
                       </div>
                       {estudi.chips ? (
@@ -424,7 +421,7 @@ function Formacio() {
                           {estudi.chips.map((chip) => (
                             <li
                               key={chip}
-                              className="rounded-[8px] border border-clar-linia bg-clar px-2.5 py-1 text-[14px] text-clar-tinta-2"
+                              className="rounded-[8px] border border-linia bg-fons-3 px-2.5 py-1.5 text-[14px] text-tinta-2"
                             >
                               {CLAUS.has(chip) ? t(chip as Clau) : chip}
                             </li>

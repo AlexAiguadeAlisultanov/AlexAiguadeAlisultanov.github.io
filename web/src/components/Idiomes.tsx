@@ -8,8 +8,9 @@ const BANDERES: Record<Idioma, (props: { className?: string }) => React.ReactEle
   en: BanderaGB
 };
 
-// El nombre largo se lee siempre en voz alta; en pantallas estrechas lo que se ve es el
-// codigo de dos letras, para que los tres botones quepan en una fila.
+// Lo que se ve es siempre el codigo de dos letras, para que los tres botones ocupen poco
+// sitio. El nombre completo queda en el title (aparece al pasar el raton) y en un span
+// solo para lectores de pantalla, con el lang que le corresponde a cada idioma.
 const NOMS: Record<Idioma, { llarg: string; curt: string }> = {
   es: { llarg: "Castellano", curt: "ES" },
   ca: { llarg: "Català", curt: "CA" },
@@ -41,17 +42,17 @@ export function Idiomes({ clar = false }: { clar?: boolean }) {
             key={codi}
             type="button"
             aria-pressed={posat}
+            title={NOMS[codi].llarg}
             onClick={() => canviar(codi)}
             className={`inline-flex min-h-[44px] items-center gap-2 rounded-[8px] px-2.5 text-[14px] font-medium transition-colors duration-200 sm:px-3 ${
               posat ? actiu : repos
             }`}
           >
             <Bandera />
-            <span className="hidden lg:inline">{NOMS[codi].llarg}</span>
-            <span className="lg:hidden" aria-hidden>
-              {NOMS[codi].curt}
+            <span aria-hidden>{NOMS[codi].curt}</span>
+            <span className="sr-only" lang={codi}>
+              {NOMS[codi].llarg}
             </span>
-            <span className="sr-only lg:hidden">{NOMS[codi].llarg}</span>
           </button>
         );
       })}
