@@ -80,12 +80,13 @@ const CONEGUTS: Record<string, Fitxa> = {
       en: "Create, read, update and delete products with an MVC pattern and AJAX requests, so the page never reloads. Works the same on a phone."
     }
   },
-  // Las cuatro herramientas de empresa de septiembre de 2026. Todavia sin demo publicada:
-  // cuando esten en Render, se anade aqui su `demo`.
+  // Las cuatro herramientas de empresa de septiembre de 2026. Las que aun no llevan
+  // `demo` salen como "en camino" hasta que su direccion de Render este comprobada.
   "gestor-ausencias": {
     titol: { es: "Gestor de ausencias", ca: "Gestor d'absències", en: "Time-off manager" },
     tipus: "web",
     tec: ["TypeScript", "React", "Node", "SQLite"],
+    demo: "https://gestor-ausencias.onrender.com",
     text: {
       es: "Vacaciones, permisos y bajas de una plantilla. El saldo cuenta solo días laborables, sin fines de semana ni festivos, y el responsable ve cuánta gente de su equipo falta esos días antes de aprobar.",
       ca: "Vacances, permisos i baixes d'una plantilla. El saldo compta només dies laborables, sense caps de setmana ni festius, i el responsable veu quanta gent del seu equip falta aquells dies abans d'aprovar.",
@@ -106,6 +107,7 @@ const CONEGUTS: Record<string, Fitxa> = {
     titol: { es: "Notas de gasto", ca: "Notes de despesa", en: "Expense reports" },
     tipus: "web",
     tec: ["TypeScript", "React", "Node", "SQLite"],
+    demo: "https://notas-de-gasto.onrender.com",
     text: {
       es: "Gastos de empleados con la foto del ticket, kilometraje y topes por categoría. Pasan por el responsable, finanzas los paga por lotes y los exporta en CSV para contabilidad, con el IVA desglosado.",
       ca: "Despeses d'empleats amb la foto del tiquet, quilometratge i límits per categoria. Passen pel responsable, finances les paga per lots i les exporta en CSV per a comptabilitat, amb l'IVA desglossat.",
