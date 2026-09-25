@@ -80,8 +80,7 @@ const CONEGUTS: Record<string, Fitxa> = {
       en: "Create, read, update and delete products with an MVC pattern and AJAX requests, so the page never reloads. Works the same on a phone."
     }
   },
-  // Las cuatro herramientas de empresa de septiembre de 2026. Las que aun no llevan
-  // `demo` salen como "en camino" hasta que su direccion de Render este comprobada.
+  // Las cuatro herramientas de empresa de septiembre de 2026.
   "gestor-ausencias": {
     titol: { es: "Gestor de ausencias", ca: "Gestor d'absències", en: "Time-off manager" },
     tipus: "web",
@@ -97,6 +96,8 @@ const CONEGUTS: Record<string, Fitxa> = {
     titol: { es: "Reserva de espacios", ca: "Reserva d'espais", en: "Desk and room booking" },
     tipus: "web",
     tec: ["TypeScript", "React", "Node", "SQLite"],
+    // Con sufijo: "reserva-espacios" ya lo tenia otra cuenta en Render.
+    demo: "https://reserva-espacios-qvsd.onrender.com",
     text: {
       es: "Salas y puestos de una oficina híbrida sobre el plano de cada planta. Reservas que se repiten cada semana, check-in que libera el sitio si nadie aparece y un panel con la ocupación real.",
       ca: "Sales i llocs d'una oficina híbrida sobre el plànol de cada planta. Reserves que es repeteixen cada setmana, check-in que allibera el lloc si ningú no apareix i un tauler amb l'ocupació real.",
@@ -118,6 +119,8 @@ const CONEGUTS: Record<string, Fitxa> = {
     titol: { es: "CRM de ventas", ca: "CRM de vendes", en: "Sales CRM" },
     tipus: "web",
     tec: ["TypeScript", "React", "Node", "SQLite"],
+    // Con sufijo por lo mismo que la reserva de espacios.
+    demo: "https://crm-ventas-3kc8.onrender.com",
     text: {
       es: "Clientes, contactos y oportunidades de un equipo comercial. Tablero por etapas con arrastrar y soltar, lo que toca hacer hoy, previsión de ventas ponderada y buscador con Ctrl+K.",
       ca: "Clients, contactes i oportunitats d'un equip comercial. Tauler per etapes amb arrossegar i deixar anar, el que toca fer avui, previsió de vendes ponderada i cercador amb Ctrl+K.",
