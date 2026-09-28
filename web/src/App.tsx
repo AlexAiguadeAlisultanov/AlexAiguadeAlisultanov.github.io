@@ -5,6 +5,8 @@ import type { Rol } from "./lib/acces";
 import { Porta } from "./components/Porta";
 import { Portafoli } from "./components/Portafoli";
 import { Anell, Fons } from "./components/Moviment";
+import { FonsCanvas } from "./components/fons/motor";
+import { crearPlaca } from "./components/fons/placa";
 
 export default function App() {
   const [rol, setRol] = useState<Rol | null>(null);
@@ -20,6 +22,8 @@ export default function App() {
   return (
     <ProveidorIdioma>
       <Fons />
+      {/* Fondo animado (components/fons). Para quitarlo basta con borrar esta linea. */}
+      <FonsCanvas crear={crearPlaca} />
       <Anell />
       {rol ? <Portafoli rol={rol} sortir={sortir} /> : <Porta obrir={obrir} />}
     </ProveidorIdioma>
