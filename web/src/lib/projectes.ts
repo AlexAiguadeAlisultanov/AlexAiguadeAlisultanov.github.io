@@ -140,9 +140,9 @@ const CONEGUTS: Record<string, Fitxa> = {
     tec: ["TypeScript", "React", "Vite", { clau: "chip.equip" }],
     demo: "https://planificador-volkswagen.onrender.com",
     text: {
-      es: "Herramienta que planifica la preparación de un Volkswagen: eliges modelo, presupuesto y objetivos, y devuelve las piezas que caben en ese dinero. Proyecto de equipo de nueve personas, con su catálogo, su motor de cálculo y su aplicación de escritorio.",
-      ca: "Eina que planifica la preparació d'un Volkswagen: tries model, pressupost i objectius, i retorna les peces que caben en aquells diners. Projecte d'equip de nou persones, amb el seu catàleg, el seu motor de càlcul i la seva aplicació d'escriptori.",
-      en: "A tool that plans a Volkswagen build: pick the model, the budget and what you are after, and it returns the parts that fit the money. A nine-person team project, with its own catalogue, calculation engine and desktop app."
+      es: "Dos herramientas para un Volkswagen. El planificador prepara el coche: eliges modelo, presupuesto y objetivos, y devuelve las piezas que caben en ese dinero. Recambios busca por número de bastidor o matrícula las piezas de mantenimiento de ese coche, por categorías y con buscador. Proyecto de equipo de nueve personas, con aplicación de escritorio.",
+      ca: "Dues eines per a un Volkswagen. El planificador prepara el cotxe: tries model, pressupost i objectius, i retorna les peces que caben en aquells diners. Recanvis busca per número de bastidor o matrícula les peces de manteniment d'aquell cotxe, per categories i amb cercador. Projecte d'equip de nou persones, amb aplicació d'escriptori.",
+      en: "Two tools for a Volkswagen. The planner builds the car: pick the model, the budget and what you are after, and it returns the parts that fit the money. Spare parts looks up the maintenance parts for that car by VIN or number plate, by category and with search. A nine-person team project, with a desktop app."
     }
   }
 };
