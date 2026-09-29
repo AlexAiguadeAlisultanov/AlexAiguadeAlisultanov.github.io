@@ -10,6 +10,7 @@ import { Idiomes } from "./Idiomes";
 import { Projectes } from "./Projectes";
 import { Correu, Fletxa, GitHub, Baixa, LinkedIn, Xat } from "./Icones";
 import retrat from "../assets/alex.png";
+import logo from "../assets/logo.png";
 
 const LINKEDIN = "https://www.linkedin.com/in/alex-aiguade-alisultanov-076706230/";
 const GITHUB = "https://github.com/AlexAiguadeAlisultanov";
@@ -68,9 +69,17 @@ function Capcalera({ sortir }: { sortir: () => void }) {
       <div className={`${AMPLE} flex h-14 items-center justify-between gap-4`}>
         <a
           href="#dalt"
-          className="inline-flex min-h-[44px] shrink-0 items-center whitespace-nowrap rounded-[8px] pr-2 text-[15px] font-semibold tracking-tight text-tinta"
+          aria-label="Alex Aiguadé"
+          className="inline-flex min-h-[44px] min-w-[44px] shrink-0 items-center justify-center rounded-[8px] transition-opacity duration-200 hover:opacity-80 motion-reduce:transition-none"
         >
-          Alex Aiguadé
+          <img
+            src={logo}
+            alt=""
+            width={40}
+            height={40}
+            decoding="async"
+            className="h-10 w-10"
+          />
         </a>
 
         <nav aria-label={t("nav.aria")} className="hidden lg:block">
