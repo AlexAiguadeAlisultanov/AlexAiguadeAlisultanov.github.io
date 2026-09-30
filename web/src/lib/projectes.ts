@@ -158,7 +158,8 @@ const SEMPRE = ["MVC-AJAX", "jondasiviz"];
 
 // Proyectos que solo puede abrir quien entra como admin. Al resto se le ensena la
 // tarjeta con el aviso de que esta a medias, sin enlace ni boton de arrancar.
-const NOMES_ADMIN = ["jondasiviz"];
+// Vacia desde el 30 sep 2026: el planificador de Volkswagen ya lo ven los invitados.
+const NOMES_ADMIN: string[] = [];
 
 const fitxes: Record<string, Fitxa> = {};
 for (const nom of Object.keys(CONEGUTS)) fitxes[nom.toLowerCase()] = CONEGUTS[nom];
