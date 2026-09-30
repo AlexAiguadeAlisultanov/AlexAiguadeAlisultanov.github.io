@@ -55,6 +55,9 @@ const es = {
   "feed.updated": "Actualizado {t}",
   "feed.try": "Probar la app",
   "feed.code": "Código",
+  "demo.acces": "Cuenta de prueba, con todo abierto",
+  "demo.correu": "Correo",
+  "demo.clau": "Contraseña",
   "feed.soon": "Demo en camino",
   "feed.onlycode": "Solo código por ahora",
 
@@ -219,6 +222,9 @@ const ca: Partial<Record<Clau, string>> = {
   "feed.updated": "Actualitzat {t}",
   "feed.try": "Provar l'aplicació",
   "feed.code": "Codi",
+  "demo.acces": "Compte de prova, amb tot obert",
+  "demo.correu": "Correu",
+  "demo.clau": "Contrasenya",
   "feed.soon": "Demo en camí",
   "feed.onlycode": "Només codi de moment",
 
@@ -381,6 +387,9 @@ const en: Partial<Record<Clau, string>> = {
   "feed.updated": "Updated {t}",
   "feed.try": "Try the app",
   "feed.code": "Code",
+  "demo.acces": "Test account, everything unlocked",
+  "demo.correu": "Email",
+  "demo.clau": "Password",
   "feed.soon": "Demo on the way",
   "feed.onlycode": "Code only for now",
 
