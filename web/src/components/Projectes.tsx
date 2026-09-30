@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useIdioma } from "../lib/idioma";
 import type { Clau } from "../lib/idioma";
 import { deCasa, demanar, desats, projecte, quanFa } from "../lib/projectes";
-import type { Acces as DadesAcces, EstatFeed, Projecte, Repo, Rol } from "../lib/projectes";
+import type { EstatFeed, Projecte, Repo, Rol } from "../lib/projectes";
 import { esAdormida, useDemos } from "../lib/demos";
 import type { Demos, Fase } from "../lib/demos";
 import { Entrada } from "./Moviment";
@@ -46,27 +46,6 @@ function LiniaEstat({ fase, segons, id }: { fase: Fase; segons: number; id: stri
       <span className="font-medium text-tinta">{nom + compta}</span>
       <span className="text-tinta-3">{t(("estat." + fase + ".why") as Clau)}</span>
     </p>
-  );
-}
-
-// La demo pide cuenta: se ensena una compartida para entrar sin registrarse. Se puede
-// seleccionar con un clic para copiarla.
-function Acces({ acces }: { acces: DadesAcces }) {
-  const { t } = useIdioma();
-  const fila = (nom: string, valor: string) => (
-    <div className="flex flex-wrap items-baseline gap-x-2">
-      <dt className="text-tinta-3">{nom}</dt>
-      <dd className="select-all font-mono text-tinta">{valor}</dd>
-    </div>
-  );
-  return (
-    <div className="mt-5 rounded-[12px] border border-linia bg-fons-3/60 px-4 py-3 text-[14px]">
-      <p className="font-medium text-tinta-2">{t("demo.acces")}</p>
-      <dl className="mt-2 grid gap-1">
-        {fila(t("demo.correu"), acces.correu)}
-        {fila(t("demo.clau"), acces.clau)}
-      </dl>
-    </div>
   );
 }
 
@@ -135,8 +114,6 @@ function Targeta({
             {dorm ? (
               <LiniaEstat fase={fase} segons={demos.segons(dades.demo)} id={idEstat} />
             ) : null}
-
-            {dades.acces ? <Acces acces={dades.acces} /> : null}
 
             <div className="mt-auto flex flex-wrap items-center gap-3 pt-6">
               {dades.demo ? (

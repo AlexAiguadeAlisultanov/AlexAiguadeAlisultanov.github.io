@@ -24,12 +24,8 @@ type Fitxa = {
   privat?: boolean;
   tec: Tec[];
   demo?: string;
-  /** Cuenta compartida para entrar en la demo cuando esta pide sesion. */
-  acces?: Acces;
   text: Multi;
 };
-
-export type Acces = { correu: string; clau: string };
 
 const CONEGUTS: Record<string, Fitxa> = {
   "springboot-thymeleaf-web-master": {
@@ -143,9 +139,6 @@ const CONEGUTS: Record<string, Fitxa> = {
     privat: true,
     tec: ["TypeScript", "React", "Vite", { clau: "chip.equip" }],
     demo: "https://planificador-volkswagen.onrender.com",
-    // La demo pide cuenta. Esta tiene el plan completo y la API no deja cambiarla ni
-    // borrarla (JONDA_CUENTAS_DEMO), asi que se puede ensenar a cualquiera.
-    acces: { correu: "invitado@jondasiviz.es", clau: "probar-la-demo" },
     text: {
       es: "Dos herramientas para un Volkswagen. El planificador prepara el coche: eliges modelo, presupuesto y objetivos, y devuelve las piezas que caben en ese dinero. Recambios busca por número de bastidor o matrícula las piezas de mantenimiento de ese coche, por categorías y con buscador. Proyecto de equipo de nueve personas, con aplicación de escritorio.",
       ca: "Dues eines per a un Volkswagen. El planificador prepara el cotxe: tries model, pressupost i objectius, i retorna les peces que caben en aquells diners. Recanvis busca per número de bastidor o matrícula les peces de manteniment d'aquell cotxe, per categories i amb cercador. Projecte d'equip de nou persones, amb aplicació d'escriptori.",
@@ -189,7 +182,6 @@ export type Projecte = {
   demo: string;
   marca: Clau | "";
   tancat: boolean;
-  acces: Acces | null;
   data: string;
 };
 
@@ -344,9 +336,7 @@ export function projecte(repo: Repo, idioma: Idioma, rol: Rol): Projecte {
   let marca: Clau | "" = "";
   if (!demo && !tancat) marca = tipus ? "feed.soon" : "feed.onlycode";
 
-  const acces = demo && fitxa && fitxa.acces ? fitxa.acces : null;
-
-  return { nom: repo.nom, titol, url, text, tec, demo, marca, tancat, acces, data: repo.data };
+  return { nom: repo.nom, titol, url, text, tec, demo, marca, tancat, data: repo.data };
 }
 
 /** "hace 3 dias", con las palabras del idioma que este puesto. */
