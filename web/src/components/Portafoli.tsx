@@ -12,7 +12,7 @@ import { Correu, Fletxa, GitHub, Baixa, LinkedIn, Xat } from "./Icones";
 import retrat from "../assets/alex.png";
 import logo from "../assets/logo.png";
 
-const LINKEDIN = "https://www.linkedin.com/in/alex-aiguade-alisultanov-076706230/";
+export const LINKEDIN = "https://www.linkedin.com/in/alex-aiguade-alisultanov-076706230/";
 const GITHUB = "https://github.com/AlexAiguadeAlisultanov";
 const CORREU = "alexaiguade@gmail.com";
 const WHATSAPP = "https://wa.me/34684258353";
@@ -565,6 +565,12 @@ function Contacte() {
             <p className="mt-6 max-w-[48ch] text-[15px] leading-relaxed text-tinta-2 sm:text-[16px]">
               {t("contact.intro")}
             </p>
+            <a
+              href="#cv"
+              className={`${BOTO} mt-8 bg-accent text-sobre-accent hover:bg-accent-2`}
+            >
+              {t("contact.cv")}
+            </a>
           </div>
 
           <ul className="w-full max-w-[72ch] divide-y divide-linia lg:justify-self-end">

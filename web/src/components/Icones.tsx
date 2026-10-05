@@ -71,6 +71,33 @@ export function Xat({ className = "" }: Props) {
   );
 }
 
+export function Enrere({ className = "" }: Props) {
+  return (
+    <svg {...base} className={`${mida} ${className}`}>
+      <path d="M19 12H5" />
+      <path d="m12 19-7-7 7-7" />
+    </svg>
+  );
+}
+
+export function Ubicacio({ className = "" }: Props) {
+  return (
+    <svg {...base} className={`${mida} ${className}`}>
+      <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0z" />
+      <circle cx="12" cy="10" r="3" />
+    </svg>
+  );
+}
+
+export function Mon({ className = "" }: Props) {
+  return (
+    <svg {...base} className={`${mida} ${className}`}>
+      <circle cx="12" cy="12" r="10" />
+      <path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
+    </svg>
+  );
+}
+
 export function Escut({ className = "" }: Props) {
   return (
     <svg {...base} className={`${mida} ${className}`}>

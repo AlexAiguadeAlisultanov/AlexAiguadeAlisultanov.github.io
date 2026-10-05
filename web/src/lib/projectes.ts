@@ -164,6 +164,12 @@ const NOMES_ADMIN: string[] = [];
 const fitxes: Record<string, Fitxa> = {};
 for (const nom of Object.keys(CONEGUTS)) fitxes[nom.toLowerCase()] = CONEGUTS[nom];
 
+/** Titulo y demo de un proyecto conocido, para enlazarlo desde otras vistas (el curriculum). */
+export function enllacProjecte(nom: string, idioma: Idioma): { titol: string; demo: string } {
+  const fitxa = fitxes[nom.toLowerCase()];
+  return { titol: fitxa ? fitxa.titol[idioma] : nom, demo: fitxa?.demo ?? "" };
+}
+
 export type Repo = {
   nom: string;
   url: string;
