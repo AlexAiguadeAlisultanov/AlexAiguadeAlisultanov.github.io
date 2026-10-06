@@ -296,7 +296,7 @@ export function Curriculum({ tornar }: { tornar: (id?: string) => void }) {
                 </li>
                 <li className="flex items-center gap-3 text-tinta">
                   <Ubicacio className="shrink-0 text-[20px] text-tinta-3" />
-                  Anglesola (Lleida)
+                  Lleida
                 </li>
               </ul>
             </section>
