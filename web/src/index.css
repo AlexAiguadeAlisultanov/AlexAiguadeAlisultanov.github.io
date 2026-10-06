@@ -217,7 +217,8 @@ img { max-width: 100%; display: block; }
   }
   .cv .num { -webkit-text-stroke-color: #b9c2cc; }
   .cv-entra { animation: none; }
-  .cv li { break-inside: avoid; }
+  .cv .cv-targeta { break-inside: avoid; padding: 14px 16px; }
+  .cv li, .cv article { break-inside: avoid; }
   .cv main { padding-block: 0; }
   .cv a { color: inherit; text-decoration: none; }
 }
