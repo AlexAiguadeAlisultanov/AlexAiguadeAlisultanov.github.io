@@ -1,6 +1,7 @@
 // Vista del curriculum. Vive dentro de la app, detras de la misma puerta de acceso, y se
-// abre con el hash #cv. No hay boton de descarga: es una pagina para leer, y si alguien la
-// imprime, el @media print de index.css la deja en blanco y sin fondo animado.
+// abre con el hash #cv. Es una pagina para leer, con un boton en la cabecera que descarga el PDF
+// (public/cv-alejandro-aiguade.pdf). Si alguien la imprime, el @media print de index.css
+// la deja en blanco y sin fondo animado.
 
 import { useEffect } from "react";
 import type { ReactNode } from "react";
@@ -10,7 +11,7 @@ import type { Clau } from "../lib/idioma";
 import { enllacProjecte } from "../lib/projectes";
 import { Idiomes } from "./Idiomes";
 import { LINKEDIN } from "./Portafoli";
-import { Correu, Enrere, Fletxa, LinkedIn, Mon, Ubicacio } from "./Icones";
+import { Baixa, Correu, Enrere, Fletxa, LinkedIn, Mon, Ubicacio } from "./Icones";
 import retrat from "../assets/alex.png";
 import logo from "../assets/logo.png";
 
@@ -164,6 +165,15 @@ export function Curriculum({ tornar }: { tornar: (id?: string) => void }) {
             <span className="hidden sm:block">
               <img src={logo} alt="" width={32} height={32} className="h-8 w-8" />
             </span>
+            <a
+              href="/cv-alejandro-aiguade.pdf"
+              download="CV Alejandro Aiguadé - Técnico de Informática.pdf"
+              aria-label={tt("cv.download")}
+              className="inline-flex min-h-[44px] min-w-[44px] items-center justify-center gap-2 whitespace-nowrap rounded-[8px] border border-accent/50 px-3 text-[14px] font-medium text-accent transition-colors duration-200 hover:bg-accent-bg"
+            >
+              <Baixa className="text-[18px]" />
+              <span className="hidden sm:inline">{tt("cv.download")}</span>
+            </a>
             <Idiomes />
           </div>
         </div>

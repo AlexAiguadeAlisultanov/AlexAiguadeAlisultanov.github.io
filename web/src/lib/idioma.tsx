@@ -153,6 +153,7 @@ const es = {
   "contact.cv": "Ver currículum",
 
   "cv.back": "Volver al portafolio",
+  "cv.download": "Descargar PDF",
   "cv.skip": "Salta al currículum",
   "cv.eyebrow": "Currículum",
   "cv.role": "Técnico Auxiliar de Informática · Sistemas y Ciberseguridad",
@@ -374,6 +375,7 @@ const ca: Partial<Record<Clau, string>> = {
   "contact.cv": "Veure el currículum",
 
   "cv.back": "Tornar al portafoli",
+  "cv.download": "Descarrega el PDF",
   "cv.skip": "Salta al currículum",
   "cv.eyebrow": "Currículum",
   "cv.role": "Tècnic Auxiliar d'Informàtica · Sistemes i Ciberseguretat",
@@ -593,6 +595,7 @@ const en: Partial<Record<Clau, string>> = {
   "contact.cv": "View CV",
 
   "cv.back": "Back to portfolio",
+  "cv.download": "Download PDF",
   "cv.skip": "Skip to the CV",
   "cv.eyebrow": "Curriculum vitae",
   "cv.role": "IT Support Technician · Systems and Cybersecurity",
