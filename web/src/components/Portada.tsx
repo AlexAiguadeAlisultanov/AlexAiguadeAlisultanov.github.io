@@ -1,8 +1,9 @@
 // La portada (#dalt): lo que alguien busca en los diez primeros segundos, en una sola
 // pantalla. Desde 1280 px son tres columnas: quien soy y como contactar, el retrato (con el
-// chip 3D detras) y cuatro demos que se pueden probar ahi mismo. De 768 a 1279 quedan dos
-// columnas, y en el movil una sola con las demos en una fila deslizable. La rejilla y los
-// tamanos viven en index.css (.portada*), que es donde estan tambien los cortes de ventana.
+// chip 3D detras) y un carrusel con todos los proyectos, que se pueden probar ahi mismo (las
+// cuatro destacadas van primero). De 768 a 1279 quedan dos columnas, y en el movil una sola
+// con las demos en una fila deslizable. La rejilla y los tamanos viven en index.css
+// (.portada*), que es donde estan tambien los cortes de ventana.
 //
 // El retrato es la primera <img> de la seccion y tiene que seguir siendolo: Escena.tsx se
 // coloca buscandola y escala el chip con su ancho. Por eso es un solo elemento que cambia de
@@ -10,19 +11,19 @@
 // que se ve: el chip sale a 2,1 veces el retrato.
 
 import { useEffect, useRef, useState } from "react";
-import type { RefObject } from "react";
+import type { ReactNode, RefObject } from "react";
 import { motion, useMotionValueEvent, useReducedMotion, useScroll, useTransform } from "framer-motion";
 import { useIdioma } from "../lib/idioma";
 import type { Clau } from "../lib/idioma";
 import { CORREU, GITHUB, LINKEDIN, WHATSAPP } from "../lib/contacte";
 import { CV_NOM, CV_PDF } from "../lib/cv";
-import { esAdormida } from "../lib/demos";
 import type { Projecte } from "../lib/projectes";
 import { useEstatDemo, useProjectesCtx } from "../lib/ProveidorProjectes";
 import { BotoDemo, progres } from "./BotoDemo";
+import { Carrusel } from "./Carrusel";
 import { Fons3D } from "./Fons3D";
 import { Baixa, Correu, Dreta, GitHub, LinkedIn, Xat } from "./Icones";
-import { Entrada, Iman } from "./Moviment";
+import { Entrada, Iman, useMovil } from "./Moviment";
 import retrat400 from "../assets/alex-400.webp";
 import retrat800 from "../assets/alex-800.webp";
 
@@ -190,9 +191,10 @@ function Stack() {
   );
 }
 
-/* ---------- Demos destacadas ---------- */
+/* ---------- Las demos: un carrusel con todos los proyectos ---------- */
 
-function TargetaMini({ dades }: { dades: Projecte }) {
+/** La tarjeta pequena del carrusel: captura, titulo, stack y el boton de la demo. */
+function TargetaMini({ dades, prioritaria }: { dades: Projecte; prioritaria: boolean }) {
   const { t } = useIdioma();
   const quiet = useReducedMotion();
   const { fase, segons } = useEstatDemo(dades.demo);
@@ -204,13 +206,40 @@ function TargetaMini({ dades }: { dades: Projecte }) {
     .map((una) => (una === equip ? t("demos.equip") : una))
     .join(" · ");
 
+  // Lo mismo que la tarjeta grande: si el rol no puede abrirla, lo dice; si no tiene demo,
+  // lleva al codigo o cuenta en que punto esta.
+  let pie: ReactNode = null;
+  if (dades.tancat) {
+    pie = (
+      <p className="flex items-baseline gap-2 text-[13px] leading-snug">
+        <span aria-hidden className="size-2 shrink-0 translate-y-[-1px] rounded-full bg-espera" />
+        <span className="font-medium text-tinta">{t("obres.nom")}</span>
+      </p>
+    );
+  } else if (dades.demo) {
+    pie = <BotoDemo url={dades.demo} titol={dades.titol} mida="mini" />;
+  } else if (dades.url) {
+    pie = (
+      <a
+        href={dades.url}
+        target="_blank"
+        rel="noopener"
+        className="inline-flex min-h-10 w-full items-center justify-center gap-2 rounded-[12px] border border-linia px-3 text-[14px] font-semibold text-tinta transition-colors duration-200 hover:border-accent/40 pointer-coarse:min-h-11"
+      >
+        <GitHub />
+        {t("feed.code")}
+      </a>
+    );
+  }
+
   return (
-    <li className="targeta flex flex-col overflow-hidden rounded-[20px] border border-linia bg-fons-2 portada__carta">
+    <article className="targeta flex h-full flex-col overflow-hidden rounded-[20px] border border-linia bg-fons-2">
       <div className="portada__captura captura-marc relative overflow-hidden border-b border-linia bg-fons-3">
         {dades.captura ? (
           <img
             src={dades.captura}
             alt={t("card.shot", { t: dades.titol })}
+            loading={prioritaria ? "eager" : "lazy"}
             decoding="async"
             draggable={false}
             className={`captura ${dades.alta ? "captura--alta" : "captura--plana"}`}
@@ -235,41 +264,38 @@ function TargetaMini({ dades }: { dades: Projecte }) {
         {dades.registre ? (
           <p className="mt-1 text-[12px] leading-snug text-tinta-3">{t("demos.registre")}</p>
         ) : null}
-        <div className="mt-auto pt-2.5">
-          <BotoDemo url={dades.demo} titol={dades.titol} mida="mini" />
-        </div>
+        {!dades.demo && !dades.tancat && dades.marca ? (
+          <p className="mt-1 text-[12px] leading-snug text-tinta-3">{t(dades.marca)}</p>
+        ) : null}
+        {pie ? <div className="mt-auto pt-2.5">{pie}</div> : null}
       </div>
-    </li>
+    </article>
   );
 }
 
-function DemosDestacades() {
+function Demos() {
   const { t } = useIdioma();
-  const { destacats, demos, compte } = useProjectesCtx();
+  const { llista, destacats, demos, compte } = useProjectesCtx();
+  const movil = useMovil();
 
-  // "Despertar las cuatro" solo toca estas cuatro, no las nueve de la lista.
-  const adreces = destacats.map((p) => p.demo).filter((url) => esAdormida(url));
-  const fases = adreces.map((url) => demos.fase(url));
-  const llestes = fases.filter((fase) => fase === "on").length;
-  const arrencant = fases.some((fase) => fase === "waking");
-  const apagat = arrencant || (fases.length > 0 && llestes === fases.length);
+  // Primero las cuatro destacadas, en su orden fijo, y despues el resto de la lista: el
+  // carrusel lleva todos los proyectos.
+  const destacades = new Set(destacats.map((p) => p.nom));
+  const totes = [...destacats, ...llista.filter((p) => !destacades.has(p.nom))];
+
+  // "Despertar todas" toca todas las demos de la lista, no solo las que se ven.
+  const c = demos.comptes;
+  const apagat = c.waking > 0 || (c.total > 0 && c.on === c.total);
 
   const despertarTotes = () => {
     if (apagat) return;
-    let quantes = 0;
-    for (const url of adreces) {
-      const fase = demos.fase(url);
-      if (fase === "off" || fase === "fail") {
-        demos.despertar(url);
-        quantes += 1;
-      }
-    }
+    const quantes = demos.encendre();
     if (quantes) {
       demos.anunciar(quantes === 1 ? t("wake.live.on.one") : t("wake.live.on", { n: quantes }));
     }
   };
 
-  if (!destacats.length) return null;
+  if (!totes.length) return null;
 
   return (
     <>
@@ -286,23 +312,33 @@ function DemosDestacades() {
         </a>
       </div>
 
-      <div className="portada__nota">
-        <p>{t("demos.nota")}</p>
-        <button
-          type="button"
-          aria-disabled={apagat}
-          onClick={despertarTotes}
-          className="mt-2 inline-flex min-h-11 items-center rounded-[8px] border border-accent/50 px-3 text-[14px] font-medium text-accent-2 transition-colors duration-200 hover:border-accent hover:bg-accent-bg aria-[disabled=true]:cursor-default aria-[disabled=true]:opacity-60 aria-[disabled=true]:hover:border-accent/50 aria-[disabled=true]:hover:bg-transparent"
-        >
-          {apagat ? t("proj.compte", { k: llestes, n: fases.length }) : t("demos.quatre")}
-        </button>
-      </div>
+      <p className="portada__nota">{t("demos.nota")}</p>
 
-      <ul aria-labelledby="portada-demos" className="portada__graella">
-        {destacats.map((dades) => (
-          <TargetaMini key={dades.nom} dades={dades} />
-        ))}
-      </ul>
+      <div className="portada__carrusel">
+        {/* El movil lleva la fila quieta con scroll nativo y snap: el dedo la mueve mejor que
+            una cinta que avanza sola, y la portada no se mueve mientras se lee. */}
+        <Carrusel
+          compacte
+          quieta={movil}
+          etiqueta={t("demos.titol")}
+          acciones={
+            c.total > 0 ? (
+              <button
+                type="button"
+                aria-disabled={apagat}
+                onClick={despertarTotes}
+                className="inline-flex min-h-11 items-center rounded-[8px] border border-accent/50 px-3 text-[14px] font-medium text-accent-2 transition-colors duration-200 hover:border-accent hover:bg-accent-bg aria-[disabled=true]:cursor-default aria-[disabled=true]:opacity-60 aria-[disabled=true]:hover:border-accent/50 aria-[disabled=true]:hover:bg-transparent"
+              >
+                {apagat ? t("proj.compte", { k: c.on, n: c.total }) : t("proj.totes")}
+              </button>
+            ) : null
+          }
+        >
+          {totes.map((dades, i) => (
+            <TargetaMini key={dades.nom} dades={dades} prioritaria={i < 3} />
+          ))}
+        </Carrusel>
+      </div>
     </>
   );
 }
@@ -423,7 +459,7 @@ export function Portada() {
         </Entrada>
 
         <Entrada className="portada__demos" retard={0.12} y={8} duracio={0.24}>
-          <DemosDestacades />
+          <Demos />
         </Entrada>
       </div>
 

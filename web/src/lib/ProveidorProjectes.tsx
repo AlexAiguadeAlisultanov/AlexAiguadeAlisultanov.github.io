@@ -22,7 +22,7 @@ export type ContextProjectes = {
   compte: number;
   /** El unico estado de demos de toda la pagina. */
   demos: Demos;
-  /** Las cuatro demos de la portada, en su orden fijo. */
+  /** Las cuatro destacadas, que abren el carrusel de la portada, en su orden fijo. */
   destacats: Projecte[];
 };
 

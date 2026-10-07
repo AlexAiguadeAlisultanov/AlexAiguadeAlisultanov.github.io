@@ -10,8 +10,13 @@
 //
 // Todo lo que se mueve va por transform y se escribe en el DOM desde un unico bucle, sin
 // pasar por el estado de React.
+//
+// Tiene dos formas. La de siempre sangra hasta los bordes de la ventana (proyectos). La
+// compacta (compacte) queda contenida en su columna, con tarjetas pequenas, sin entrada
+// propia y con un hueco a la izquierda de los botones para una accion suya (la portada pone
+// ahi "despertar todas"). En las dos la logica, las medidas y las garantias son las mismas.
 
-import { Children, useCallback, useEffect, useRef, useState } from "react";
+import { Children, useCallback, useEffect, useId, useRef, useState } from "react";
 import type { FocusEvent, KeyboardEvent, PointerEvent as PEvent, ReactNode } from "react";
 import { useReducedMotion } from "framer-motion";
 import { useIdioma } from "../lib/idioma";
@@ -43,9 +48,25 @@ const BOTO =
   "inline-flex size-11 items-center justify-center rounded-[12px] border border-linia bg-fons-2 text-[18px] " +
   "text-tinta-2 transition-colors duration-200 hover:border-accent/40 hover:text-tinta";
 
-export function Carrusel({ children }: { children: ReactNode }) {
+type Props = {
+  children: ReactNode;
+  /** Version contenida en una columna: sin sangrar a los bordes ni entrada propia. */
+  compacte?: boolean;
+  /** Fuerza el respaldo quieto (fila con scroll nativo y snap), igual que movimiento reducido. */
+  quieta?: boolean;
+  /** Nombre del carrusel para lectores de pantalla, si no vale "Carrusel de proyectos". */
+  etiqueta?: string;
+  /** Accion que comparte fila con los botones, a su izquierda. Solo en la version compacta. */
+  acciones?: ReactNode;
+};
+
+export function Carrusel({ children, compacte = false, quieta = false, etiqueta, acciones }: Props) {
   const { t } = useIdioma();
-  const quiet = !!useReducedMotion();
+  const quiet = !!useReducedMotion() || quieta;
+  // Dos carruseles en la misma pagina no pueden compartir id: el de proyectos conserva el de
+  // siempre y el compacto saca el suyo de useId.
+  const idUnic = useId();
+  const id = compacte ? "carrusel-" + idUnic.replace(/:/g, "") : "carrusel-projectes";
   const finestra = useRef<HTMLDivElement>(null);
   const cinta = useRef<HTMLUListElement>(null);
   const [roda, setRoda] = useState(false);
@@ -461,13 +482,12 @@ export function Carrusel({ children }: { children: ReactNode }) {
     motiu("focus", false);
   };
 
-  // La entrada mueve el carrusel entero, ventana incluida. Si moviera solo la cinta dentro
-  // de una ventana que recorta, la parte de abajo de las tarjetas se cortaria al subir.
-  return (
-    <Entrada>
-      <div className="mb-4 flex justify-end">
+  const contingut = (
+    <>
+      <div className={compacte ? "carrusel__barra" : "mb-4 flex justify-end"}>
+        {compacte ? <div className="min-w-0">{acciones}</div> : null}
         <div className="flex shrink-0 gap-2">
-          <button type="button" className={BOTO} aria-label={t("car.prev")} aria-controls="carrusel-projectes" onClick={() => anar(-1)}>
+          <button type="button" className={BOTO} aria-label={t("car.prev")} aria-controls={id} onClick={() => anar(-1)}>
             <Anterior />
           </button>
           {roda ? (
@@ -475,13 +495,13 @@ export function Carrusel({ children }: { children: ReactNode }) {
               type="button"
               className={BOTO}
               aria-label={aturat ? t("car.play") : t("car.pause")}
-              aria-controls="carrusel-projectes"
+              aria-controls={id}
               onClick={() => setAturat((a) => !a)}
             >
               {aturat ? <Reproduir className="text-[16px]" /> : <Pausa />}
             </button>
           ) : null}
-          <button type="button" className={BOTO} aria-label={t("car.next")} aria-controls="carrusel-projectes" onClick={() => anar(1)}>
+          <button type="button" className={BOTO} aria-label={t("car.next")} aria-controls={id} onClick={() => anar(1)}>
             <Seguent />
           </button>
         </div>
@@ -489,11 +509,11 @@ export function Carrusel({ children }: { children: ReactNode }) {
 
       <div
         ref={finestra}
-        id="carrusel-projectes"
+        id={id}
         role="region"
-        aria-label={t("car.aria")}
+        aria-label={etiqueta ?? t("car.aria")}
         tabIndex={0}
-        className={`carrusel ${roda ? "carrusel--roda" : "carrusel--quiet"}`}
+        className={`carrusel ${compacte ? "carrusel--compacte " : ""}${roda ? "carrusel--roda" : "carrusel--quiet"}`}
         onKeyDown={tecla}
         onFocus={entraFocus}
         onBlur={surtFocus}
@@ -519,6 +539,11 @@ export function Carrusel({ children }: { children: ReactNode }) {
           ))}
         </ul>
       </div>
-    </Entrada>
+    </>
   );
+
+  // La entrada mueve el carrusel entero, ventana incluida. Si moviera solo la cinta dentro
+  // de una ventana que recorta, la parte de abajo de las tarjetas se cortaria al subir. La
+  // compacta ya entra con la columna que la lleva.
+  return compacte ? <div>{contingut}</div> : <Entrada>{contingut}</Entrada>;
 }

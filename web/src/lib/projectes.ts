@@ -44,7 +44,7 @@ type Fitxa = {
   /** Captura de la demo y si es mas alta que el marco. */
   captura?: string;
   alta?: boolean;
-  /** Sitio entre las cuatro demos de la portada, que van siempre en este orden. */
+  /** Sitio entre las cuatro destacadas, que abren el carrusel de la portada siempre en este orden. */
   destacat?: 1 | 2 | 3 | 4;
   /** Para probar la demo hay que crear una cuenta. */
   registre?: true;
@@ -468,7 +468,7 @@ export function projecte(repo: Repo, idioma: Idioma, rol: Rol): Projecte {
 }
 
 /**
- * Las cuatro demos de la portada, en su orden fijo. Si alguna falta en la lista (el
+ * Las cuatro destacadas, que abren el carrusel de la portada, en su orden fijo. Si alguna falta en la lista (el
  * repositorio ya no sale, o la demo esta cerrada a este rol), su sitio lo ocupa la primera
  * demo abierta de la lista que no este ya puesta.
  */

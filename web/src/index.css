@@ -271,6 +271,45 @@ img { max-width: 100%; display: block; }
 .carrusel--quiet .carrusel__cinta { padding-inline: var(--marc); }
 .carrusel--quiet .carrusel__peca { scroll-snap-align: start; }
 
+/* ---------- Carrusel compacto (portada) ----------
+   Contenido en su columna: no sangra hasta los bordes de la ventana, y las tarjetas miden lo
+   que la columna dicta (cqw es el ancho de la ventana del carrusel): dos enteras y un trozo
+   de la tercera, que avisa de que hay mas. El hueco se queda en 16 px; con el resaltado de
+   raton (3 % hacia la vecina, que retrocede un 1,5 %) pierde unos 3 px, asi que no se tocan.
+   La barra de botones solo sale con ancho para ello: en el movil se desliza con el dedo. */
+
+.carrusel--compacte {
+  margin-inline: 0;
+  padding-block: 8px;
+  container-type: inline-size;
+}
+
+.carrusel--compacte .carrusel__cinta { gap: 16px; }
+.carrusel--compacte .carrusel__peca { width: calc((100cqw - 16px) / 2.15); }
+
+.carrusel--compacte.carrusel--quiet { scroll-padding-inline: 0; }
+.carrusel--compacte.carrusel--quiet .carrusel__cinta { padding-inline: 0; }
+
+.carrusel__barra { display: none; }
+
+@media (min-width: 768px) {
+  .carrusel__barra {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 8px;
+  }
+}
+
+/* En el movil la fila llega al borde derecho de la ventana (el margen negativo es el de la
+   pagina) y la primera tarjeta arranca alineada con el texto; la segunda asoma. */
+@media (max-width: 767px) {
+  .carrusel--compacte { margin-right: calc(-1 * var(--marc)); }
+  .carrusel--compacte .carrusel__peca { width: calc((100cqw - var(--marc)) * 0.74); }
+  .carrusel--compacte.carrusel--quiet .carrusel__cinta { padding-right: var(--marc); }
+}
+
 /* Con el raton encima, la tarjeta se adelanta y las demas se apartan un poco. Crece hacia
    dentro de la pantalla, no hacia el borde: el origen lo pone el carrusel solo en la
    resaltada, las demas encogen desde el centro. Cuentas del peor caso: la resaltada avanza
@@ -450,9 +489,9 @@ html:has(.menu-fulla[open]) { overflow: hidden; }
 }
 
 /* ---------- Portada ----------
-   Tres columnas desde 1280 px: quien soy, el retrato con el chip 3D detras y las cuatro
-   demos. De 768 a 1279, dos columnas (identidad y demos) con el retrato junto al nombre. Por
-   debajo, una columna con las demos en una fila deslizable (components/Portada.tsx).
+   Tres columnas desde 1280 px: quien soy, el retrato con el chip 3D detras y el carrusel de
+   proyectos. De 768 a 1279, dos columnas (identidad y demos) con el retrato junto al nombre.
+   Por debajo, una columna con las demos en una fila deslizable (components/Portada.tsx).
 
    El retrato es un solo elemento que cambia de sitio con la rejilla, porque Escena.tsx se
    coloca buscando la primera <img> de la seccion y no puede haber dos. En una columna o dos
@@ -575,28 +614,9 @@ html:has(.menu-fulla[open]) { overflow: hidden; }
 .portada__stack,
 .portada__nota { display: none; }
 
-/* Las demos: una fila que se desliza con snap y que llega hasta el borde derecho de la
-   ventana (el margen negativo es el de la pagina). La primera tarjeta arranca alineada con
-   el texto y la segunda asoma. */
-.portada__graella {
-  display: flex;
-  gap: 12px;
-  margin: 16px calc(-1 * var(--marc)) 0 0;
-  padding: 0 var(--marc) 0 0;
-  list-style: none;
-  overflow-x: auto;
-  overscroll-behavior-x: contain;
-  scroll-snap-type: x mandatory;
-  scrollbar-width: none;
-}
-
-.portada__graella::-webkit-scrollbar { display: none; }
-
-.portada__carta {
-  flex: 0 0 74%;
-  scroll-snap-align: start;
-}
-
+/* Las demos son el carrusel compacto de Carrusel.tsx; aqui solo el hueco que lo separa del
+   titular y la proporcion de las capturas. */
+.portada__carrusel { margin-top: 8px; }
 .portada__captura { aspect-ratio: 16 / 10; }
 
 /* Invita a bajar solo cuando hay sitio; se apaga con el scroll (Pista, en Portada.tsx). */
@@ -690,25 +710,15 @@ html:has(.menu-fulla[open]) { overflow: hidden; }
     margin-top: var(--ritme);
   }
 
-  .portada__nota { display: block; }
-
-  .portada__nota p {
+  .portada__nota {
+    display: block;
     margin: 6px 0 0;
     font-size: 13px;
     line-height: 1.45;
     color: var(--color-tinta-3);
   }
 
-  .portada__graella {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 16px;
-    margin: 16px 0 0;
-    padding: 0;
-    overflow: visible;
-  }
-
-  .portada__carta { flex: none; }
+  .portada__carrusel { margin-top: 4px; }
 
   /* Centrada abajo. El enlace mide 44 px de alto para el dedo, pero el texto cae donde
      estaba en la maqueta: a unos 16 px del borde. */
@@ -760,9 +770,9 @@ html:has(.menu-fulla[open]) { overflow: hidden; }
   .portada__h1 { font-size: min(5.6vw, 9.6svh); }
 }
 
-/* Pantallas anchas pero bajas (1366 x 768, 1280 x 720): se aprieta el ritmo vertical, la
-   ficha pierde la segunda linea de cada celda y las capturas pasan a 2:1. Lo que sobra (los
-   chips del stack, la pista) se queda por debajo del pliegue. */
+/* Pantallas anchas pero bajas (1366 x 768, 1280 x 720): se aprieta el ritmo vertical y la
+   ficha pierde la segunda linea de cada celda. Lo que sobra (los chips del stack, la pista)
+   se queda por debajo del pliegue. */
 @media (min-width: 1280px) and (max-height: 820px) {
   .portada { padding-block: 24px 72px; }
   .portada__reixa { --ritme: 16px; }
@@ -775,12 +785,6 @@ html:has(.menu-fulla[open]) { overflow: hidden; }
 
   .fitxa__cel { padding: 10px 14px; }
   .fitxa__n { display: none; }
-  .portada__captura { aspect-ratio: 2 / 1; }
-
-  .portada__graella {
-    gap: 12px;
-    margin-top: 12px;
-  }
 }
 
 /* ---------- Historia (en flujo normal) ----------
