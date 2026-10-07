@@ -8,6 +8,7 @@ import type { ReactNode } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import { useIdioma } from "../lib/idioma";
 import type { Clau } from "../lib/idioma";
+import { CV_NOM, CV_PDF } from "../lib/cv";
 import { enllacProjecte } from "../lib/projectes";
 import { Idiomes } from "./Idiomes";
 import { LINKEDIN } from "./Portafoli";
@@ -166,8 +167,8 @@ export function Curriculum({ tornar }: { tornar: (id?: string) => void }) {
               <img src={logo} alt="" width={32} height={32} className="h-8 w-8" />
             </span>
             <a
-              href="/cv-alejandro-aiguade.pdf"
-              download="CV Alejandro Aiguadé - Técnico de Informática.pdf"
+              href={CV_PDF}
+              download={CV_NOM}
               aria-label={tt("cv.download")}
               className="inline-flex min-h-[44px] min-w-[44px] items-center justify-center gap-2 whitespace-nowrap rounded-[8px] border border-accent/50 px-3 text-[14px] font-medium text-accent transition-colors duration-200 hover:bg-accent-bg"
             >

@@ -7,7 +7,9 @@ import type { Rol } from "../lib/acces";
 import { ProveidorProjectes, useProjectesCtx } from "../lib/ProveidorProjectes";
 import { Apilada, Entrada, Iman, Revelat, Tira } from "./Moviment";
 import { Fons3D } from "./Fons3D";
+import { CV_NOM, CV_PDF } from "../lib/cv";
 import { Idiomes } from "./Idiomes";
+import { MenuMobil } from "./MenuMobil";
 import { Projectes } from "./Projectes";
 import { Correu, Fletxa, GitHub, Baixa, LinkedIn, Xat } from "./Icones";
 import retrat from "../assets/alex.png";
@@ -40,6 +42,21 @@ const BOTO =
 function Capcalera({ sortir }: { sortir: () => void }) {
   const { t } = useIdioma();
   const [activa, setActiva] = useState("");
+  // El boton del CV solo sale cuando la portada, que ya lo lleva grande, deja de verse.
+  const [cvVisible, setCvVisible] = useState(false);
+
+  useEffect(() => {
+    const portada = document.getElementById("dalt");
+    if (!portada || !("IntersectionObserver" in window)) return;
+    // Los 56 px de arriba son la propia cabecera: lo que queda tapado por ella no cuenta
+    // como portada a la vista. (Mismo valor que --barra en index.css.)
+    const vigilant = new IntersectionObserver(
+      ([entrada]) => setCvVisible(!entrada.isIntersecting),
+      { rootMargin: "-56px 0px 0px 0px" }
+    );
+    vigilant.observe(portada);
+    return () => vigilant.disconnect();
+  }, []);
 
   useEffect(() => {
     const nodes = SECCIONS.map((s) => document.getElementById(s.id)).filter(
@@ -66,12 +83,12 @@ function Capcalera({ sortir }: { sortir: () => void }) {
     }`;
 
   return (
-    <header className="sticky top-0 z-50 border-b border-linia/70 bg-fons/80 backdrop-blur-xl">
-      <div className={`${AMPLE} flex h-14 items-center justify-between gap-4`}>
+    <header className="sticky top-0 z-50 h-[var(--barra)] border-b border-linia/70 bg-fons/80 backdrop-blur-xl">
+      <div className={`${AMPLE} flex h-full items-center justify-between gap-4`}>
         <a
           href="#dalt"
           aria-label="Alex Aiguadé"
-          className="inline-flex min-h-[44px] min-w-[44px] shrink-0 items-center justify-center rounded-[8px] transition-opacity duration-200 hover:opacity-80 motion-reduce:transition-none"
+          className="inline-flex size-11 shrink-0 items-center justify-center rounded-[8px] transition-opacity duration-200 hover:opacity-80 motion-reduce:transition-none"
         >
           <img
             src={logo}
@@ -100,37 +117,33 @@ function Capcalera({ sortir }: { sortir: () => void }) {
         </nav>
 
         <div className="flex items-center gap-2">
+          {/* Con la portada fuera de la vista el CV sigue a un toque. Apagado queda inerte:
+              ni foco ni clic, solo el fundido de 200 ms. */}
+          <a
+            href={CV_PDF}
+            download={CV_NOM}
+            inert={!cvVisible}
+            aria-label={t("hero.cv")}
+            className={`hidden min-h-[44px] items-center gap-2 rounded-[8px] border border-accent/50 px-3 text-[14px] font-medium text-accent-2 transition-[opacity,background-color] duration-200 hover:bg-accent-bg sm:inline-flex ${
+              cvVisible ? "opacity-100" : "pointer-events-none opacity-0"
+            }`}
+          >
+            CV
+            <Baixa className="text-[18px]" />
+          </a>
           <Idiomes />
           <button
             type="button"
             onClick={sortir}
-            className="min-h-[44px] rounded-[8px] border border-linia px-3 text-[14px] font-medium text-tinta-2 transition-colors duration-200 hover:border-accent/40 hover:text-tinta"
+            className="hidden min-h-[44px] items-center rounded-[8px] border border-linia px-3 text-[14px] font-medium text-tinta-2 transition-colors duration-200 hover:border-accent/40 hover:text-tinta lg:inline-flex"
           >
             {t("sortir")}
           </button>
+          {/* Por debajo de 1024 px la navegacion y "Salir" van en una hoja, para que la
+              cabecera siga siendo una sola fila. */}
+          <MenuMobil seccions={SECCIONS} activa={activa} sortir={sortir} />
         </div>
       </div>
-
-      {/* En pantallas estrechas la navegacion pasa a una fila propia que se arrastra de
-          lado, para no perderla y no meter un menu desplegable de mas. */}
-      <nav
-        aria-label={t("nav.aria")}
-        className="border-t border-linia/50 lg:hidden"
-      >
-        <ul className="flex items-center gap-1 overflow-x-auto px-4 py-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-          {SECCIONS.map((s) => (
-            <li key={s.id}>
-              <a
-                href={"#" + s.id}
-                className={enllac(s.id)}
-                aria-current={activa === s.id ? "true" : undefined}
-              >
-                {t(s.clau)}
-              </a>
-            </li>
-          ))}
-        </ul>
-      </nav>
     </header>
   );
 }
@@ -292,7 +305,7 @@ function Portada() {
 function Sobre() {
   const { t } = useIdioma();
   return (
-    <section id="sobre-mi" className="scroll-mt-28 py-20 lg:py-28">
+    <section id="sobre-mi" className="py-20 lg:py-28">
       <div className={AMPLE}>
         <Titol numero="01" text={t("about.h")} />
 
@@ -389,7 +402,7 @@ function Formacio() {
   const { t } = useIdioma();
 
   return (
-    <section id="formacio" className="scroll-mt-28 py-20 lg:py-28">
+    <section id="formacio" className="py-20 lg:py-28">
       <div className={AMPLE}>
         <Titol numero="03" text={t("edu.h")} />
         <p className="mt-6 max-w-[62ch] text-[15px] leading-relaxed text-tinta-2 sm:text-[16px]">
@@ -484,7 +497,7 @@ function Habilitats() {
   const { t } = useIdioma();
 
   return (
-    <section id="habilitats" className="scroll-mt-28 py-20 lg:py-28">
+    <section id="habilitats" className="py-20 lg:py-28">
       <div className={AMPLE}>
         <Titol numero="04" text={t("skills.h")} />
         <p className="mt-6 max-w-[62ch] text-[15px] leading-relaxed text-tinta-2 sm:text-[16px]">
@@ -557,7 +570,7 @@ function Contacte() {
   ];
 
   return (
-    <section id="contacte" className="scroll-mt-28 py-20 lg:py-28">
+    <section id="contacte" className="py-20 lg:py-28">
       <div className={AMPLE}>
         <Titol numero="05" text={t("contact.h")} />
 
@@ -626,7 +639,7 @@ function Pagina({ sortir }: { sortir: () => void }) {
         <Sobre />
         <Cinta />
 
-        <section id="projectes" className="scroll-mt-28 py-20 lg:py-28">
+        <section id="projectes" className="py-20 lg:py-28">
           <div className={AMPLE}>
             <Titol numero="02" text={t("proj.h")} />
             <p className="mb-12 mt-6 max-w-[62ch] text-[15px] leading-relaxed text-tinta-2 sm:text-[16px]">

@@ -48,7 +48,9 @@ export function Idiomes({ clar = false }: { clar?: boolean }) {
               posat ? actiu : repos
             }`}
           >
-            <Bandera />
+            {/* Por debajo de 360 px la bandera sobra: el codigo de dos letras basta y la
+                pastilla cabe en la cabecera de una fila. */}
+            <Bandera className="max-[359px]:hidden" />
             <span aria-hidden>{NOMS[codi].curt}</span>
             <span className="sr-only" lang={codi}>
               {NOMS[codi].llarg}
