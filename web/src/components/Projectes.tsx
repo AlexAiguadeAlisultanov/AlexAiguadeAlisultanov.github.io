@@ -1,12 +1,11 @@
-import { useEffect, useMemo, useState } from "react";
 import type { ReactNode } from "react";
 import { useIdioma } from "../lib/idioma";
-import { deCasa, demanar, desats, projecte } from "../lib/projectes";
-import type { EstatFeed, Projecte, Repo, Rol } from "../lib/projectes";
-import { esAdormida, useDemos } from "../lib/demos";
+import type { Projecte } from "../lib/projectes";
+import { useDespertar, useEstatDemo, useProjectesCtx } from "../lib/ProveidorProjectes";
 import type { Demos, Fase } from "../lib/demos";
+import { BotoDemo, CTA } from "./BotoDemo";
 import { Carrusel } from "./Carrusel";
-import { Fletxa, GitHub } from "./Icones";
+import { GitHub } from "./Icones";
 
 const COLOR_FASE: Record<Fase | "obres", string> = {
   off: "bg-tinta-3",
@@ -19,15 +18,6 @@ const COLOR_FASE: Record<Fase | "obres", string> = {
 const BOTO =
   "inline-flex min-h-[44px] items-center justify-center gap-2 rounded-[8px] px-4 text-[14px] " +
   "font-semibold transition-colors duration-200";
-
-// El boton principal de cada tarjeta, en el cian de la web como el resto de acciones.
-const CTA =
-  "inline-flex min-h-[48px] w-full items-center justify-center gap-2 rounded-[12px] px-5 " +
-  "text-[15px] font-semibold transition-[background-color,border-color,transform] duration-200 " +
-  "active:scale-[0.98] aria-[disabled=true]:cursor-default aria-[disabled=true]:opacity-70 " +
-  "aria-[disabled=true]:active:scale-100";
-
-const CTA_PLE = `${CTA} bg-accent text-sobre-accent hover:bg-accent-2 aria-[disabled=true]:hover:bg-accent`;
 
 function Chips({ tec, etiqueta }: { tec: string[]; etiqueta: string }) {
   if (!tec.length) return null;
@@ -60,19 +50,13 @@ function Composicio({ titol }: { titol: string }) {
   );
 }
 
-function Targeta({ dades, demos }: { dades: Projecte; demos: Demos }) {
+function Targeta({ dades }: { dades: Projecte }) {
   const { t } = useIdioma();
-  const dorm = esAdormida(dades.demo);
-  const fase = dorm ? demos.fase(dades.demo) : "on";
-  const enMarxa = !dorm || fase === "on";
-  const segons = demos.segons(dades.demo);
+  const { demos, dorm, fase, enMarxa, segons } = useEstatDemo(dades.demo);
+  const despertarDemo = useDespertar();
   const idEstat = "estat-demo-" + dades.nom.toLowerCase().replace(/[^a-z0-9]+/g, "-");
 
-  const despertar = () => {
-    if (demos.fase(dades.demo) === "waking") return;
-    demos.anunciar(t("wake.live.starting", { t: dades.titol }));
-    demos.despertar(dades.demo);
-  };
+  const despertar = () => despertarDemo(dades.demo, dades.titol);
 
   const imatge = dades.captura ? (
     <img
@@ -157,32 +141,7 @@ function Targeta({ dades, demos }: { dades: Projecte; demos: Demos }) {
             {dades.demo ? (
               // Mientras la demo no conteste, el boton la despierta y cuenta los segundos; cuando
               // contesta, el mismo hueco pasa a ser el enlace que la abre. Nunca los dos a la vez.
-              enMarxa ? (
-                <a
-                  href={dades.demo}
-                  target="_blank"
-                  rel="noopener"
-                  onClick={() => demos.visita(dades.demo)}
-                  className={CTA_PLE}
-                >
-                  {t("card.try")}
-                  <Fletxa />
-                </a>
-              ) : (
-                <button
-                  type="button"
-                  aria-describedby={idEstat}
-                  aria-disabled={fase === "waking"}
-                  onClick={despertar}
-                  className={CTA_PLE}
-                >
-                  {fase === "waking"
-                    ? t("card.waking", { s: segons })
-                    : fase === "fail"
-                      ? t("estat.again")
-                      : t("card.try")}
-                </button>
-              )
+              <BotoDemo url={dades.demo} titol={dades.titol} descrit={idEstat} />
             ) : dades.url ? (
               <a
                 href={dades.url}
@@ -280,78 +239,36 @@ function Panell({ demos }: { demos: Demos }) {
       >
         {etiqueta}
       </button>
-      {/* Los cambios de estado se cuentan aqui para quien no los ve. */}
-      <p role="status" aria-live="polite" className="sr-only">
-        {demos.viu}
-      </p>
     </div>
   );
 }
 
-export function Projectes({ rol, onCompte }: { rol: Rol; onCompte: (n: number) => void }) {
-  const { t, idioma } = useIdioma();
-
-  // Con la copia de la ultima visita la seccion se ve al momento, y la lista de verdad la
-  // sustituye en cuanto llega. Sin copia se pintan los proyectos escritos en el
-  // diccionario, para que las tarjetas salgan ya con su estado y su boton.
-  const [repos, setRepos] = useState<Repo[]>(() => desats() || deCasa());
-  const [avis, setAvis] = useState<EstatFeed>(() => (desats() ? "" : "feed.loading"));
-
-  useEffect(() => {
-    let viu = true;
-    demanar()
-      .then((nets) => {
-        if (!viu) return;
-        setRepos(nets);
-        setAvis("");
-      })
-      .catch(() => {
-        if (!viu) return;
-        // El limite de la API anonima son 60 peticiones por hora y por IP: cuando se
-        // pasa, GitHub contesta 403 y esto cae al respaldo como con cualquier fallo.
-        setAvis(desats() ? "feed.cache" : "feed.offline");
-      });
-    return () => {
-      viu = false;
-    };
-  }, []);
-
-  const projectes = useMemo(
-    () => repos.map((repo) => projecte(repo, idioma, rol)),
-    [repos, idioma, rol]
-  );
-
-  const adreces = useMemo(
-    () => projectes.map((p) => p.demo).filter((url) => esAdormida(url)),
-    [projectes]
-  );
-
-  const demos = useDemos(adreces);
-
-  useEffect(() => {
-    onCompte(projectes.length);
-  }, [projectes.length, onCompte]);
+// La lista, el aviso de donde sale y el estado de las demos vienen de ProveidorProjectes: lo
+// que se despierte en la portada se ve aqui, y la lista se pide una sola vez.
+export function Projectes() {
+  const { t } = useIdioma();
+  const { llista, estat, demos } = useProjectesCtx();
 
   return (
     <>
-      {avis ? (
+      {estat ? (
         <p
           role="status"
           className="mb-8 flex items-center gap-2.5 text-[14px] text-tinta-2"
         >
           <span
             aria-hidden
-            className={`size-2 rounded-full ${avis === "feed.loading" ? "bg-accent" : "bg-espera"}`}
+            className={`size-2 rounded-full ${estat === "feed.loading" ? "bg-accent" : "bg-espera"}`}
           />
-          {t(avis)}
+          {t(estat)}
         </p>
       ) : null}
 
       <Panell demos={demos} />
 
       <Carrusel>
-        {projectes.map((dades) => (
-          <Targeta key={dades.nom} dades={dades} demos={demos} />
+        {llista.map((dades) => (
+          <Targeta key={dades.nom} dades={dades} />
         ))}
       </Carrusel>
     </>

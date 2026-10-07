@@ -368,3 +368,33 @@ img { max-width: 100%; display: block; }
   .captura { transform: none !important; }
   .carrusel__cos { transition: none; }
 }
+
+/* ---------- Punto que late ----------
+   Marca "arrancando" (boton de una demo, nodo de "en curso"): un punto de 8 px con un anillo
+   que crece y se apaga cada 2,4 s. En reposo el anillo es invisible, de modo que con
+   movimiento reducido (la regla de arriba corta la animacion) queda solo el punto. */
+
+.pols {
+  position: relative;
+  display: inline-block;
+  flex: none;
+  width: 8px;
+  height: 8px;
+  border-radius: 9999px;
+  background: var(--color-accent);
+}
+
+.pols::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: var(--color-accent);
+  opacity: 0;
+  animation: pols 2.4s var(--ease-suau) infinite;
+}
+
+@keyframes pols {
+  from { transform: scale(1); opacity: 0.6; }
+  to   { transform: scale(1.6); opacity: 0; }
+}

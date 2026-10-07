@@ -42,6 +42,10 @@ type Fitxa = {
   /** Captura de la demo y si es mas alta que el marco. */
   captura?: string;
   alta?: boolean;
+  /** Sitio entre las cuatro demos de la portada, que van siempre en este orden. */
+  destacat?: 1 | 2 | 3 | 4;
+  /** Para probar la demo hay que crear una cuenta. */
+  registre?: true;
 };
 
 const CONEGUTS: Record<string, Fitxa> = {
@@ -101,7 +105,8 @@ const CONEGUTS: Record<string, Fitxa> = {
       en: "A school's breakdowns, from report to fix."
     },
     captura: capIncidencias,
-    alta: true
+    alta: true,
+    destacat: 1
   },
   "MVC-AJAX": {
     titol: { es: "Gestor de inventario", ca: "Gestor d'inventari", en: "Inventory manager" },
@@ -123,7 +128,8 @@ const CONEGUTS: Record<string, Fitxa> = {
       en: "What gear there is, how much is left and where."
     },
     captura: capInventario,
-    alta: false
+    alta: false,
+    destacat: 2
   },
   // Las cuatro herramientas de empresa de septiembre de 2026.
   "gestor-ausencias": {
@@ -198,7 +204,8 @@ const CONEGUTS: Record<string, Fitxa> = {
       en: "Sales deals on a stage-by-stage board."
     },
     captura: capCrm,
-    alta: true
+    alta: true,
+    destacat: 4
   },
   "jondasiviz": {
     titol: {
@@ -223,7 +230,9 @@ const CONEGUTS: Record<string, Fitxa> = {
       en: "Give it a budget and it tells you which parts fit."
     },
     captura: capVolkswagen,
-    alta: false
+    alta: false,
+    destacat: 3,
+    registre: true
   }
 };
 
@@ -272,6 +281,8 @@ export type Projecte = {
   lema: string;
   captura: string;
   alta: boolean;
+  destacat?: 1 | 2 | 3 | 4;
+  registre: boolean;
 };
 
 export type EstatFeed = "" | "feed.loading" | "feed.cache" | "feed.offline";
@@ -440,8 +451,27 @@ export function projecte(repo: Repo, idioma: Idioma, rol: Rol): Projecte {
     data: repo.data,
     lema,
     captura: fitxa?.captura ?? "",
-    alta: !!fitxa?.alta
+    alta: !!fitxa?.alta,
+    destacat: fitxa?.destacat,
+    registre: !!fitxa?.registre
   };
+}
+
+/**
+ * Las cuatro demos de la portada, en su orden fijo. Si alguna falta en la lista (el
+ * repositorio ya no sale, o la demo esta cerrada a este rol), su sitio lo ocupa la primera
+ * demo abierta de la lista que no este ya puesta.
+ */
+export function destacats(llista: Projecte[]): Projecte[] {
+  const obertes = (p: Projecte) => !!p.demo && !p.tancat;
+  const fixes = ([1, 2, 3, 4] as const).map((lloc) =>
+    llista.find((p) => p.destacat === lloc && obertes(p))
+  );
+  const posats = new Set(fixes.filter((p): p is Projecte => !!p).map((p) => p.nom));
+  const reserva = llista.filter((p) => obertes(p) && !posats.has(p.nom));
+  return fixes
+    .map((p) => p ?? reserva.shift())
+    .filter((p): p is Projecte => !!p);
 }
 
 /** "hace 3 dias", con las palabras del idioma que este puesto. */

@@ -1,13 +1,13 @@
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import type { ReactNode } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import { useIdioma } from "../lib/idioma";
 import type { Clau } from "../lib/idioma";
 import type { Rol } from "../lib/acces";
+import { ProveidorProjectes, useProjectesCtx } from "../lib/ProveidorProjectes";
 import { Apilada, Entrada, Iman, Revelat, Tira } from "./Moviment";
 import { Fons3D } from "./Fons3D";
 import { Idiomes } from "./Idiomes";
-import { deCasa, desats } from "../lib/projectes";
 import { Projectes } from "./Projectes";
 import { Correu, Fletxa, GitHub, Baixa, LinkedIn, Xat } from "./Icones";
 import retrat from "../assets/alex.png";
@@ -179,8 +179,9 @@ function Dada({
   );
 }
 
-function Portada({ compte }: { compte: number }) {
+function Portada() {
   const { t } = useIdioma();
+  const { compte } = useProjectesCtx();
   const quiet = useReducedMotion();
 
   return (
@@ -605,12 +606,9 @@ function Contacte() {
 
 /* ---------- El portafolio entero ---------- */
 
-export function Portafoli({ rol, sortir }: { rol: Rol; sortir: () => void }) {
+function Pagina({ sortir }: { sortir: () => void }) {
   const { t } = useIdioma();
-  // Arranca ya con la cuenta de la lista que se va a pintar, para que la frase de
-  // proyectos no salga un instante con un cero.
-  const [compte, setCompte] = useState(() => (desats() || deCasa()).length);
-  const guardarCompte = useCallback((n: number) => setCompte(n), []);
+  const { compte } = useProjectesCtx();
 
   return (
     <>
@@ -624,7 +622,7 @@ export function Portafoli({ rol, sortir }: { rol: Rol; sortir: () => void }) {
       <Capcalera sortir={sortir} />
 
       <main id="contingut">
-        <Portada compte={compte} />
+        <Portada />
         <Sobre />
         <Cinta />
 
@@ -634,7 +632,7 @@ export function Portafoli({ rol, sortir }: { rol: Rol; sortir: () => void }) {
             <p className="mb-12 mt-6 max-w-[62ch] text-[15px] leading-relaxed text-tinta-2 sm:text-[16px]">
               {t("proj.intro", { n: compte })}
             </p>
-            <Projectes rol={rol} onCompte={guardarCompte} />
+            <Projectes />
           </div>
         </section>
 
@@ -652,5 +650,15 @@ export function Portafoli({ rol, sortir }: { rol: Rol; sortir: () => void }) {
         </div>
       </footer>
     </>
+  );
+}
+
+// Proyectos y demos se piden y se despiertan en un solo sitio, por encima de la portada y
+// del carrusel, para que los dos vean lo mismo.
+export function Portafoli({ rol, sortir }: { rol: Rol; sortir: () => void }) {
+  return (
+    <ProveidorProjectes rol={rol}>
+      <Pagina sortir={sortir} />
+    </ProveidorProjectes>
   );
 }
