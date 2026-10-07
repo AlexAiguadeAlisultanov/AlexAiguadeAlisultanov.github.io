@@ -4,20 +4,24 @@ import type { Clau } from "../lib/idioma";
 import type { Rol } from "../lib/acces";
 import { ProveidorProjectes, useProjectesCtx } from "../lib/ProveidorProjectes";
 import { CORREU, GITHUB, LINKEDIN, WHATSAPP } from "../lib/contacte";
-import { Apilada, Entrada, Revelat, Tira } from "./Moviment";
+import { Entrada } from "./Moviment";
 import { CV_NOM, CV_PDF } from "../lib/cv";
+import { Historia } from "./Historia";
 import { Idiomes } from "./Idiomes";
 import { MenuMobil } from "./MenuMobil";
-import { Portada } from "./Portada";
+import { CopiarCorreu, Portada } from "./Portada";
 import { Projectes } from "./Projectes";
+import { Titol } from "./Titol";
+import { Trajectoria } from "./Trajectoria";
 import { Correu, Fletxa, GitHub, Baixa, LinkedIn, Xat } from "./Icones";
 import logo from "../assets/logo.png";
 
+// Las anclas de la cabecera y de la hoja del menu. Van en este orden aunque en la pagina la
+// historia venga antes que los proyectos: lo que se busca primero son las demos.
 const SECCIONS: { id: string; clau: Clau }[] = [
-  { id: "sobre-mi", clau: "nav.about" },
   { id: "projectes", clau: "nav.projects" },
-  { id: "formacio", clau: "nav.edu" },
-  { id: "habilitats", clau: "nav.skills" },
+  { id: "historia", clau: "nav.story" },
+  { id: "trayectoria", clau: "nav.background" },
   { id: "contacte", clau: "nav.contact" }
 ];
 
@@ -141,285 +145,11 @@ function Capcalera({ sortir }: { sortir: () => void }) {
   );
 }
 
-/* ---------- Encabezado de seccion ---------- */
-
-function Titol({
-  numero,
-  text,
-  clar = false
-}: {
-  numero: string;
-  text: string;
-  clar?: boolean;
-}) {
-  return (
-    <div className="flex flex-wrap items-baseline gap-x-6 gap-y-2">
-      <span aria-hidden className={`num ${clar ? "num--clar" : ""}`}>
-        {numero}
-      </span>
-      <h2 className={`titular titular--l ${clar ? "titular--clar" : ""}`}>{text}</h2>
-    </div>
-  );
-}
-
-/* ---------- Sobre mi ---------- */
-
-function Sobre() {
-  const { t } = useIdioma();
-  return (
-    <section id="sobre-mi" className="py-20 lg:py-28">
-      <div className={AMPLE}>
-        <Titol numero="01" text={t("about.h")} />
-
-        <div className="mt-12 grid gap-12 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.35fr)] lg:gap-20 2xl:grid-cols-[minmax(0,1fr)_minmax(0,1.9fr)] 2xl:gap-28">
-          <Revelat
-            text={t("about.claim")}
-            com="lletra"
-            etiqueta="p"
-            className="max-w-[18ch] text-[clamp(1.5rem,3.2vw,4rem)] font-semibold leading-[1.12] tracking-tight text-tinta"
-          />
-          {/* Los tres parrafos no se ensanchan: a partir de 1536 se parten en dos columnas
-              y cada una se queda en su medida de lectura. */}
-          <div className="grid gap-6 gap-x-16 2xl:grid-cols-2 2xl:items-start">
-            <div className="grid max-w-[62ch] gap-6 2xl:max-w-[68ch]">
-              {(["about.p1", "about.p2"] as Clau[]).map((clau) => (
-                <Revelat
-                  key={clau}
-                  text={t(clau)}
-                  com="paraula"
-                  className="text-[15px] leading-relaxed text-tinta-2 sm:text-[16px]"
-                />
-              ))}
-            </div>
-            <div className="grid max-w-[62ch] gap-6 2xl:max-w-[68ch]">
-              <Revelat
-                text={t("about.p3")}
-                com="paraula"
-                className="text-[15px] leading-relaxed text-tinta-2 sm:text-[16px]"
-              />
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-  );
-}
-
-/* ---------- Tira de palabras ---------- */
-
-const FILA_A = ["Kali Linux", "Nmap", "Burp Suite", "Wireshark", "Metasploit", "OSINT", "SQLMap"];
-const FILA_B = ["Blue Team", "SOC", "SIEM", "OWASP", "NIS2", "ENS", "Python", "Java"];
-
-function Cinta() {
-  return (
-    <div className="border-y border-linia/60 py-8">
-      <Tira paraules={FILA_A} sentit={1} />
-      <div className="h-3" />
-      <Tira paraules={FILA_B} sentit={-1} />
-    </div>
-  );
-}
-
-/* ---------- Formacion ---------- */
-
-type Estudi = {
-  quan: Clau;
-  titol: Clau;
-  lloc: string;
-  tag?: Clau;
-  nota?: Clau;
-  chips?: (Clau | string)[];
-};
-
-const ESTUDIS: Estudi[] = [
-  {
-    quan: "edu.ev.when",
-    titol: "edu.ev.title",
-    lloc: "Evolve",
-    tag: "edu.ev.tag",
-    chips: [
-      "edu.ev.c1", "edu.ev.c2", "edu.ev.c3", "edu.ev.c4", "edu.ev.c5", "Metasploit",
-      "edu.ev.c7", "edu.ev.c8", "edu.ev.c9", "sk.iacyber", "edu.ev.c11"
-    ]
-  },
-  {
-    quan: "edu.ls.when",
-    titol: "edu.ls.title",
-    lloc: "La Salle Mollerussa",
-    nota: "edu.ls.note"
-  },
-  {
-    quan: "edu.gm.when",
-    titol: "edu.gm.title",
-    lloc: "Ins Alfons Costafreda"
-  }
-];
-
-const CLAUS = new Set<string>([
-  "edu.ev.c1", "edu.ev.c2", "edu.ev.c3", "edu.ev.c4", "edu.ev.c5",
-  "edu.ev.c7", "edu.ev.c8", "edu.ev.c9", "edu.ev.c11", "sk.iacyber"
-]);
-
-function Formacio() {
-  const { t } = useIdioma();
-
-  return (
-    <section id="formacio" className="py-20 lg:py-28">
-      <div className={AMPLE}>
-        <Titol numero="03" text={t("edu.h")} />
-        <p className="mt-6 max-w-[62ch] text-[15px] leading-relaxed text-tinta-2 sm:text-[16px]">
-          {t("edu.intro")}
-        </p>
-
-        <ol className="mt-12 space-y-6">
-          {ESTUDIS.map((estudi, i) => (
-            <Apilada key={estudi.titol} index={i} total={ESTUDIS.length}>
-                <article className="rounded-[20px] border border-linia bg-fons-2/60 p-6 sm:p-8 lg:p-10">
-                  <div className="grid gap-6 lg:grid-cols-[minmax(200px,280px)_minmax(0,1fr)] lg:gap-12 2xl:gap-16">
-                    <div>
-                      <p className="text-[14px] text-tinta-2">{t(estudi.quan)}</p>
-                      {estudi.tag ? (
-                        <p className="mt-3 inline-flex items-center gap-2 rounded-[8px] bg-accent-bg px-2.5 py-1 text-[14px] font-medium text-accent-2">
-                          <span aria-hidden className="size-1.5 rounded-full bg-accent-2" />
-                          {t(estudi.tag)}
-                        </p>
-                      ) : null}
-                    </div>
-
-                    <div
-                      className={
-                        estudi.chips
-                          ? "grid gap-6 2xl:grid-cols-[minmax(0,48ch)_minmax(0,1fr)] 2xl:gap-16"
-                          : ""
-                      }
-                    >
-                      <div className="max-w-[62ch]">
-                        <h3 className="text-[19px] font-semibold leading-snug tracking-tight sm:text-[22px]">
-                          {t(estudi.titol)}
-                        </h3>
-                        <p className="mt-2 text-[14px] text-tinta-2">{estudi.lloc}</p>
-                        {estudi.nota ? (
-                          <p className="mt-3 text-[14px] text-tinta-2">{t(estudi.nota)}</p>
-                        ) : null}
-                      </div>
-                      {estudi.chips ? (
-                        <ul aria-label={t("edu.aria")} className="flex flex-wrap content-start gap-2">
-                          {estudi.chips.map((chip) => (
-                            <li
-                              key={chip}
-                              className="rounded-[8px] border border-linia bg-fons-3 px-2.5 py-1.5 text-[14px] text-tinta-2"
-                            >
-                              {CLAUS.has(chip) ? t(chip as Clau) : chip}
-                            </li>
-                          ))}
-                        </ul>
-                      ) : null}
-                    </div>
-                  </div>
-                </article>
-            </Apilada>
-          ))}
-        </ol>
-      </div>
-    </section>
-  );
-}
-
-/* ---------- Aptitudes ---------- */
-
-const GRUPS: { titol: Clau; chips: (Clau | string)[] }[] = [
-  {
-    titol: "skills.g1",
-    chips: [
-      "Kali Linux", "Nmap", "Burp Suite", "SQLMap", "Metasploit", "Wireshark", "OSINT",
-      "sk.explo", "sk.esc", "sk.lat", "sk.post", "Payloads", "sk.wifi", "sk.e2e", "sk.info"
-    ]
-  },
-  { titol: "skills.g2", chips: ["Blue Team", "Purple Team", "SOC", "sk.inc", "SIEM", "sk.cve"] },
-  { titol: "skills.g3", chips: ["OWASP", "PTES", "ENS", "NIS2", "sk.rgpd"] },
-  { titol: "skills.g4", chips: ["Python", "Java", "MariaDB", "TCP/IP"] },
-  { titol: "skills.g5", chips: ["sk.ag", "sk.ml", "sk.llm", "sk.iacyber"] }
-];
-
-const CLAUS_SK = new Set<string>([
-  "sk.explo", "sk.esc", "sk.lat", "sk.post", "sk.wifi", "sk.e2e", "sk.info",
-  "sk.inc", "sk.cve", "sk.rgpd", "sk.ag", "sk.ml", "sk.llm", "sk.iacyber"
-]);
-
-// Ruso primero, que es la lengua de casa. Despues los dos que estan certificados al mismo
-// nivel, y el ingles al final. Los codigos del marco europeo van igual en los tres idiomas.
-const IDIOMES: [Clau, Clau][] = [
-  ["lg.ru", "lg.ru.n"],
-  ["lg.es", "lg.es.n"],
-  ["lg.ca", "lg.ca.n"],
-  ["lg.en", "lg.en.n"]
-];
-
-function Habilitats() {
-  const { t } = useIdioma();
-
-  return (
-    <section id="habilitats" className="py-20 lg:py-28">
-      <div className={AMPLE}>
-        <Titol numero="04" text={t("skills.h")} />
-        <p className="mt-6 max-w-[62ch] text-[15px] leading-relaxed text-tinta-2 sm:text-[16px]">
-          {t("skills.intro")}
-        </p>
-
-        <div className="mt-12 grid gap-6 md:grid-cols-2 xl:grid-cols-3 3xl:grid-cols-4">
-          {GRUPS.map((grup, i) => (
-            <Entrada key={grup.titol} retard={Math.min(i, 4) * 0.06} className="h-full">
-              <div className="h-full rounded-[20px] border border-linia bg-fons-2/60 p-6 sm:p-8">
-                <h3 className="text-[15px] font-semibold uppercase tracking-[0.14em] text-accent">
-                  {t(grup.titol)}
-                </h3>
-                <ul className="mt-5 flex flex-wrap gap-2">
-                  {grup.chips.map((chip) => (
-                    <li
-                      key={chip}
-                      className="rounded-[8px] border border-linia bg-fons-3 px-2.5 py-1.5 text-[14px] text-tinta-2"
-                    >
-                      {CLAUS_SK.has(chip) ? t(chip as Clau) : chip}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </Entrada>
-          ))}
-
-          <Entrada retard={0.3} className="h-full">
-            <div className="h-full rounded-[20px] border border-linia bg-fons-2/60 p-6 sm:p-8">
-              <h3 className="text-[15px] font-semibold uppercase tracking-[0.14em] text-accent">
-                {t("skills.g6")}
-              </h3>
-              <p className="mt-5 max-w-[56ch] text-[14px] leading-relaxed text-tinta-2">
-                {t("skills.soft")}
-              </p>
-            </div>
-          </Entrada>
-
-          <Entrada retard={0.36} className="h-full">
-            <div className="h-full rounded-[20px] border border-linia bg-fons-2/60 p-6 sm:p-8">
-              <h3 className="text-[15px] font-semibold uppercase tracking-[0.14em] text-accent">
-                {t("skills.g7")}
-              </h3>
-              <ul className="mt-5 divide-y divide-linia-suau">
-                {IDIOMES.map(([nom, nivell]) => (
-                  <li key={nom} className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1 py-3">
-                    <span className="text-[15px] text-tinta">{t(nom)}</span>
-                    <span className="text-[14px] text-tinta-3">{t(nivell)}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </Entrada>
-        </div>
-      </div>
-    </section>
-  );
-}
-
 /* ---------- Contacto ---------- */
+
+const PRIMARI = `${BOTO} min-h-12 w-full bg-accent text-sobre-accent hover:bg-accent-2 sm:w-auto`;
+const SECUNDARI =
+  `${BOTO} min-h-12 w-full border border-linia text-tinta-2 hover:border-accent/40 hover:text-tinta sm:w-auto`;
 
 function Contacte() {
   const { t } = useIdioma();
@@ -432,45 +162,56 @@ function Contacte() {
   ];
 
   return (
-    <section id="contacte" className="py-20 lg:py-28">
+    <section id="contacte" className="py-14 sm:py-20 lg:py-28">
       <div className={AMPLE}>
-        <Titol numero="05" text={t("contact.h")} />
+        <Titol numero="06" text={t("contact.h")} />
 
-        <div className="mt-12 grid gap-12 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)] lg:gap-20 2xl:gap-28">
+        <div className="mt-10 grid gap-10 sm:mt-12 sm:gap-12 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)] lg:gap-20 2xl:gap-28">
           <div>
             <p className="titular titular--xl">{t("contact.claim")}</p>
             <p className="mt-6 max-w-[48ch] text-[15px] leading-relaxed text-tinta-2 sm:text-[16px]">
-              {t("contact.intro")}
+              {t("cont.frase")}
             </p>
-            <a
-              href="#cv"
-              className={`${BOTO} mt-8 bg-accent text-sobre-accent hover:bg-accent-2`}
-            >
-              {t("contact.cv")}
-            </a>
+            <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+              <a href="#cv" className={PRIMARI}>
+                {t("contact.cv")}
+              </a>
+              <a href={CV_PDF} download={CV_NOM} className={SECUNDARI}>
+                {t("cont.pdf")}
+                <Baixa className="text-[18px]" />
+              </a>
+            </div>
           </div>
 
           <ul className="w-full max-w-[72ch] divide-y divide-linia lg:justify-self-end">
             {vies.map(({ href, Icona, etiqueta, valor }, i) => (
-              <Entrada key={etiqueta} retard={Math.min(i, 4) * 0.06}>
-                <li>
+              <li key={etiqueta}>
+                <Entrada retard={i * 0.06} y={8} duracio={0.24} className="flex items-center gap-2">
                   <a
                     href={href}
                     target={href.startsWith("mailto:") ? undefined : "_blank"}
                     rel="noopener"
-                    className="group flex min-h-[72px] items-center gap-4 py-5 transition-colors duration-200 hover:text-accent-2 sm:gap-6"
+                    className="group flex min-h-[72px] flex-1 items-center gap-4 py-5 transition-colors duration-200 hover:text-accent-2 sm:gap-6"
                   >
                     <Icona className="shrink-0 text-[22px] text-tinta-3 transition-colors duration-200 group-hover:text-accent" />
-                    <span className="w-[88px] shrink-0 text-[14px] uppercase tracking-[0.12em] text-tinta-3 sm:w-[120px]">
+                    <span className="sr-only shrink-0 text-[14px] uppercase tracking-[0.12em] text-tinta-3 sm:not-sr-only sm:w-[120px]">
                       {etiqueta}
                     </span>
                     <span className="min-w-0 flex-1 truncate text-[15px] text-tinta transition-colors duration-200 group-hover:text-accent-2 sm:text-[17px]">
                       {valor}
                     </span>
-                    <Fletxa className="shrink-0 text-[20px] text-tinta-3 transition-colors duration-200 group-hover:text-accent" />
+                    <Fletxa
+                      className={`shrink-0 text-[20px] text-tinta-3 transition-colors duration-200 group-hover:text-accent ${
+                        href.startsWith("mailto:") ? "max-sm:hidden" : ""
+                      }`}
+                    />
                   </a>
-                </li>
-              </Entrada>
+                  {/* El correo se puede copiar sin salir de la pagina. */}
+                  {href.startsWith("mailto:") ? (
+                    <CopiarCorreu className="inline-flex min-h-11 min-w-[5.5rem] shrink-0 items-center justify-center rounded-[8px] border border-linia px-3 text-[14px] font-medium text-accent-2 transition-colors duration-200 hover:border-accent/40 hover:bg-accent-bg" />
+                  ) : null}
+                </Entrada>
+              </li>
             ))}
           </ul>
         </div>
@@ -498,12 +239,11 @@ function Pagina({ sortir }: { sortir: () => void }) {
 
       <main id="contingut">
         <Portada />
-        <Sobre />
-        <Cinta />
+        <Historia />
 
-        <section id="projectes" className="py-20 lg:py-28">
+        <section id="projectes" className="py-14 sm:py-20 lg:py-28">
           <div className={AMPLE}>
-            <Titol numero="02" text={t("proj.h")} />
+            <Titol numero="04" text={t("proj.h")} />
             <p className="mb-12 mt-6 max-w-[62ch] text-[15px] leading-relaxed text-tinta-2 sm:text-[16px]">
               {t("proj.intro", { n: compte })}
             </p>
@@ -511,14 +251,13 @@ function Pagina({ sortir }: { sortir: () => void }) {
           </div>
         </section>
 
-        <Formacio />
-        <Habilitats />
+        <Trajectoria />
         <Contacte />
       </main>
 
       <footer className="border-t border-linia py-10">
         <div className={`${AMPLE} flex flex-wrap items-center justify-between gap-x-6 gap-y-2 text-[14px] text-tinta-3`}>
-          <p>Alex Aiguadé Alisultánov</p>
+          <p>Alejandro (Alex) Aiguadé Alisultánov · Lleida</p>
           <p>
             {t("foot.made")} · {new Date().getFullYear()}
           </p>

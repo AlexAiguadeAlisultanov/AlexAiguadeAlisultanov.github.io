@@ -335,7 +335,7 @@ function Pista({ seccio }: { seccio: RefObject<HTMLElement | null> }) {
 
   return (
     <motion.a
-      href="#sobre-mi"
+      href="#historia"
       inert={!activa}
       style={quiet ? undefined : { opacity: opacitat }}
       className="portada__pista"

@@ -11,6 +11,7 @@ import type { Clau } from "../lib/idioma";
 import { CORREU, LINKEDIN } from "../lib/contacte";
 import { CV_NOM, CV_PDF } from "../lib/cv";
 import { enllacProjecte } from "../lib/projectes";
+import { Fila } from "./Fila";
 import { Idiomes } from "./Idiomes";
 import { Baixa, Correu, Enrere, Fletxa, LinkedIn, Mon, Ubicacio } from "./Icones";
 import retrat400 from "../assets/alex-400.webp";
@@ -56,48 +57,6 @@ function Seccio({
       </div>
       <div className="mt-8">{children}</div>
     </section>
-  );
-}
-
-function Fila({
-  quan,
-  titol,
-  lloc,
-  etiqueta,
-  punts
-}: {
-  quan: string;
-  titol: string;
-  lloc?: ReactNode;
-  etiqueta?: string;
-  punts?: string[];
-}) {
-  return (
-    <li className="grid gap-x-8 gap-y-2 py-6 first:pt-0 last:pb-0 sm:grid-cols-[minmax(110px,150px)_minmax(0,1fr)]">
-      <p className="text-[14px] tabular-nums text-tinta-3">{quan}</p>
-      <div className="max-w-[68ch]">
-        <h3 className="text-[17px] font-semibold leading-snug tracking-tight text-tinta sm:text-[19px]">
-          {titol}
-          {etiqueta ? (
-            <span className="ml-3 inline-flex items-center gap-2 rounded-[8px] bg-accent-bg px-2.5 py-0.5 align-middle text-[13px] font-medium text-accent-2 cv-etiqueta">
-              <span aria-hidden className="size-1.5 rounded-full bg-accent-2" />
-              {etiqueta}
-            </span>
-          ) : null}
-        </h3>
-        {lloc ? <p className="mt-1 text-[15px] text-accent-2 cv-lloc">{lloc}</p> : null}
-        {punts && punts.length ? (
-          <ul className="mt-3 grid gap-1.5 text-[15px] leading-relaxed text-tinta-2">
-            {punts.map((punt) => (
-              <li key={punt} className="relative pl-4">
-                <span aria-hidden className="absolute left-0 top-[0.7em] size-1 rounded-full bg-accent" />
-                {punt}
-              </li>
-            ))}
-          </ul>
-        ) : null}
-      </div>
-    </li>
   );
 }
 

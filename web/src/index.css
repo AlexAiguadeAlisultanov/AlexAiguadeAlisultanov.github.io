@@ -151,16 +151,6 @@ img { max-width: 100%; display: block; }
 
 .num--clar { -webkit-text-stroke-color: #CFCEC9; }
 
-/* ---------- Tira de palabras ---------- */
-
-.tira {
-  display: flex;
-  width: max-content;
-  gap: 0;
-  white-space: nowrap;
-  will-change: transform;
-}
-
 /* ---------- Movimiento reducido ----------
    Todo lo que se mueve se queda quieto, no lento. Lo que depende de framer-motion se
    apaga desde JavaScript; esto cubre lo que es CSS puro. */
@@ -173,7 +163,6 @@ img { max-width: 100%; display: block; }
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
   }
-  .tira { transform: none !important; }
 }
 
 /* ---------- Curriculum ---------- */
@@ -792,4 +781,133 @@ html:has(.menu-fulla[open]) { overflow: hidden; }
     gap: 12px;
     margin-top: 12px;
   }
+}
+
+/* ---------- Historia (en flujo normal) ----------
+   Movil, tableta, movimiento reducido y sin WebGL. Cada capitulo es un bloque con su capa del
+   chip dibujada encima de la tarjeta (XipCapes). Desde 1024 px la tarjeta va a la izquierda y
+   la capa, mas grande, a la derecha: lo mismo que la pelicula enseña con el chip en 3D. */
+
+.historia { position: relative; }
+
+.historia__cap { padding-block: 40px 0; }
+
+/* Con el interlineado de .titular la tilde de la I de APRENDI tocaria la linea de arriba. */
+.historia__titol {
+  max-width: 16ch;
+  line-height: 1.04;
+}
+
+.historia__bloc { padding-block: 16px; }
+
+.historia__ent {
+  display: grid;
+  gap: 16px;
+}
+
+/* Fondo casi solido: el texto se lee igual de bien con la placa base detras. */
+.historia__tarjeta {
+  max-width: 30rem;
+  padding: 20px;
+  border: 1px solid var(--color-linia);
+  border-radius: 20px;
+  background: color-mix(in srgb, var(--color-fons-2) 92%, transparent);
+}
+
+.historia__nom {
+  margin-top: 12px;
+  font-size: clamp(1.75rem, 3.2vw, 3rem);
+}
+
+.historia__fi { max-width: 44rem; }
+
+@media (min-width: 640px) {
+  .historia__tarjeta { padding: 32px; }
+}
+
+@media (min-width: 768px) {
+  .historia__cap { padding-block: 64px 0; }
+  .historia__bloc { padding-block: 48px; }
+}
+
+@media (min-width: 1024px) {
+  .historia__ent {
+    grid-template-columns: minmax(0, 30rem) minmax(0, 1fr);
+    align-items: center;
+    gap: 40px 64px;
+  }
+
+  /* El cierre tiene mas texto que una tarjeta: su columna es mas ancha. */
+  .historia__ent--fi { grid-template-columns: minmax(0, 44rem) minmax(0, 1fr); }
+
+  .historia__tarjeta { grid-column: 1; grid-row: 1; }
+  .historia__fi { grid-column: 1; grid-row: 1; }
+
+  .historia__xip {
+    grid-column: 2;
+    grid-row: 1;
+    justify-self: center;
+    width: clamp(160px, 16vw, 240px);
+    height: auto;
+  }
+}
+
+/* ---------- Trayectoria ----------
+   Dos columnas con un filete vertical a la izquierda. El filete cian crece con el scroll
+   (Trajectoria.tsx) y cada nodo se enciende cuando su fila cruza la franja central (Fila.tsx).
+   El nodo de "en curso" late solo mientras esta en pantalla. */
+
+.tray__col {
+  position: relative;
+  margin-top: 24px;
+  padding-left: 32px;
+}
+
+.tray__pista,
+.tray__filete {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 1px;
+}
+
+.tray__pista { background: var(--color-linia); }
+
+.tray__filete {
+  background: var(--color-accent);
+  transform-origin: top;
+}
+
+/* Un punto de 10 px con borde de 1,5 px, centrado en el filete (a 32 px de la fila). */
+.tray__node {
+  position: absolute;
+  top: 7px;
+  left: -36.5px;
+  width: 10px;
+  height: 10px;
+  border: 1.5px solid #3C3C44;
+  border-radius: 9999px;
+  background: var(--color-fons);
+  transition:
+    background-color 0.2s var(--ease-suau),
+    border-color 0.2s var(--ease-suau);
+}
+
+.tray__node[data-on="true"] {
+  border-color: var(--color-accent);
+  background: var(--color-accent);
+}
+
+.tray__node[data-curs]::after {
+  content: "";
+  position: absolute;
+  inset: -1.5px;
+  border-radius: inherit;
+  background: var(--color-accent);
+  opacity: 0;
+}
+
+.tray__node[data-curs][data-visible="true"]::after {
+  animation: pols 2.4s var(--ease-suau) infinite;
 }
