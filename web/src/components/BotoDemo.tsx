@@ -44,7 +44,7 @@ const MINI_VORA =
 const MINI_ERROR = `${MINI} border border-malament/50 text-malament hover:border-malament hover:bg-malament/10`;
 
 /** Cuanto lleva de los 60 s que suele tardar, sin pasar del 90 % antes de que conteste. */
-const progres = (segons: number) => Math.min(0.9, segons / 60);
+export const progres = (segons: number) => Math.min(0.9, segons / 60);
 
 type Props = {
   url: string;

@@ -8,15 +8,14 @@ import type { ReactNode } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import { useIdioma } from "../lib/idioma";
 import type { Clau } from "../lib/idioma";
+import { CORREU, LINKEDIN } from "../lib/contacte";
 import { CV_NOM, CV_PDF } from "../lib/cv";
 import { enllacProjecte } from "../lib/projectes";
 import { Idiomes } from "./Idiomes";
-import { LINKEDIN } from "./Portafoli";
 import { Baixa, Correu, Enrere, Fletxa, LinkedIn, Mon, Ubicacio } from "./Icones";
-import retrat from "../assets/alex.png";
+import retrat400 from "../assets/alex-400.webp";
+import retrat800 from "../assets/alex-800.webp";
 import logo from "../assets/logo.png";
-
-const CORREU = "alexaiguade@gmail.com";
 
 // Mismo orden que el curriculum en papel. Las claves son las fichas de projectes.ts.
 const APLICACIONS = [
@@ -188,18 +187,17 @@ export function Curriculum({ tornar }: { tornar: (id?: string) => void }) {
           transition={{ duration: 0.5 }}
           className="grid items-center gap-8 sm:grid-cols-[auto_minmax(0,1fr)] sm:gap-12"
         >
-          {/* El PNG lleva margen transparente: el circulo visible es el 75 % de la imagen,
-              asi que se amplia y se recorta para que el retrato llene su marco. */}
           <div className="relative size-[160px] shrink-0 overflow-hidden rounded-full ring-1 ring-accent/50 ring-offset-4 ring-offset-fons sm:size-[200px]">
             <img
-              src={retrat}
+              src={retrat400}
+              srcSet={`${retrat400} 400w, ${retrat800} 800w`}
+              sizes="(min-width: 640px) 200px, 160px"
               alt={t("hero.alt")}
               width={400}
               height={400}
               decoding="async"
               draggable={false}
-              style={{ maxWidth: "none" }}
-              className="absolute left-1/2 top-1/2 h-auto w-[133.4%] -translate-x-1/2 -translate-y-1/2"
+              className="size-full"
             />
           </div>
           <div>

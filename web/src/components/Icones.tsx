@@ -26,6 +26,15 @@ export function Fletxa({ className = "" }: Props) {
   );
 }
 
+export function Dreta({ className = "" }: Props) {
+  return (
+    <svg {...base} className={`${mida} ${className}`}>
+      <path d="M5 12h14" />
+      <path d="m12 5 7 7-7 7" />
+    </svg>
+  );
+}
+
 export function Baixa({ className = "" }: Props) {
   return (
     <svg {...base} className={`${mida} ${className}`}>

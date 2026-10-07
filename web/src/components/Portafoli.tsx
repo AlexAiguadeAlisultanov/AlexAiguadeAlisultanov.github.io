@@ -1,24 +1,17 @@
 import { useEffect, useState } from "react";
-import type { ReactNode } from "react";
-import { motion, useReducedMotion } from "framer-motion";
 import { useIdioma } from "../lib/idioma";
 import type { Clau } from "../lib/idioma";
 import type { Rol } from "../lib/acces";
 import { ProveidorProjectes, useProjectesCtx } from "../lib/ProveidorProjectes";
-import { Apilada, Entrada, Iman, Revelat, Tira } from "./Moviment";
-import { Fons3D } from "./Fons3D";
+import { CORREU, GITHUB, LINKEDIN, WHATSAPP } from "../lib/contacte";
+import { Apilada, Entrada, Revelat, Tira } from "./Moviment";
 import { CV_NOM, CV_PDF } from "../lib/cv";
 import { Idiomes } from "./Idiomes";
 import { MenuMobil } from "./MenuMobil";
+import { Portada } from "./Portada";
 import { Projectes } from "./Projectes";
 import { Correu, Fletxa, GitHub, Baixa, LinkedIn, Xat } from "./Icones";
-import retrat from "../assets/alex.png";
 import logo from "../assets/logo.png";
-
-export const LINKEDIN = "https://www.linkedin.com/in/alex-aiguade-alisultanov-076706230/";
-const GITHUB = "https://github.com/AlexAiguadeAlisultanov";
-const CORREU = "alexaiguade@gmail.com";
-const WHATSAPP = "https://wa.me/34684258353";
 
 const SECCIONS: { id: string; clau: Clau }[] = [
   { id: "sobre-mi", clau: "nav.about" },
@@ -166,137 +159,6 @@ function Titol({
       </span>
       <h2 className={`titular titular--l ${clar ? "titular--clar" : ""}`}>{text}</h2>
     </div>
-  );
-}
-
-/* ---------- Portada ---------- */
-
-/** Un dato de la fila de la portada: etiqueta arriba, dato en grande y matiz debajo. */
-function Dada({
-  etiqueta,
-  valor,
-  nota
-}: {
-  etiqueta: string;
-  valor: ReactNode;
-  nota: string;
-}) {
-  return (
-    <div className="bg-fons-2/40 px-6 py-5 backdrop-blur-sm lg:px-8 lg:py-6">
-      <dt className="text-[13px] uppercase tracking-[0.16em] text-tinta-3">{etiqueta}</dt>
-      <dd className="mt-2 text-[16px] font-medium leading-snug text-tinta sm:text-[17px]">
-        {valor}
-      </dd>
-      <dd className="mt-1 text-[14px] leading-snug text-tinta-3">{nota}</dd>
-    </div>
-  );
-}
-
-function Portada() {
-  const { t } = useIdioma();
-  const { compte } = useProjectesCtx();
-  const quiet = useReducedMotion();
-
-  return (
-    <section id="dalt" className="relative pb-16 pt-14 sm:pt-20 lg:pb-24 lg:pt-24">
-      {/* La escena vive solo detras de la portada. Mas abajo estorbaria a la lectura y no
-          habria por que estar pintando nada. */}
-      <div aria-hidden className="absolute inset-0 -z-10 overflow-hidden">
-        <Fons3D />
-      </div>
-
-      <div className={`${AMPLE} relative`}>
-        <div className="grid items-center gap-12 lg:grid-cols-[minmax(0,1.25fr)_minmax(0,0.75fr)] lg:gap-16 2xl:gap-24">
-          <div>
-            <motion.p
-              initial={quiet ? false : { opacity: 0, y: 12 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5 }}
-              className="text-[15px] font-medium uppercase tracking-[0.16em] text-accent sm:text-[16px]"
-            >
-              {t("hero.eyebrow")}
-            </motion.p>
-
-            <motion.h1
-              initial={quiet ? false : { opacity: 0, y: 24 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.65, delay: 0.06, ease: [0.22, 0.61, 0.36, 1] }}
-              className="titular titular--xxl mt-5"
-            >
-              Alex
-              <br />
-              Aiguadé
-            </motion.h1>
-
-            <motion.div
-              initial={quiet ? false : { opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.16 }}
-            >
-              <p className="mt-8 max-w-[52ch] text-[15px] leading-relaxed text-tinta-2 sm:text-[17px]">
-                {t("hero.lead")}
-              </p>
-
-              <div className="mt-8 flex flex-wrap items-center gap-3">
-                <a href="#projectes" className={`${BOTO} bg-accent text-sobre-accent hover:bg-accent-2`}>
-                  {t("hero.cta")}
-                  <Baixa />
-                </a>
-                <a
-                  href={LINKEDIN}
-                  target="_blank"
-                  rel="noopener"
-                  className={`${BOTO} border border-linia text-tinta-2 hover:border-accent/40 hover:text-tinta`}
-                >
-                  LinkedIn
-                  <Fletxa />
-                </a>
-              </div>
-            </motion.div>
-          </div>
-
-          <Iman className="justify-self-center lg:justify-self-end">
-            <div className="relative">
-              <div
-                aria-hidden
-                className="absolute inset-0 -z-10 rounded-full bg-[radial-gradient(circle_at_50%_40%,rgba(95,198,212,.22),transparent_65%)] blur-2xl"
-              />
-              <img
-                src={retrat}
-                width={400}
-                height={400}
-                alt={t("hero.alt")}
-                fetchPriority="high"
-                decoding="async"
-                className="w-[min(72vw,400px)] select-none rounded-[20px] lg:w-[min(30vw,480px)] 2xl:w-[min(26vw,560px)]"
-                draggable={false}
-              />
-            </div>
-          </Iman>
-        </div>
-
-        {/* Debajo del titular sobraba sitio en pantallas anchas. Ahi van los cuatro datos
-            que alguien busca en los diez primeros segundos: que estudia ahora, de donde
-            viene, cuanto hay publicado y desde donde trabaja. */}
-        <motion.dl
-          initial={quiet ? false : { opacity: 0, y: 16 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.26 }}
-          className="mt-14 grid gap-px overflow-hidden rounded-[20px] border border-linia/70 bg-linia/70 sm:grid-cols-2 lg:mt-20 lg:grid-cols-4"
-        >
-          <Dada etiqueta={t("hero.d1k")} valor={t("hero.d1v")} nota={t("hero.d1n")} />
-          <Dada etiqueta={t("hero.d2k")} valor={t("hero.d2v")} nota={t("hero.d2n")} />
-          <Dada
-            etiqueta={t("hero.d3k")}
-            valor={
-              <span className="tabular-nums">{compte > 0 ? compte : " "}</span>
-            }
-            nota={t("hero.d3n")}
-          />
-          <Dada etiqueta={t("hero.d4k")} valor={t("hero.d4v")} nota={t("hero.d4n")} />
-        </motion.dl>
-      </div>
-    </section>
   );
 }
 

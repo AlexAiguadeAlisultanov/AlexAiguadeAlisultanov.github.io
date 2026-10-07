@@ -31,6 +31,8 @@ type Multi = Record<Idioma, string>;
 
 type Fitxa = {
   titol: Multi;
+  /** Titulo corto para las tarjetas pequenas de la portada, cuando el entero no cabe en una linea. */
+  curt?: Multi;
   tipus?: string;
   /** Repositorio privado: la API no lo devuelve y no se ensena enlace al codigo. */
   privat?: boolean;
@@ -213,6 +215,11 @@ const CONEGUTS: Record<string, Fitxa> = {
       ca: "Planificador de preparació Volkswagen",
       en: "Volkswagen build planner"
     },
+    curt: {
+      es: "Planificador Volkswagen",
+      ca: "Planificador Volkswagen",
+      en: "Volkswagen build planner"
+    },
     tipus: "web",
     // Proyecto de equipo, con el repositorio privado. La ficha es la unica fuente de la
     // tarjeta y no se ensena enlace al codigo: daria un 404 a quien no sea del equipo.
@@ -271,6 +278,8 @@ export type Repo = {
 export type Projecte = {
   nom: string;
   titol: string;
+  /** El titulo corto si la ficha lo tiene; si no, el de siempre. */
+  curt: string;
   url: string;
   text: string;
   tec: string[];
@@ -442,6 +451,7 @@ export function projecte(repo: Repo, idioma: Idioma, rol: Rol): Projecte {
   return {
     nom: repo.nom,
     titol,
+    curt: enIdioma(fitxa?.curt, idioma) || titol,
     url,
     text,
     tec,

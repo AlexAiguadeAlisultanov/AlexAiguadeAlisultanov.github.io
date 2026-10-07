@@ -27,13 +27,13 @@ function Estatic() {
             "linear-gradient(to bottom, rgba(95,198,212,.07) 1px, transparent 1px)",
           backgroundSize: "clamp(56px, 7vw, 104px) clamp(56px, 7vw, 104px)",
           maskImage:
-            "radial-gradient(ellipse 66% 78% at 70% 46%, #000 6%, rgba(0,0,0,.45) 46%, transparent 82%)",
+            "radial-gradient(ellipse 66% 78% at 50% 46%, #000 6%, rgba(0,0,0,.45) 46%, transparent 82%)",
           WebkitMaskImage:
-            "radial-gradient(ellipse 66% 78% at 70% 46%, #000 6%, rgba(0,0,0,.45) 46%, transparent 82%)"
+            "radial-gradient(ellipse 66% 78% at 50% 46%, #000 6%, rgba(0,0,0,.45) 46%, transparent 82%)"
         }}
       />
       <div
-        className="absolute right-[6%] top-[18%] h-[52vh] w-[52vh] rounded-full blur-[80px]"
+        className="absolute left-1/2 top-[45%] h-[52vh] w-[52vh] -translate-x-1/2 -translate-y-1/2 rounded-full blur-[80px]"
         style={{
           background:
             "radial-gradient(circle at center, rgba(95,198,212,.14), transparent 68%)"

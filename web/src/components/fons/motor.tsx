@@ -333,6 +333,12 @@ export function FonsCanvas({ crear }: { crear: CrearFigura }) {
       }
     }
 
+    // El corte de la portada depende de donde acaba #dalt, y eso cambia cuando el portafolio se
+    // monta (despues de entrar) o cambia de alto. Con movimiento reducido no hay bucle que lo
+    // repinte, y hasta el primer scroll se veria la placa por debajo de la escena.
+    const vigilantAlt = new ResizeObserver(alDesplazar);
+    vigilantAlt.observe(document.body);
+
     configurar();
     window.addEventListener("resize", alRedimensionar);
     window.addEventListener("scroll", alDesplazar, { passive: true });
@@ -344,6 +350,7 @@ export function FonsCanvas({ crear }: { crear: CrearFigura }) {
     }
 
     return () => {
+      vigilantAlt.disconnect();
       window.clearTimeout(resizeTimer);
       window.removeEventListener("resize", alRedimensionar);
       window.removeEventListener("scroll", alDesplazar);

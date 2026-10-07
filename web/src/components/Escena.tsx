@@ -404,6 +404,8 @@ export default function Escena({ onFalla }: { onFalla: () => void }) {
 
     /** Coloca el chip detras del retrato de la portada y lo escala a su medida. */
     const retrat = canvas.closest("section")?.querySelector("img");
+    let maskX = "";
+    let maskY = "";
     const situar = () => {
       const caixa = canvas.getBoundingClientRect();
       const foto = retrat?.getBoundingClientRect();
@@ -417,6 +419,14 @@ export default function Escena({ onFalla }: { onFalla: () => void }) {
       const cy = foto.top + foto.height / 2 - (caixa.top + caixa.height / 2);
       suport.position.set(cx * perPixel, -cy * perPixel, 0);
       chip.scale.setScalar((foto.width * perPixel * MIDA_RESPECTE_FOTO) / 2.1 / 2);
+
+      // La mascara del lienzo (ver el style de abajo) se centra en el retrato. Antes era un
+      // 78 % / 48 % fijo, que era donde caia el retrato; con el retrato en la columna central
+      // el chip se quedaba casi apagado. Solo se escribe si cambia, para no repintar la mascara.
+      const mx = `${(((caixa.width / 2 + cx) / caixa.width) * 100).toFixed(1)}%`;
+      const my = `${(((caixa.height / 2 + cy) / caixa.height) * 100).toFixed(1)}%`;
+      if (mx !== maskX) canvas.style.setProperty("--mx", (maskX = mx));
+      if (my !== maskY) canvas.style.setProperty("--my", (maskY = my));
     };
     dimensionar();
 
@@ -601,10 +611,11 @@ export default function Escena({ onFalla }: { onFalla: () => void }) {
       aria-hidden
       className="pointer-events-none size-full"
       style={{
-        // El chip se apaga hacia los bordes y, sobre todo, por la izquierda, que es donde
-        // cae el titular. Asi el texto nunca compite con el fondo.
-        maskImage: "radial-gradient(ellipse 62% 90% at 78% 48%, #000 25%, rgba(0,0,0,.5) 55%, transparent 88%)",
-        WebkitMaskImage: "radial-gradient(ellipse 62% 90% at 78% 48%, #000 25%, rgba(0,0,0,.5) 55%, transparent 88%)"
+        // El chip se apaga hacia los bordes y el texto nunca compite con el fondo. El centro de
+        // la mascara (--mx, --my) lo escribe situar() desde el retrato; sin retrato se queda
+        // en el 78 % / 48 % de siempre.
+        maskImage: "radial-gradient(ellipse 62% 90% at var(--mx, 78%) var(--my, 48%), #000 25%, rgba(0,0,0,.5) 55%, transparent 88%)",
+        WebkitMaskImage: "radial-gradient(ellipse 62% 90% at var(--mx, 78%) var(--my, 48%), #000 25%, rgba(0,0,0,.5) 55%, transparent 88%)"
       }}
     />
   );

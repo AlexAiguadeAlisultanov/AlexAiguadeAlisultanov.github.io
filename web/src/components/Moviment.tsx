@@ -33,11 +33,16 @@ export function Entrada({
   children,
   retard = 0,
   y = 24,
+  duracio = 0.55,
   className = ""
 }: {
   children: ReactNode;
+  /** Segundos de espera antes de empezar. */
   retard?: number;
+  /** Pixeles que sube al entrar. */
   y?: number;
+  /** Segundos que dura la entrada. */
+  duracio?: number;
   className?: string;
 }) {
   const quiet = useReducedMotion();
@@ -48,7 +53,7 @@ export function Entrada({
       initial={{ opacity: 0, y }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, amount: 0.25, margin: "0px 0px -10% 0px" }}
-      transition={{ duration: 0.55, delay: retard, ease: [0.22, 0.61, 0.36, 1] }}
+      transition={{ duration: duracio, delay: retard, ease: [0.22, 0.61, 0.36, 1] }}
     >
       {children}
     </motion.div>
