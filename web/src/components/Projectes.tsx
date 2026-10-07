@@ -1,11 +1,11 @@
 import { useEffect, useMemo, useState } from "react";
+import type { ReactNode } from "react";
 import { useIdioma } from "../lib/idioma";
-import type { Clau } from "../lib/idioma";
-import { deCasa, demanar, desats, projecte, quanFa } from "../lib/projectes";
+import { deCasa, demanar, desats, projecte } from "../lib/projectes";
 import type { EstatFeed, Projecte, Repo, Rol } from "../lib/projectes";
 import { esAdormida, useDemos } from "../lib/demos";
 import type { Demos, Fase } from "../lib/demos";
-import { Entrada } from "./Moviment";
+import { Carrusel } from "./Carrusel";
 import { Fletxa, GitHub } from "./Icones";
 
 const COLOR_FASE: Record<Fase | "obres", string> = {
@@ -20,6 +20,15 @@ const BOTO =
   "inline-flex min-h-[44px] items-center justify-center gap-2 rounded-[8px] px-4 text-[14px] " +
   "font-semibold transition-colors duration-200";
 
+// El boton principal de cada tarjeta, en el cian de la web como el resto de acciones.
+const CTA =
+  "inline-flex min-h-[48px] w-full items-center justify-center gap-2 rounded-[12px] px-5 " +
+  "text-[15px] font-semibold transition-[background-color,border-color,transform] duration-200 " +
+  "active:scale-[0.98] aria-[disabled=true]:cursor-default aria-[disabled=true]:opacity-70 " +
+  "aria-[disabled=true]:active:scale-100";
+
+const CTA_PLE = `${CTA} bg-accent text-sobre-accent hover:bg-accent-2 aria-[disabled=true]:hover:bg-accent`;
+
 function Chips({ tec, etiqueta }: { tec: string[]; etiqueta: string }) {
   if (!tec.length) return null;
   return (
@@ -27,7 +36,7 @@ function Chips({ tec, etiqueta }: { tec: string[]; etiqueta: string }) {
       {tec.map((una) => (
         <li
           key={una}
-          className="rounded-[8px] border border-linia bg-fons-3 px-2.5 py-1 text-[14px] text-tinta-2"
+          className="rounded-[8px] border border-linia bg-fons-3 px-2.5 py-0.5 text-[14px] text-tinta-2"
         >
           {una}
         </li>
@@ -36,162 +45,181 @@ function Chips({ tec, etiqueta }: { tec: string[]; etiqueta: string }) {
   );
 }
 
-function LiniaEstat({ fase, segons, id }: { fase: Fase; segons: number; id: string }) {
-  const { t } = useIdioma();
-  const nom = t(("estat." + fase) as Clau);
-  const compta = fase === "waking" && segons ? " · " + t("estat.secs", { s: segons }) : "";
+/** Proyecto sin captura: sus iniciales en contorno sobre un halo del acento. */
+function Composicio({ titol }: { titol: string }) {
+  const inicials = titol
+    .split(/\s+/)
+    .filter((p) => p.length > 2)
+    .slice(0, 2)
+    .map((p) => p[0].toUpperCase())
+    .join("");
   return (
-    <p id={id} className="mt-5 flex flex-wrap items-baseline gap-x-2 gap-y-1 text-[14px]">
-      <span aria-hidden className={`size-2 shrink-0 translate-y-[-1px] rounded-full ${COLOR_FASE[fase]}`} />
-      <span className="font-medium text-tinta">{nom + compta}</span>
-      <span className="text-tinta-3">{t(("estat." + fase + ".why") as Clau)}</span>
-    </p>
+    <div className="composicio absolute inset-0 grid place-items-center" aria-hidden>
+      <span className="composicio__lletres">{inicials || titol.slice(0, 2).toUpperCase()}</span>
+    </div>
   );
 }
 
-function Targeta({
-  dades,
-  demos,
-  ordre
-}: {
-  dades: Projecte;
-  demos: Demos;
-  ordre: number;
-}) {
-  const { t, idioma } = useIdioma();
+function Targeta({ dades, demos }: { dades: Projecte; demos: Demos }) {
+  const { t } = useIdioma();
   const dorm = esAdormida(dades.demo);
   const fase = dorm ? demos.fase(dades.demo) : "on";
   const enMarxa = !dorm || fase === "on";
-
-  // El titulo cubre la tarjeta entera, asi que apunta a lo que se quiere abrir al
-  // pulsarla: la aplicacion si esta en marcha, y si no el codigo. Cuando el repositorio
-  // es privado, o cuando la demo esta dormida y todavia no contesta, no hay nada que
-  // abrir: el titulo se queda en texto.
-  const obrir = enMarxa ? dades.demo || dades.url : dades.url;
-  const quan = dades.data ? quanFa(idioma, dades.data) : "";
+  const segons = demos.segons(dades.demo);
   const idEstat = "estat-demo-" + dades.nom.toLowerCase().replace(/[^a-z0-9]+/g, "-");
 
-  const titol = obrir ? (
-    <a
-      href={obrir}
-      target="_blank"
-      rel="noopener"
-      onClick={() => dades.demo && demos.visita(dades.demo)}
-      className="text-tinta transition-colors duration-200 hover:text-accent-2"
-    >
-      {dades.titol}
-    </a>
+  const despertar = () => {
+    if (demos.fase(dades.demo) === "waking") return;
+    demos.anunciar(t("wake.live.starting", { t: dades.titol }));
+    demos.despertar(dades.demo);
+  };
+
+  const imatge = dades.captura ? (
+    <img
+      src={dades.captura}
+      alt={t("card.shot", { t: dades.titol })}
+      loading="lazy"
+      decoding="async"
+      draggable={false}
+      className={`captura ${dades.alta ? "captura--alta" : "captura--plana"}`}
+    />
   ) : (
-    dades.titol
+    <Composicio titol={dades.titol} />
   );
 
-  return (
-    <Entrada retard={Math.min(ordre, 4) * 0.06} className="h-full">
-      <li className="flex h-full list-none flex-col rounded-[20px] border border-linia bg-fons-2/70 p-6 backdrop-blur-sm transition-colors duration-200 hover:border-linia/0 hover:ring-1 hover:ring-accent/30 sm:p-8">
-        <h3 className="text-[19px] font-semibold leading-snug tracking-tight sm:text-[21px]">
-          {titol}
-        </h3>
-        <p className="mt-3 text-[14px] leading-relaxed text-tinta-2 sm:text-[15px]">{dades.text}</p>
+  // Etiqueta sobre la captura solo cuando hay algo que contar: arrancando, lista o sin
+  // respuesta. Dormida sin tocar no lleva nada, el boton ya lo dice.
+  const pastilla =
+    dorm && fase !== "off" ? (
+      <span className="absolute left-3 top-3 flex items-center gap-2 rounded-[8px] bg-fons/85 px-2.5 py-1 text-[14px] font-medium text-tinta">
+        <span aria-hidden className={`size-2 rounded-full ${COLOR_FASE[fase]}`} />
+        {fase === "waking"
+          ? t("card.waking", { s: segons })
+          : fase === "on"
+            ? t("card.ready")
+            : t("estat.fail")}
+      </span>
+    ) : null;
 
-        <Chips tec={dades.tec} etiqueta={t("chips.aria")} />
+  // La captura tambien abre la demo, pero solo con el raton o el dedo: para el teclado y
+  // los lectores de pantalla ya esta el boton, y asi no hay dos paradas iguales.
+  let marc: ReactNode;
+  const classeMarc = "captura-marc relative block aspect-[16/10] overflow-hidden border-b border-linia bg-fons-3";
+  if (dades.demo && enMarxa) {
+    marc = (
+      <a
+        href={dades.demo}
+        target="_blank"
+        rel="noopener"
+        tabIndex={-1}
+        aria-hidden
+        onClick={() => demos.visita(dades.demo)}
+        className={classeMarc}
+      >
+        {imatge}
+        {pastilla}
+      </a>
+    );
+  } else {
+    marc = (
+      <div
+        className={`${classeMarc} ${dades.demo && !dades.tancat ? "cursor-pointer" : ""}`}
+        onClick={dades.demo && !dades.tancat ? despertar : undefined}
+      >
+        {imatge}
+        {pastilla}
+      </div>
+    );
+  }
+
+  return (
+    <article className="targeta flex h-full flex-col overflow-hidden rounded-[20px] border border-linia bg-fons-2">
+      {marc}
+
+      <div className="flex flex-1 flex-col p-5 sm:p-6">
+        <h3 className="text-[19px] font-semibold leading-snug tracking-tight text-tinta sm:text-[21px]">
+          {dades.titol}
+        </h3>
+        <p className="mt-2 line-clamp-2 text-[15px] leading-relaxed text-tinta-2">{dades.lema}</p>
+
+        <Chips tec={dades.tec.slice(0, 3)} etiqueta={t("chips.aria")} />
 
         {/* Proyecto que este rol no puede abrir: la tarjeta se queda sin pie, con la
             linea que dice que esta a medias ocupando ese sitio. */}
         {dades.tancat ? (
-          <p className="mt-5 flex flex-wrap items-baseline gap-x-2 gap-y-1 text-[14px]">
+          <p className="mt-auto flex flex-wrap items-baseline gap-x-2 gap-y-1 pt-6 text-[14px]">
             <span aria-hidden className={`size-2 shrink-0 translate-y-[-1px] rounded-full ${COLOR_FASE.obres}`} />
             <span className="font-medium text-tinta">{t("obres.nom")}</span>
             <span className="text-tinta-3">{t("obres.why")}</span>
           </p>
         ) : (
-          <>
-            {quan ? (
-              <p className="mt-5 text-[14px] text-tinta-3">
-                <time dateTime={dades.data}>{t("feed.updated", { t: quan })}</time>
+          <div className="mt-auto pt-6">
+            {dades.demo ? (
+              // Mientras la demo no conteste, el boton la despierta y cuenta los segundos; cuando
+              // contesta, el mismo hueco pasa a ser el enlace que la abre. Nunca los dos a la vez.
+              enMarxa ? (
+                <a
+                  href={dades.demo}
+                  target="_blank"
+                  rel="noopener"
+                  onClick={() => demos.visita(dades.demo)}
+                  className={CTA_PLE}
+                >
+                  {t("card.try")}
+                  <Fletxa />
+                </a>
+              ) : (
+                <button
+                  type="button"
+                  aria-describedby={idEstat}
+                  aria-disabled={fase === "waking"}
+                  onClick={despertar}
+                  className={CTA_PLE}
+                >
+                  {fase === "waking"
+                    ? t("card.waking", { s: segons })
+                    : fase === "fail"
+                      ? t("estat.again")
+                      : t("card.try")}
+                </button>
+              )
+            ) : dades.url ? (
+              <a
+                href={dades.url}
+                target="_blank"
+                rel="noopener"
+                className={`${CTA} border border-linia text-tinta hover:border-accent/40`}
+              >
+                <GitHub />
+                {t("proj.code")}
+              </a>
+            ) : null}
+
+            {dorm && !enMarxa ? (
+              <p id={idEstat} className="mt-3 text-[14px] leading-relaxed text-tinta-3">
+                {fase === "fail" ? t("estat.fail.why") : t("card.note")}
               </p>
             ) : null}
 
-            {dorm ? (
-              <LiniaEstat fase={fase} segons={demos.segons(dades.demo)} id={idEstat} />
+            {dades.demo && dades.url ? (
+              <a
+                href={dades.url}
+                target="_blank"
+                rel="noopener"
+                className="mt-2 inline-flex min-h-[44px] items-center gap-2 text-[14px] text-tinta-3 transition-colors duration-200 hover:text-tinta"
+              >
+                <GitHub />
+                {t("feed.code")}
+              </a>
             ) : null}
 
-            <div className="mt-auto flex flex-wrap items-center gap-3 pt-6">
-              {dades.demo ? (
-                <>
-                  {/* Mientras la demo no conteste, en su hueco esta el boton de
-                      iniciarla, no el de probarla: los dos nunca se ven a la vez. */}
-                  {enMarxa ? (
-                    <a
-                      href={dades.demo}
-                      target="_blank"
-                      rel="noopener"
-                      onClick={() => demos.visita(dades.demo)}
-                      className={`${BOTO} bg-accent text-sobre-accent hover:bg-accent-2`}
-                    >
-                      {t("feed.try")}
-                      <Fletxa />
-                    </a>
-                  ) : (
-                    <button
-                      type="button"
-                      aria-describedby={idEstat}
-                      aria-disabled={fase === "waking"}
-                      onClick={() => {
-                        if (demos.fase(dades.demo) === "waking") return;
-                        demos.anunciar(t("wake.live.starting", { t: dades.titol }));
-                        demos.despertar(dades.demo);
-                      }}
-                      className={`${BOTO} bg-accent text-sobre-accent hover:bg-accent-2 aria-[disabled=true]:cursor-default aria-[disabled=true]:opacity-60 aria-[disabled=true]:hover:bg-accent`}
-                    >
-                      {t(
-                        fase === "waking"
-                          ? "estat.waking"
-                          : fase === "fail"
-                            ? "estat.again"
-                            : "demo.start"
-                      )}
-                    </button>
-                  )}
-
-                  {/* Sin repositorio publico no hay codigo que ensenar: el enlace daria
-                      un 404 a cualquiera que no sea del equipo. */}
-                  {dades.url ? (
-                    <a
-                      href={dades.url}
-                      target="_blank"
-                      rel="noopener"
-                      className={`${BOTO} border border-linia text-tinta-2 hover:border-accent/40 hover:text-tinta`}
-                    >
-                      <GitHub />
-                      {t("feed.code")}
-                    </a>
-                  ) : null}
-                </>
-              ) : (
-                <>
-                  {dades.url ? (
-                    <a
-                      href={dades.url}
-                      target="_blank"
-                      rel="noopener"
-                      className={`${BOTO} border border-linia text-tinta-2 hover:border-accent/40 hover:text-tinta`}
-                    >
-                      <GitHub />
-                      {t("proj.code")}
-                    </a>
-                  ) : null}
-                  {dades.marca ? (
-                    <span className="rounded-[8px] border border-linia px-2.5 py-1 text-[14px] text-tinta-3">
-                      {t(dades.marca)}
-                    </span>
-                  ) : null}
-                </>
-              )}
-            </div>
-          </>
+            {!dades.demo && dades.marca ? (
+              <p className="mt-3 text-[14px] text-tinta-3">{t(dades.marca)}</p>
+            ) : null}
+          </div>
         )}
-      </li>
-    </Entrada>
+      </div>
+    </article>
   );
 }
 
@@ -201,7 +229,7 @@ function Panell({ demos }: { demos: Demos }) {
   if (!c.total) return null;
 
   let etiqueta: string;
-  let pista: string;
+  let pista = "";
   let apagat: boolean;
 
   if (c.waking) {
@@ -219,38 +247,39 @@ function Panell({ demos }: { demos: Demos }) {
     apagat = false;
   } else {
     etiqueta = c.off === 1 ? t("wake.on.one") : t("wake.on", { n: c.off });
-    pista = t("wake.hint");
     apagat = false;
   }
 
+  // Compacto y en segundo plano: el gesto principal de la seccion es probar una demo, y
+  // ese boton esta en cada tarjeta.
   return (
-    <div className="mb-10 grid gap-6 rounded-[20px] border border-linia bg-fons-2/60 p-6 backdrop-blur-sm sm:p-8 lg:grid-cols-[minmax(0,1.6fr)_minmax(0,1fr)] lg:items-start lg:gap-10 2xl:grid-cols-[minmax(0,72ch)_minmax(0,34ch)] 2xl:justify-between 2xl:gap-16">
+    <div className="mb-8 flex flex-col gap-4 rounded-[20px] border border-linia bg-fons-2/60 p-5 sm:flex-row sm:items-center sm:justify-between sm:gap-8 sm:p-6">
       <div>
         <p className="text-[16px] font-semibold text-tinta">{t("wake.title")}</p>
-        <p className="mt-2 max-w-[62ch] text-[14px] leading-relaxed text-tinta-2">{t("wake.text")}</p>
+        <p className="mt-1 max-w-[64ch] text-[14px] leading-relaxed text-tinta-2">{t("wake.text")}</p>
+        {pista ? (
+          <p id="wake-pista" className="mt-2 text-[14px] leading-relaxed text-tinta-3">
+            {pista}
+          </p>
+        ) : null}
       </div>
-      <div>
-        <button
-          type="button"
-          aria-disabled={apagat}
-          aria-describedby="wake-pista"
-          onClick={() => {
-            if (apagat) return;
-            const quantes = demos.encendre();
-            if (quantes) {
-              demos.anunciar(
-                quantes === 1 ? t("wake.live.on.one") : t("wake.live.on", { n: quantes })
-              );
-            }
-          }}
-          className={`${BOTO} w-full bg-accent text-sobre-accent hover:bg-accent-2 aria-[disabled=true]:cursor-default aria-[disabled=true]:opacity-60 aria-[disabled=true]:hover:bg-accent`}
-        >
-          {etiqueta}
-        </button>
-        <p id="wake-pista" className="mt-3 text-[14px] leading-relaxed text-tinta-3">
-          {pista}
-        </p>
-      </div>
+      <button
+        type="button"
+        aria-disabled={apagat}
+        aria-describedby={pista ? "wake-pista" : undefined}
+        onClick={() => {
+          if (apagat) return;
+          const quantes = demos.encendre();
+          if (quantes) {
+            demos.anunciar(
+              quantes === 1 ? t("wake.live.on.one") : t("wake.live.on", { n: quantes })
+            );
+          }
+        }}
+        className={`${BOTO} shrink-0 border border-accent/50 text-accent-2 hover:border-accent hover:bg-accent-bg aria-[disabled=true]:cursor-default aria-[disabled=true]:opacity-60 aria-[disabled=true]:hover:bg-transparent sm:min-w-[14rem]`}
+      >
+        {etiqueta}
+      </button>
       {/* Los cambios de estado se cuentan aqui para quien no los ve. */}
       <p role="status" aria-live="polite" className="sr-only">
         {demos.viu}
@@ -320,11 +349,11 @@ export function Projectes({ rol, onCompte }: { rol: Rol; onCompte: (n: number) =
 
       <Panell demos={demos} />
 
-      <ul className="grid gap-6 sm:grid-cols-2 xl:grid-cols-3 3xl:grid-cols-4">
-        {projectes.map((dades, i) => (
-          <Targeta key={dades.nom} dades={dades} demos={demos} ordre={i} />
+      <Carrusel>
+        {projectes.map((dades) => (
+          <Targeta key={dades.nom} dades={dades} demos={demos} />
         ))}
-      </ul>
+      </Carrusel>
     </>
   );
 }

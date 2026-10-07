@@ -222,3 +222,149 @@ img { max-width: 100%; display: block; }
   .cv main { padding-block: 0; }
   .cv a { color: inherit; text-decoration: none; }
 }
+
+/* ---------- Carrusel de proyectos ----------
+   La ventana sale del margen de la seccion y llega a los dos bordes; las tarjetas se
+   alinean con el texto al empezar. Con la cinta en marcha cada tarjeta se mueve por su
+   transform; quieta (movimiento reducido o pocas tarjetas) es una fila con scroll nativo. */
+
+.carrusel {
+  margin-inline: calc(-1 * var(--marc));
+  padding-block: 16px;
+  outline-offset: -2px;
+}
+
+.carrusel__cinta {
+  display: flex;
+  gap: 16px;
+  width: max-content;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.carrusel__peca {
+  position: relative;
+  flex: 0 0 auto;
+  width: clamp(17.5rem, 84vw, 26rem);
+}
+
+/* Con raton el hueco es de 24 px a cualquier ancho: la tarjeta resaltada crece hasta un
+   1,5 % de su ancho hacia la vecina (ver abajo) y asi nunca se le acerca a menos de 16. */
+@media (min-width: 640px), (hover: hover) and (pointer: fine) {
+  .carrusel__cinta { gap: 24px; }
+}
+
+@media (min-width: 1024px) {
+  .carrusel__peca { width: clamp(22rem, 30vw, 30rem); }
+}
+
+/* clip y no hidden: con hidden la ventana sigue siendo desplazable por codigo y, al entrar
+   el foco en una tarjeta que aun no se ve, el navegador le movia el scrollLeft por su
+   cuenta. Ese desplazamiento se sumaba al del carrusel y la tarjeta acababa fuera. */
+.carrusel--roda {
+  overflow: clip;
+  touch-action: pan-y;
+}
+
+.carrusel--roda .carrusel__peca { will-change: transform; }
+.carrusel__cinta[data-arrossega] { user-select: none; cursor: grabbing; }
+
+.carrusel--quiet {
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x mandatory;
+  scroll-padding-inline: var(--marc);
+  scrollbar-width: none;
+}
+
+.carrusel--quiet::-webkit-scrollbar { display: none; }
+.carrusel--quiet .carrusel__cinta { padding-inline: var(--marc); }
+.carrusel--quiet .carrusel__peca { scroll-snap-align: start; }
+
+/* Con el raton encima, la tarjeta se adelanta y las demas se apartan un poco. Crece hacia
+   dentro de la pantalla, no hacia el borde: el origen lo pone el carrusel solo en la
+   resaltada, las demas encogen desde el centro. Cuentas del peor caso: la resaltada avanza
+   un 3 % de su ancho hacia la vecina y la vecina retrocede un 1,5 %, de modo que el hueco
+   pierde un 1,5 % del ancho (7 px con la tarjeta mas ancha, 480) y se queda en 17 o mas.
+   Las de fondo se apagan bajando el brillo y no con opacity, que dejaba ver a traves de
+   ellas el fondo animado de la pagina. */
+.carrusel__cos {
+  transform-origin: var(--origen, 50% 50%);
+  transition: transform 0.25s var(--ease-suau), transform-origin 0.25s var(--ease-suau),
+    filter 0.25s var(--ease-suau);
+}
+
+.carrusel__peca[data-calenta] { z-index: 1; }
+.carrusel__peca[data-calenta] .carrusel__cos { transform: scale(1.03); }
+.carrusel__cinta[data-calenta] .carrusel__peca:not([data-calenta]) .carrusel__cos {
+  transform: scale(0.97);
+  filter: brightness(0.55);
+}
+
+/* ---------- Tarjeta de proyecto ----------
+   La captura de la demo manda. Al pasar el raton, las capturas largas se recorren hacia
+   abajo como si alguien navegara la aplicacion; las cortas se acercan un poco. La vuelta
+   es mas rapida que la ida. */
+
+.targeta { transition: border-color 0.25s var(--ease-suau); }
+.targeta:hover,
+.carrusel__peca[data-calenta] .targeta {
+  border-color: color-mix(in srgb, var(--color-accent) 50%, var(--color-linia));
+}
+
+.captura {
+  position: absolute;
+  inset-inline: 0;
+  top: 0;
+  width: 100%;
+  max-width: none;
+  user-select: none;
+  transition: transform 0.8s var(--ease-suau);
+}
+.captura--alta { height: auto; }
+.captura--plana {
+  height: 100%;
+  object-fit: cover;
+  object-position: top;
+  transform-origin: 50% 0;
+}
+
+.targeta:hover .captura--alta,
+.targeta:focus-within .captura--alta {
+  /* La captura mide 800 x 750 y el marco es 16:10: sobra un tercio por abajo. */
+  transform: translateY(-33.333%);
+  transition: transform 3.6s cubic-bezier(.45, .05, .35, 1);
+}
+.targeta:hover .captura--plana,
+.targeta:focus-within .captura--plana {
+  transform: scale(1.05);
+  transition: transform 1.4s var(--ease-suau);
+}
+
+/* Fundido abajo para que la captura se asiente en la tarjeta. */
+.captura-marc::after {
+  content: "";
+  position: absolute;
+  inset-inline: 0;
+  bottom: 0;
+  height: 28%;
+  background: linear-gradient(to top, var(--color-fons-2), transparent);
+  pointer-events: none;
+}
+
+.composicio {
+  background: radial-gradient(120% 90% at 30% 20%, color-mix(in srgb, var(--color-accent) 18%, transparent), transparent 62%);
+}
+.composicio__lletres {
+  font-size: clamp(3rem, 8vw, 4.5rem);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: transparent;
+  -webkit-text-stroke: 1px color-mix(in srgb, var(--color-accent) 70%, transparent);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .captura { transform: none !important; }
+  .carrusel__cos { transition: none; }
+}

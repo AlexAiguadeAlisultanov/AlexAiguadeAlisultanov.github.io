@@ -150,3 +150,36 @@ export function BanderaGB({ className = "" }: Props) {
     </svg>
   );
 }
+
+export function Anterior({ className = "" }: Props) {
+  return (
+    <svg {...base} className={`${mida} ${className}`}>
+      <path d="m15 18-6-6 6-6" />
+    </svg>
+  );
+}
+
+export function Seguent({ className = "" }: Props) {
+  return (
+    <svg {...base} className={`${mida} ${className}`}>
+      <path d="m9 18 6-6-6-6" />
+    </svg>
+  );
+}
+
+export function Pausa({ className = "" }: Props) {
+  return (
+    <svg {...base} className={`${mida} ${className}`}>
+      <path d="M9 5v14" />
+      <path d="M15 5v14" />
+    </svg>
+  );
+}
+
+export function Reproduir({ className = "" }: Props) {
+  return (
+    <svg {...base} className={`${mida} ${className}`}>
+      <path d="M7 4.5v15l12-7.5z" />
+    </svg>
+  );
+}

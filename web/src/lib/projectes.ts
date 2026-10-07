@@ -6,6 +6,18 @@
 import type { Clau, Idioma } from "./idioma";
 import { traduir } from "./idioma";
 
+// Capturas reales de cada demo, sacadas con la sesion ya iniciada. Las "altas" son mas
+// largas que el marco de la tarjeta y al pasar el raton se recorren hacia abajo.
+import capAusencias from "../assets/demos/ausencias.webp";
+import capCrm from "../assets/demos/crm.webp";
+import capGastos from "../assets/demos/gastos.webp";
+import capIncidencias from "../assets/demos/incidencias.webp";
+import capInventario from "../assets/demos/inventario.webp";
+import capLibros from "../assets/demos/libros.webp";
+import capReservas from "../assets/demos/reservas.webp";
+import capTaquilla from "../assets/demos/taquilla.webp";
+import capVolkswagen from "../assets/demos/volkswagen.webp";
+
 export const USUARI = "AlexAiguadeAlisultanov";
 const API = "https://api.github.com/users/" + USUARI + "/repos?sort=updated&per_page=100";
 const CLAU_REPOS = "portafoli-repos";
@@ -25,6 +37,11 @@ type Fitxa = {
   tec: Tec[];
   demo?: string;
   text: Multi;
+  /** Una linea, lo que se lee en la tarjeta. El texto largo queda para quien lo pida. */
+  lema?: Multi;
+  /** Captura de la demo y si es mas alta que el marco. */
+  captura?: string;
+  alta?: boolean;
 };
 
 const CONEGUTS: Record<string, Fitxa> = {
@@ -41,7 +58,14 @@ const CONEGUTS: Record<string, Fitxa> = {
       es: "Aplicación web que lleva los libros, los usuarios y los préstamos de una biblioteca, con los datos sobre MySQL.",
       ca: "Aplicació web que porta els llibres, els usuaris i els préstecs d'una biblioteca, amb les dades sobre MySQL.",
       en: "Web app that handles the books, the users and the loans of a library, with the data on MySQL."
-    }
+    },
+    lema: {
+      es: "Libros, usuarios y préstamos de una biblioteca.",
+      ca: "Llibres, usuaris i préstecs d'una biblioteca.",
+      en: "Books, members and loans for a library."
+    },
+    captura: capLibros,
+    alta: true
   },
   "qrcodegenerator": {
     titol: { es: "Taquilla de fútbol", ca: "Taquilla de futbol", en: "Football ticket office" },
@@ -52,7 +76,14 @@ const CONEGUTS: Record<string, Fitxa> = {
       es: "Web que genera y lee códigos QR para entradas de partidos, con cuentas de usuario y el pago de la entrada.",
       ca: "Web que genera i llegeix codis QR per a entrades de partits, amb comptes d'usuari i el pagament de l'entrada.",
       en: "Site that generates and reads QR codes for match tickets, with user accounts and ticket payment."
-    }
+    },
+    lema: {
+      es: "Entradas de fútbol con un código QR para la puerta.",
+      ca: "Entrades de futbol amb un codi QR per a la porta.",
+      en: "Football tickets with a QR code for the gate."
+    },
+    captura: capTaquilla,
+    alta: true
   },
   "app-gestio-incidencies": {
     titol: { es: "Gestor de incidencias", ca: "Gestor d'incidències", en: "Issue tracker" },
@@ -63,7 +94,14 @@ const CONEGUTS: Record<string, Fitxa> = {
       es: "Aplicación para registrar las incidencias de un centro educativo y seguir su estado, organizadas por categorías y con los contactos de cada una.",
       ca: "Aplicació per registrar les incidències d'un centre educatiu i seguir-ne l'estat, organitzades per categories i amb els contactes de cadascuna.",
       en: "App to log the issues of a school and follow how they are going, sorted by category and with the contacts for each one."
-    }
+    },
+    lema: {
+      es: "Las averías de un centro, del aviso al arreglo.",
+      ca: "Les avaries d'un centre, de l'avís a l'arranjament.",
+      en: "A school's breakdowns, from report to fix."
+    },
+    captura: capIncidencias,
+    alta: true
   },
   "MVC-AJAX": {
     titol: { es: "Gestor de inventario", ca: "Gestor d'inventari", en: "Inventory manager" },
@@ -78,7 +116,14 @@ const CONEGUTS: Record<string, Fitxa> = {
       es: "Alta, consulta, edición y borrado de productos con patrón MVC y peticiones AJAX, para que la página no se recargue. Funciona igual en móvil.",
       ca: "Alta, consulta, edició i esborrat de productes amb patró MVC i peticions AJAX, perquè la pàgina no es recarregui. Funciona igual en mòbil.",
       en: "Create, read, update and delete products with an MVC pattern and AJAX requests, so the page never reloads. Works the same on a phone."
-    }
+    },
+    lema: {
+      es: "Qué material hay, cuánto queda y dónde está.",
+      ca: "Quin material hi ha, quant en queda i on és.",
+      en: "What gear there is, how much is left and where."
+    },
+    captura: capInventario,
+    alta: false
   },
   // Las cuatro herramientas de empresa de septiembre de 2026.
   "gestor-ausencias": {
@@ -90,7 +135,14 @@ const CONEGUTS: Record<string, Fitxa> = {
       es: "Vacaciones, permisos y bajas de una plantilla. El saldo cuenta solo días laborables, sin fines de semana ni festivos, y el responsable ve cuánta gente de su equipo falta esos días antes de aprobar.",
       ca: "Vacances, permisos i baixes d'una plantilla. El saldo compta només dies laborables, sense caps de setmana ni festius, i el responsable veu quanta gent del seu equip falta aquells dies abans d'aprovar.",
       en: "Holidays, leave and sick days for a whole staff. The balance counts working days only, skipping weekends and bank holidays, and managers see who else on the team is off before they approve."
-    }
+    },
+    lema: {
+      es: "Vacaciones y permisos sobre el calendario del equipo.",
+      ca: "Vacances i permisos sobre el calendari de l'equip.",
+      en: "Holidays and leave on the team calendar."
+    },
+    captura: capAusencias,
+    alta: false
   },
   "reserva-espacios": {
     titol: { es: "Reserva de espacios", ca: "Reserva d'espais", en: "Desk and room booking" },
@@ -102,7 +154,14 @@ const CONEGUTS: Record<string, Fitxa> = {
       es: "Salas y puestos de una oficina híbrida sobre el plano de cada planta. Reservas que se repiten cada semana, check-in que libera el sitio si nadie aparece y un panel con la ocupación real.",
       ca: "Sales i llocs d'una oficina híbrida sobre el plànol de cada planta. Reserves que es repeteixen cada setmana, check-in que allibera el lloc si ningú no apareix i un tauler amb l'ocupació real.",
       en: "Rooms and desks in a hybrid office, booked on the floor plan. Weekly repeating bookings, a check-in that frees the spot when nobody shows up, and a panel with real occupancy."
-    }
+    },
+    lema: {
+      es: "Salas y puestos que se reservan sobre el plano.",
+      ca: "Sales i llocs que es reserven sobre el plànol.",
+      en: "Rooms and desks you book on the floor plan."
+    },
+    captura: capReservas,
+    alta: false
   },
   "notas-de-gasto": {
     titol: { es: "Notas de gasto", ca: "Notes de despesa", en: "Expense reports" },
@@ -113,7 +172,14 @@ const CONEGUTS: Record<string, Fitxa> = {
       es: "Gastos de empleados con la foto del ticket, kilometraje y topes por categoría. Pasan por el responsable, finanzas los paga por lotes y los exporta en CSV para contabilidad, con el IVA desglosado.",
       ca: "Despeses d'empleats amb la foto del tiquet, quilometratge i límits per categoria. Passen pel responsable, finances les paga per lots i les exporta en CSV per a comptabilitat, amb l'IVA desglossat.",
       en: "Employee expenses with a photo of the receipt, mileage and per-category limits. Managers review them, finance pays them in batches and exports a CSV for the books, with VAT broken down."
-    }
+    },
+    lema: {
+      es: "Tickets, kilómetros y aprobaciones en un solo sitio.",
+      ca: "Tiquets, quilòmetres i aprovacions en un sol lloc.",
+      en: "Receipts, mileage and approvals in one place."
+    },
+    captura: capGastos,
+    alta: false
   },
   "crm-ventas": {
     titol: { es: "CRM de ventas", ca: "CRM de vendes", en: "Sales CRM" },
@@ -125,7 +191,14 @@ const CONEGUTS: Record<string, Fitxa> = {
       es: "Clientes, contactos y oportunidades de un equipo comercial. Tablero por etapas con arrastrar y soltar, lo que toca hacer hoy, previsión de ventas ponderada y buscador con Ctrl+K.",
       ca: "Clients, contactes i oportunitats d'un equip comercial. Tauler per etapes amb arrossegar i deixar anar, el que toca fer avui, previsió de vendes ponderada i cercador amb Ctrl+K.",
       en: "Customers, contacts and deals for a sales team. A drag-and-drop stage board, what needs doing today, a weighted sales forecast and Ctrl+K search."
-    }
+    },
+    lema: {
+      es: "Oportunidades de venta en un tablero por etapas.",
+      ca: "Oportunitats de venda en un tauler per etapes.",
+      en: "Sales deals on a stage-by-stage board."
+    },
+    captura: capCrm,
+    alta: true
   },
   "jondasiviz": {
     titol: {
@@ -137,13 +210,20 @@ const CONEGUTS: Record<string, Fitxa> = {
     // Proyecto de equipo, con el repositorio privado. La ficha es la unica fuente de la
     // tarjeta y no se ensena enlace al codigo: daria un 404 a quien no sea del equipo.
     privat: true,
-    tec: ["TypeScript", "React", "Vite", { clau: "chip.equip" }],
+    tec: ["TypeScript", "React", { clau: "chip.equip" }, "Vite"],
     demo: "https://planificador-volkswagen.onrender.com",
     text: {
       es: "Dos herramientas para un Volkswagen. El planificador prepara el coche: eliges modelo, presupuesto y objetivos, y devuelve las piezas que caben en ese dinero. Recambios busca por número de bastidor o matrícula las piezas de mantenimiento de ese coche, por categorías y con buscador. Proyecto de equipo de nueve personas, con aplicación de escritorio.",
       ca: "Dues eines per a un Volkswagen. El planificador prepara el cotxe: tries model, pressupost i objectius, i retorna les peces que caben en aquells diners. Recanvis busca per número de bastidor o matrícula les peces de manteniment d'aquell cotxe, per categories i amb cercador. Projecte d'equip de nou persones, amb aplicació d'escriptori.",
       en: "Two tools for a Volkswagen. The planner builds the car: pick the model, the budget and what you are after, and it returns the parts that fit the money. Spare parts looks up the maintenance parts for that car by VIN or number plate, by category and with search. A nine-person team project, with a desktop app."
-    }
+    },
+    lema: {
+      es: "Le dices el presupuesto y te dice qué piezas caben.",
+      ca: "Li dius el pressupost i et diu quines peces hi caben.",
+      en: "Give it a budget and it tells you which parts fit."
+    },
+    captura: capVolkswagen,
+    alta: false
   }
 };
 
@@ -189,6 +269,9 @@ export type Projecte = {
   marca: Clau | "";
   tancat: boolean;
   data: string;
+  lema: string;
+  captura: string;
+  alta: boolean;
 };
 
 export type EstatFeed = "" | "feed.loading" | "feed.cache" | "feed.offline";
@@ -342,7 +425,23 @@ export function projecte(repo: Repo, idioma: Idioma, rol: Rol): Projecte {
   let marca: Clau | "" = "";
   if (!demo && !tancat) marca = tipus ? "feed.soon" : "feed.onlycode";
 
-  return { nom: repo.nom, titol, url, text, tec, demo, marca, tancat, data: repo.data };
+  // Sin linea corta propia, la tarjeta usa la descripcion: la de la ficha o la de GitHub.
+  const lema = enIdioma(fitxa?.lema, idioma) || text;
+
+  return {
+    nom: repo.nom,
+    titol,
+    url,
+    text,
+    tec,
+    demo,
+    marca,
+    tancat,
+    data: repo.data,
+    lema,
+    captura: fitxa?.captura ?? "",
+    alta: !!fitxa?.alta
+  };
 }
 
 /** "hace 3 dias", con las palabras del idioma que este puesto. */

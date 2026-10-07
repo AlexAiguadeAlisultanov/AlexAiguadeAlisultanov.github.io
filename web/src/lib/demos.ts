@@ -197,8 +197,9 @@ export function useDemos(adreces: string[]): Demos {
   const segons = useCallback(
     (url: string) => {
       const reg = estats[url] || nou();
+      // `ara` lo mueve el segundero, y al empezar puede ser anterior a `inici`.
       return reg.fase === "waking" && reg.inici
-        ? Math.round((ara - reg.inici) / 1000)
+        ? Math.max(0, Math.round((ara - reg.inici) / 1000))
         : 0;
     },
     [estats, ara]
