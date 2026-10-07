@@ -272,10 +272,12 @@ img { max-width: 100%; display: block; }
 .carrusel--quiet .carrusel__peca { scroll-snap-align: start; }
 
 /* ---------- Carrusel compacto (portada) ----------
-   Contenido en su columna: no sangra hasta los bordes de la ventana, y las tarjetas miden lo
-   que la columna dicta (cqw es el ancho de la ventana del carrusel): dos enteras y un trozo
-   de la tercera, que avisa de que hay mas. El hueco se queda en 16 px; con el resaltado de
-   raton (3 % hacia la vecina, que retrocede un 1,5 %) pierde unos 3 px, asi que no se tocan.
+   Contenido en su columna: no sangra hasta los bordes de la ventana. Cada pieza es una columna
+   de dos tarjetas horizontales (components/Portada.tsx) y mide lo que la ventana dicta menos
+   un resto, para que el principio de la siguiente asome y avise de que hay mas (cqw es el
+   ancho de la ventana del carrusel). Con tope de 30 rem: en pantallas muy anchas la columna no
+   se estira, asoma mas de la siguiente. El hueco se queda en 16 px; con el resaltado de raton
+   (2 % hacia la vecina, que retrocede un 1 %) pierde como mucho 5 px, asi que no se tocan.
    La barra de botones solo sale con ancho para ello: en el movil se desliza con el dedo. */
 
 .carrusel--compacte {
@@ -285,7 +287,7 @@ img { max-width: 100%; display: block; }
 }
 
 .carrusel--compacte .carrusel__cinta { gap: 16px; }
-.carrusel--compacte .carrusel__peca { width: calc((100cqw - 16px) / 2.15); }
+.carrusel--compacte .carrusel__peca { width: clamp(15rem, calc(100cqw - 56px), 30rem); }
 
 .carrusel--compacte.carrusel--quiet { scroll-padding-inline: 0; }
 .carrusel--compacte.carrusel--quiet .carrusel__cinta { padding-inline: 0; }
@@ -303,10 +305,12 @@ img { max-width: 100%; display: block; }
 }
 
 /* En el movil la fila llega al borde derecho de la ventana (el margen negativo es el de la
-   pagina) y la primera tarjeta arranca alineada con el texto; la segunda asoma. */
+   pagina) y la primera columna arranca alineada con el texto; la segunda asoma. */
 @media (max-width: 767px) {
   .carrusel--compacte { margin-right: calc(-1 * var(--marc)); }
-  .carrusel--compacte .carrusel__peca { width: calc((100cqw - var(--marc)) * 0.74); }
+  .carrusel--compacte .carrusel__peca {
+    width: max(15rem, min(calc(100cqw - var(--marc) - 32px), 28rem));
+  }
   .carrusel--compacte.carrusel--quiet .carrusel__cinta { padding-right: var(--marc); }
 }
 
@@ -328,6 +332,17 @@ img { max-width: 100%; display: block; }
 .carrusel__cinta[data-calenta] .carrusel__peca:not([data-calenta]) .carrusel__cos {
   transform: scale(0.97);
   filter: brightness(0.55);
+}
+
+/* En el compacto la pieza es una columna de dos tarjetas: sube y se aparta menos (un 2 %), y
+   solo la tarjeta que tiene el raton encima lleva el borde del acento. */
+.carrusel--compacte .carrusel__peca[data-calenta] .carrusel__cos { transform: scale(1.02); }
+.carrusel--compacte .carrusel__cinta[data-calenta] .carrusel__peca:not([data-calenta]) .carrusel__cos {
+  transform: scale(0.98);
+}
+.carrusel--compacte .carrusel__peca[data-calenta] .targeta { border-color: var(--color-linia); }
+.carrusel--compacte .carrusel__peca[data-calenta] .targeta:hover {
+  border-color: color-mix(in srgb, var(--color-accent) 50%, var(--color-linia));
 }
 
 /* ---------- Tarjeta de proyecto ----------
@@ -614,10 +629,84 @@ html:has(.menu-fulla[open]) { overflow: hidden; }
 .portada__stack,
 .portada__nota { display: none; }
 
-/* Las demos son el carrusel compacto de Carrusel.tsx; aqui solo el hueco que lo separa del
-   titular y la proporcion de las capturas. */
+/* Las demos son el carrusel compacto de Carrusel.tsx, con una columna de dos tarjetas por paso.
+   La cinta estira todas las columnas a la misma altura y las dos filas de cada una se reparten
+   esa altura a partes iguales, asi que los bordes de arriba y de abajo quedan alineados de una
+   columna a la siguiente. Con una sola tarjeta (cuenta par de proyectos) ocupa la columna. */
 .portada__carrusel { margin-top: 8px; }
+
+.portada__col {
+  display: grid;
+  grid-template-rows: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  height: 100%;
+}
+
+.portada__col > :only-child { grid-row: 1 / -1; }
+
+/* Tarjeta horizontal: la captura a la izquierda, siempre 16:10, y el texto a la derecha. Manda
+   el texto: se le reservan 192 px, que es lo que mide "Planificador Volkswagen" en una linea,
+   y la captura se queda con el resto, entre 88 y 168 px. Va centrada en vertical; el texto se
+   estira y deja el boton abajo. */
+.portada__targeta {
+  display: grid;
+  grid-template-columns: clamp(88px, calc(100% - 204px), 168px) minmax(0, 1fr);
+  align-items: center;
+  gap: 12px;
+  height: 100%;
+  padding: 12px;
+}
+
 .portada__captura { aspect-ratio: 16 / 10; }
+
+.portada__text {
+  display: flex;
+  flex-direction: column;
+  align-self: stretch;
+}
+
+/* En el movil la columna es mas estrecha: el hueco entre la captura y el texto baja a 8 px y se
+   reservan 190 px para el texto, que es lo que necesita "Volkswagen build planner" en una linea.
+   Los telefonos pequenos se quedan en la captura minima (y ahi ese titulo pasa a dos lineas) y los
+   grandes la estiran hasta 112. */
+@media (max-width: 767px) {
+  .portada__targeta {
+    grid-template-columns: clamp(88px, calc(100% - 198px), 112px) minmax(0, 1fr);
+    gap: 8px;
+  }
+}
+
+/* "Ver todos los proyectos": la ultima tarjeta, con la salida hacia #projectes. El anillo de
+   foco global le quitaria el radio, asi que se lo devolvemos, y va por dentro del borde: la
+   ventana del carrusel recorta lo que sobresale, y esta tarjeta llega justo al borde cuando el
+   foco la trae a la vista. */
+.portada__tots {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  height: 100%;
+  padding: 12px 16px 12px 20px;
+}
+
+.portada__tots:focus-visible {
+  border-radius: 20px;
+  outline-offset: -2px;
+}
+
+.portada__tots-fletxa {
+  display: inline-grid;
+  flex: none;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border: 1px solid color-mix(in srgb, var(--color-accent) 50%, transparent);
+  border-radius: 9999px;
+  color: var(--color-accent-2);
+  transition: background-color 0.2s var(--ease-suau);
+}
+
+.portada__tots:hover .portada__tots-fletxa { background: var(--color-accent-bg); }
 
 /* Invita a bajar solo cuando hay sitio; se apaga con el scroll (Pista, en Portada.tsx). */
 .portada__pista { display: none; }

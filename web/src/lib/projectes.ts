@@ -57,6 +57,13 @@ const CONEGUTS: Record<string, Fitxa> = {
       ca: "Gestor d'inventari de llibres",
       en: "Book inventory manager"
     },
+    // Con el titulo entero la tarjeta pequena de la portada lo parte en dos lineas y deja
+    // "libros" suelto en la segunda.
+    curt: {
+      es: "Inventario de libros",
+      ca: "Inventari de llibres",
+      en: "Book inventory"
+    },
     tipus: "web",
     tec: ["Java", "Spring Boot", "Thymeleaf", "MySQL"],
     demo: "https://inventario-de-libros.onrender.com/llibres",

@@ -1,8 +1,9 @@
 // La portada (#dalt): lo que alguien busca en los diez primeros segundos, en una sola
 // pantalla. Desde 1280 px son tres columnas: quien soy y como contactar, el retrato (con el
 // chip 3D detras) y un carrusel con todos los proyectos, que se pueden probar ahi mismo (las
-// cuatro destacadas van primero). De 768 a 1279 quedan dos columnas, y en el movil una sola
-// con las demos en una fila deslizable. La rejilla y los tamanos viven en index.css
+// cuatro destacadas van primero). Cada paso del carrusel es una columna con dos proyectos, uno
+// encima de otro, en tarjetas horizontales. De 768 a 1279 quedan dos columnas, y en el movil
+// una sola con las demos en una fila deslizable. La rejilla y los tamanos viven en index.css
 // (.portada*), que es donde estan tambien los cortes de ventana.
 //
 // El retrato es la primera <img> de la seccion y tiene que seguir siendolo: Escena.tsx se
@@ -191,9 +192,12 @@ function Stack() {
   );
 }
 
-/* ---------- Las demos: un carrusel con todos los proyectos ---------- */
+/* ---------- Las demos: un carrusel de columnas de dos proyectos ---------- */
 
-/** La tarjeta pequena del carrusel: captura, titulo, stack y el boton de la demo. */
+/**
+ * La tarjeta pequena del carrusel, en horizontal para que quepan dos una encima de otra: la
+ * captura a la izquierda y, a su lado, el nombre, el stack y el boton de la demo.
+ */
 function TargetaMini({ dades, prioritaria }: { dades: Projecte; prioritaria: boolean }) {
   const { t } = useIdioma();
   const quiet = useReducedMotion();
@@ -233,8 +237,8 @@ function TargetaMini({ dades, prioritaria }: { dades: Projecte; prioritaria: boo
   }
 
   return (
-    <article className="targeta flex h-full flex-col overflow-hidden rounded-[20px] border border-linia bg-fons-2">
-      <div className="portada__captura captura-marc relative overflow-hidden border-b border-linia bg-fons-3">
+    <article className="targeta portada__targeta rounded-[20px] border border-linia bg-fons-2">
+      <div className="portada__captura relative overflow-hidden rounded-[8px] border border-linia bg-fons-3">
         {dades.captura ? (
           <img
             src={dades.captura}
@@ -258,20 +262,38 @@ function TargetaMini({ dades, prioritaria }: { dades: Projecte; prioritaria: boo
         ) : null}
       </div>
 
-      <div className="flex flex-1 flex-col px-3.5 pb-3.5 pt-3">
+      <div className="portada__text">
         <h3 className="line-clamp-2 text-[15px] font-semibold leading-snug text-tinta">{dades.curt}</h3>
         <p className="mt-0.5 truncate text-[12px] leading-snug text-tinta-3">{stack}</p>
         {dades.registre ? (
-          <p className="mt-1 text-[12px] leading-snug text-tinta-3">{t("demos.registre")}</p>
+          <p className="mt-0.5 text-[12px] leading-snug text-tinta-3">{t("demos.registre")}</p>
         ) : null}
         {!dades.demo && !dades.tancat && dades.marca ? (
-          <p className="mt-1 text-[12px] leading-snug text-tinta-3">{t(dades.marca)}</p>
+          <p className="mt-0.5 text-[12px] leading-snug text-tinta-3">{t(dades.marca)}</p>
         ) : null}
-        {pie ? <div className="mt-auto pt-2.5">{pie}</div> : null}
+        {pie ? <div className="mt-auto pt-2">{pie}</div> : null}
       </div>
     </article>
   );
 }
+
+/**
+ * Cierra el carrusel con la salida hacia la seccion de proyectos. Mide lo mismo que una
+ * tarjeta mini, para que la columna en la que cae no cambie de altura.
+ */
+function TargetaTots() {
+  const { t } = useIdioma();
+  return (
+    <a href="#projectes" className="targeta portada__tots rounded-[20px] border border-linia bg-fons-2">
+      <span className="text-[15px] font-semibold leading-snug text-tinta">{t("demos.tots")}</span>
+      <span aria-hidden className="portada__tots-fletxa">
+        <Dreta className="text-[18px]" />
+      </span>
+    </a>
+  );
+}
+
+type Peca = { clau: string; dades?: Projecte };
 
 function Demos() {
   const { t } = useIdioma();
@@ -279,9 +301,14 @@ function Demos() {
   const movil = useMovil();
 
   // Primero las cuatro destacadas, en su orden fijo, y despues el resto de la lista: el
-  // carrusel lleva todos los proyectos.
+  // carrusel lleva todos los proyectos. Cada paso del carrusel es una columna de dos, y detras
+  // del ultimo proyecto va la tarjeta que baja a #projectes. Con nueve proyectos esa tarjeta
+  // completa la ultima columna, y con una cuenta par se queda sola ocupando la columna entera.
   const destacades = new Set(destacats.map((p) => p.nom));
   const totes = [...destacats, ...llista.filter((p) => !destacades.has(p.nom))];
+  const peces: Peca[] = [...totes.map((dades) => ({ clau: dades.nom, dades })), { clau: "tots" }];
+  const columnes: Peca[][] = [];
+  for (let i = 0; i < peces.length; i += 2) columnes.push(peces.slice(i, i + 2));
 
   // "Despertar todas" toca todas las demos de la lista, no solo las que se ven.
   const c = demos.comptes;
@@ -334,8 +361,16 @@ function Demos() {
             ) : null
           }
         >
-          {totes.map((dades, i) => (
-            <TargetaMini key={dades.nom} dades={dades} prioritaria={i < 3} />
+          {columnes.map((columna, c) => (
+            <div key={columna.map((peca) => peca.clau).join("+")} className="portada__col">
+              {columna.map((peca) =>
+                peca.dades ? (
+                  <TargetaMini key={peca.clau} dades={peca.dades} prioritaria={c < 2} />
+                ) : (
+                  <TargetaTots key={peca.clau} />
+                )
+              )}
+            </div>
           ))}
         </Carrusel>
       </div>

@@ -129,8 +129,21 @@ la API, no el navegador.
   es el original) pasado por un canvas, recortado a su círculo y codificado a calidad 0,85.
 - **Hay dos carruseles y comparten código.** El de `#projectes` sangra hasta los bordes de la
   ventana; el de la portada es la variante `compacte` de `Carrusel.tsx`, contenida en su
-  columna y con todas las tarjetas mini. En el móvil la de la portada es la fila quieta con
-  snap (`quieta`). Cualquier cambio en la lógica del carrusel vale para los dos.
+  columna. En el móvil la de la portada es la fila quieta con snap (`quieta`). Cualquier
+  cambio en la lógica del carrusel vale para los dos, y lo que solo es de uno va en el CSS:
+  `.carrusel--compacte` y `.portada__*` para la portada, nada que el grande lea.
+- **Cada paso del carrusel de la portada es una columna de dos proyectos**, uno encima de
+  otro. Para `Carrusel.tsx` la columna es una sola pieza, así que «siguiente», Tab y el
+  resaltado del ratón trabajan por columna, y Tab recorre primero la tarjeta de arriba y
+  luego la de abajo. La tarjeta mini es horizontal: captura 16:10 a la izquierda (entre 88 y
+  168 px, lo que sobra después de reservar 192 px para el texto, 190 en el móvil) y a la
+  derecha nombre, stack y `BotoDemo`. Van primero incidencias, inventario, Volkswagen y CRM,
+  y luego el resto. Detrás del último proyecto va la tarjeta «Ver todos los proyectos»
+  (`TargetaTots`), que baja a `#projectes`: con nueve proyectos completa la última columna y,
+  si la cuenta fuera par, ocupa ella sola la columna entera. Las filas de todas las columnas
+  miden lo mismo (la nota «Pide crear cuenta» del Volkswagen es la que fija la altura), así
+  que los bordes quedan alineados. Un título largo que parta en dos líneas en la tarjeta
+  mini se arregla con `curt` en la ficha de `lib/projectes.ts`.
 - **El anillo que sigue al ratón no sustituye al puntero del sistema**, lo acompaña, y
   desaparece en pantallas táctiles.
 - **El ancho de la página lo fija `.ample` en `index.css`**, no un contenedor con tope
