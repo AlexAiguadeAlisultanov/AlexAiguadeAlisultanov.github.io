@@ -77,11 +77,25 @@ web/
       acces.ts          entrar, comprobar la sesión guardada, guardarla y olvidarla
       projectes.ts      diccionario de fichas + lectura de la API de GitHub
       demos.ts          estado de las demos que se duermen
+      ProveidorProjectes.tsx  la lista de proyectos y el estado de las demos, una sola vez
+                        para toda la página (portada y proyectos leen de aquí)
+      contacte.ts       correo, WhatsApp, LinkedIn y GitHub
+      cv.ts             el PDF del currículum
     components/
       Porta.tsx         pantalla de acceso
-      Portafoli.tsx     cabecera, portada, sobre mí, formación, aptitudes y contacto
+      Portafoli.tsx     cabecera, contacto, pie y el montaje de la página
+      MenuMobil.tsx     la hoja del menú en el móvil
+      Portada.tsx       la portada: ficha, contacto rápido, retrato y carrusel de demos
+      Historia.tsx      la historia en flujo normal: hardware, software y seguridad
+      XipCapes.tsx      las capas del chip dibujadas en SVG, marca de cada capítulo
       Projectes.tsx     tarjetas de proyecto y panel de arranque de las demos
-      Moviment.tsx      imán, revelado, tira, apilado, fondo y anillo del puntero
+      Carrusel.tsx      la cinta de tarjetas: la de proyectos y la compacta de la portada
+      BotoDemo.tsx      el botón de una demo con sus fases (probar, arrancando, abrir)
+      Trajectoria.tsx   experiencia y formación con línea de tiempo, herramientas e idiomas
+      Fila.tsx          fila de lista con fecha; con `hito` es un nodo de la línea de tiempo
+      Titol.tsx         encabezado de sección con el número en contorno
+      Curriculum.tsx    la vista #cv
+      Moviment.tsx      entrada escalonada, imán, fondo y anillo del puntero
       Fons3D.tsx        decide si la portada lleva escena o fondo estático, y carga three
       Escena.tsx        la malla de nodos en 3D, con sus shaders y su bucle
       Idiomes.tsx       selector de idioma
@@ -99,13 +113,24 @@ la API, no el navegador.
   sin enlaces ni botón, con el aviso de que está en obras. La lista está en
   `lib/projectes.ts`, en `NOMES_ADMIN`.
 - **Las demos no se sondean al cargar.** Cada petición despierta un servicio de Render, y
-  sondear al entrar serían cinco arranques por visita. Se encienden cuando alguien lo pide.
+  sondear al entrar serían nueve arranques por visita. Se encienden cuando alguien lo pide
+  (una por una o con "Despertar todas").
 - **Los dos botones de una demo nunca conviven**: o está el de iniciar o está el de
   probar, en el mismo hueco.
 - **Las banderas van dibujadas en SVG.** Windows no pinta los emoji de bandera y la
   senyera ni siquiera existe como emoji.
-- **`prefers-reduced-motion` deja todo quieto, no lento.** Imán, revelado, tira, apilado y
-  anillo del puntero se apagan enteros.
+- **`prefers-reduced-motion` deja todo quieto, no lento.** Imán, entrada escalonada, línea
+  de tiempo, carruseles y anillo del puntero se apagan enteros.
+- **El retrato es la primera `<img>` de `#dalt` y no puede haber otra antes.** `Escena.tsx`
+  se coloca buscándola y escala el chip con su ancho, y su máscara se centra en ella. Por eso
+  es un solo elemento que cambia de sitio con la rejilla de la portada, y por eso el webp está
+  recortado al círculo (sin margen transparente): el chip sale a 2,1 veces el retrato.
+  `alex-400.webp` y `alex-800.webp` salen de `Img/alex.png` (el de la raíz del repositorio, que
+  es el original) pasado por un canvas, recortado a su círculo y codificado a calidad 0,85.
+- **Hay dos carruseles y comparten código.** El de `#projectes` sangra hasta los bordes de la
+  ventana; el de la portada es la variante `compacte` de `Carrusel.tsx`, contenida en su
+  columna y con todas las tarjetas mini. En el móvil la de la portada es la fila quieta con
+  snap (`quieta`). Cualquier cambio en la lógica del carrusel vale para los dos.
 - **El anillo que sigue al ratón no sustituye al puntero del sistema**, lo acompaña, y
   desaparece en pantallas táctiles.
 - **El ancho de la página lo fija `.ample` en `index.css`**, no un contenedor con tope
