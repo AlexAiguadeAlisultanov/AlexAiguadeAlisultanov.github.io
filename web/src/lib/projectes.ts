@@ -213,9 +213,9 @@ const CONEGUTS: Record<string, Fitxa> = {
     tec: ["TypeScript", "React", { clau: "chip.equip" }, "Vite"],
     demo: "https://planificador-volkswagen.onrender.com",
     text: {
-      es: "Dos herramientas para un Volkswagen. El planificador prepara el coche: eliges modelo, presupuesto y objetivos, y devuelve las piezas que caben en ese dinero. Recambios busca por número de bastidor o matrícula las piezas de mantenimiento de ese coche, por categorías y con buscador. Proyecto de equipo de nueve personas, con aplicación de escritorio.",
-      ca: "Dues eines per a un Volkswagen. El planificador prepara el cotxe: tries model, pressupost i objectius, i retorna les peces que caben en aquells diners. Recanvis busca per número de bastidor o matrícula les peces de manteniment d'aquell cotxe, per categories i amb cercador. Projecte d'equip de nou persones, amb aplicació d'escriptori.",
-      en: "Two tools for a Volkswagen. The planner builds the car: pick the model, the budget and what you are after, and it returns the parts that fit the money. Spare parts looks up the maintenance parts for that car by VIN or number plate, by category and with search. A nine-person team project, with a desktop app."
+      es: "Dos herramientas para un Volkswagen. El planificador prepara el coche: eliges modelo, presupuesto y objetivos, y devuelve las piezas que caben en ese dinero. Recambios busca por número de bastidor o matrícula las piezas de mantenimiento de ese coche, por categorías y con buscador. Proyecto de equipo de seis personas, con aplicación de escritorio.",
+      ca: "Dues eines per a un Volkswagen. El planificador prepara el cotxe: tries model, pressupost i objectius, i retorna les peces que caben en aquells diners. Recanvis busca per número de bastidor o matrícula les peces de manteniment d'aquell cotxe, per categories i amb cercador. Projecte d'equip de sis persones, amb aplicació d'escriptori.",
+      en: "Two tools for a Volkswagen. The planner builds the car: pick the model, the budget and what you are after, and it returns the parts that fit the money. Spare parts looks up the maintenance parts for that car by VIN or number plate, by category and with search. A six-person team project, with a desktop app."
     },
     lema: {
       es: "Le dices el presupuesto y te dice qué piezas caben.",

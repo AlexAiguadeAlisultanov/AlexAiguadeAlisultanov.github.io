@@ -7,6 +7,7 @@ import type { Rol } from "../lib/acces";
 import { Apilada, Entrada, Iman, Revelat, Tira } from "./Moviment";
 import { Fons3D } from "./Fons3D";
 import { Idiomes } from "./Idiomes";
+import { deCasa, desats } from "../lib/projectes";
 import { Projectes } from "./Projectes";
 import { Correu, Fletxa, GitHub, Baixa, LinkedIn, Xat } from "./Icones";
 import retrat from "../assets/alex.png";
@@ -606,7 +607,9 @@ function Contacte() {
 
 export function Portafoli({ rol, sortir }: { rol: Rol; sortir: () => void }) {
   const { t } = useIdioma();
-  const [compte, setCompte] = useState(0);
+  // Arranca ya con la cuenta de la lista que se va a pintar, para que la frase de
+  // proyectos no salga un instante con un cero.
+  const [compte, setCompte] = useState(() => (desats() || deCasa()).length);
   const guardarCompte = useCallback((n: number) => setCompte(n), []);
 
   return (
@@ -629,7 +632,7 @@ export function Portafoli({ rol, sortir }: { rol: Rol; sortir: () => void }) {
           <div className={AMPLE}>
             <Titol numero="02" text={t("proj.h")} />
             <p className="mb-12 mt-6 max-w-[62ch] text-[15px] leading-relaxed text-tinta-2 sm:text-[16px]">
-              {t("proj.intro")}
+              {t("proj.intro", { n: compte })}
             </p>
             <Projectes rol={rol} onCompte={guardarCompte} />
           </div>
