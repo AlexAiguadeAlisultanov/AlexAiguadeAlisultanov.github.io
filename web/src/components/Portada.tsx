@@ -12,7 +12,7 @@
 // sitio con la rejilla (no uno por tamano de pantalla) y por eso mide lo mismo que el circulo
 // que se ve: el chip sale a 2,1 veces el retrato.
 
-import { useEffect, useRef, useState } from "react";
+import { Suspense, lazy, useEffect, useRef, useState } from "react";
 import type { ReactNode, RefObject } from "react";
 import { motion, useMotionValueEvent, useReducedMotion, useScroll, useTransform } from "framer-motion";
 import { useIdioma } from "../lib/idioma";
@@ -26,7 +26,12 @@ import { Captura } from "./Captura";
 import { Carrusel } from "./Carrusel";
 import { Galeria3D } from "./galeria/Galeria3D";
 import { escaparata } from "./galeria/formes";
+import { Limit, useCapaz } from "./galeria/comu3d";
 import { Fons3D } from "./Fons3D";
+
+// La galeria de verdad en 3D (three + react-three-fiber) va en su propio trozo: solo se pide en
+// escritorio con WebGL, nunca en la pantalla de acceso ni en el resto del portafolio.
+const OrbitaDemos = lazy(() => import("./galeria/orbita"));
 import { Baixa, Correu, Dreta, GitHub, LinkedIn, Xat } from "./Icones";
 import { Entrada, Iman, useMovil } from "./Moviment";
 import { useRelat } from "./relat/Escenari";
@@ -318,9 +323,12 @@ function Demos() {
   const { comptes: c, apagat, despertarTotes } = useDespertarTotes();
   const quiet = useReducedMotion();
   const movil = useMovil();
-  // En escritorio y tableta, el escaparate 3D de profundidad. En el movil y con movimiento
-  // reducido cae la fila plana de siempre, con scroll y snap.
-  const tresD = !quiet && !movil;
+  const capaz = useCapaz();
+  // En escritorio con WebGL, el anillo de verdad en 3D (orbita.tsx). Sin WebGL pero con raton, el
+  // escaparate de profundidad hecho con CSS (Galeria3D), que tambien da sensacion de 3D. En el
+  // movil o con movimiento reducido, la fila plana de siempre, con scroll y snap.
+  const escriptori = !quiet && !movil;
+  const ambWebGL = escriptori && capaz;
 
   // Primero las cuatro destacadas, en su orden fijo, y despues el resto de la lista: la galeria
   // lleva todos los proyectos. Detras del ultimo va la tarjeta que baja a #projectes.
@@ -368,23 +376,36 @@ function Demos() {
       <p className="portada__nota">{t("demos.nota")}</p>
 
       <div className="portada__carrusel">
-        {tresD ? (
-          // Escaparate: la del centro de frente y entera, las vecinas inclinadas y hacia atras,
-          // asomando por los lados de la columna. Es DOM de verdad (captura, nombre, stack y boton
-          // de la demo); la profundidad sale solo de transforms de CSS.
-          <Galeria3D
-            variant="gal3d--escaparata"
-            colocar={escaparata}
-            perspectiva={1050}
-            autoPasos={0.11}
-            alturaEscenari={(alt) => Math.round(alt * 1.06 + 20)}
-            etiqueta={t("demos.titol")}
-            barraDalt
-            acciones={despertarBtn}
-          >
-            {targetes}
-            <TargetaTots key="tots" n={compte} />
-          </Galeria3D>
+        {escriptori ? (
+          // Escaparate de CSS: la del centro de frente y entera, las vecinas inclinadas y hacia
+          // atras. Es DOM de verdad (captura, nombre, stack y boton de la demo) y hace de respaldo
+          // del anillo 3D mientras su trozo llega o si WebGL falla.
+          (() => {
+            const escaparate = (
+              <Galeria3D
+                variant="gal3d--escaparata"
+                colocar={escaparata}
+                perspectiva={1050}
+                autoPasos={0.11}
+                alturaEscenari={(alt) => Math.round(alt * 1.06 + 20)}
+                etiqueta={t("demos.titol")}
+                barraDalt
+                acciones={despertarBtn}
+              >
+                {targetes}
+                <TargetaTots key="tots" n={compte} />
+              </Galeria3D>
+            );
+            return ambWebGL ? (
+              <Limit respaldo={escaparate}>
+                <Suspense fallback={escaparate}>
+                  <OrbitaDemos projectes={totes} acciones={despertarBtn} />
+                </Suspense>
+              </Limit>
+            ) : (
+              escaparate
+            );
+          })()
         ) : (
           <Carrusel compacte entra="dreta" quieta={movil} etiqueta={t("demos.titol")} acciones={despertarBtn}>
             {columnes.map((columna, col) => (

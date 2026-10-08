@@ -11,6 +11,8 @@
     "publicar": "vite build --outDir ../ --emptyOutDir false"
   },
   "dependencies": {
+    "@react-three/drei": "^10.7.9",
+    "@react-three/fiber": "^9.8.1",
     "framer-motion": "^13.4.2",
     "react": "^19.3.0",
     "react-dom": "^19.3.0",

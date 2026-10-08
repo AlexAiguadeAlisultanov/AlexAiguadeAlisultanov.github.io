@@ -503,6 +503,48 @@ img { max-width: 100%; display: block; }
   box-shadow: 0 30px 56px -24px rgb(0 0 0 / 0.78), 0 0 42px -16px color-mix(in srgb, var(--color-accent) 55%, transparent);
 }
 
+/* ---------- Anillo 3D de la portada (WebGL, react-three-fiber) ----------
+   El lienzo vive dentro de la columna de demos. Es transparente a proposito: entre las estrellas
+   se ve la placa base del fondo, asi que no es un cielo a pantalla completa sino un velo acotado
+   en su hueco. El alto se limita con clamp para no romper el primer pantallazo. */
+.orbita {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+.orbita__barra {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 8px;
+}
+.orbita__llenc {
+  position: relative;
+  flex: 1 1 auto;
+  min-height: clamp(300px, 46svh, 500px);
+  overflow: clip;
+  /* Gira solo y se para con el raton; el arrastre vertical sigue desplazando la pagina. */
+  touch-action: pan-y;
+  cursor: grab;
+}
+.orbita__llenc canvas {
+  display: block;
+  outline: none;
+}
+.orbita__peu {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 14px;
+  min-height: 44px;
+}
+.orbita__peu > .min-w-0 {
+  flex: 1 1 auto;
+}
+.orbita__boto {
+  flex: none;
+  width: clamp(7.5rem, 42%, 11rem);
+}
+
 /* ---------- Menu en movil ----------
    Hoja inferior (components/MenuMobil.tsx). Es un <dialog> modal, asi que vive en la capa
    superior del navegador y no le afectan el blur ni el z-index de la cabecera. Sube en
