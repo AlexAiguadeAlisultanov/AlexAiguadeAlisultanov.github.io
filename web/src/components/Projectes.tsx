@@ -19,8 +19,10 @@ import {
 import { BotoDemo, CTA, progres } from "./BotoDemo";
 import { Captura } from "./Captura";
 import { Carrusel } from "./Carrusel";
+import { Galeria3D } from "./galeria/Galeria3D";
+import { anell } from "./galeria/formes";
 import { GitHub } from "./Icones";
-import { Entrada } from "./Moviment";
+import { Entrada, useMovil } from "./Moviment";
 
 // Etiqueta pequena en mayusculas, con la medida de las de la portada (.portada__etiqueta).
 const ETIQUETA = "text-[12px] font-medium uppercase leading-normal tracking-[0.14em] text-tinta-3";
@@ -90,7 +92,7 @@ function Targeta({ dades }: { dades: Projecte }) {
   // La captura tambien abre la demo, pero solo con el raton o el dedo: para el teclado y
   // los lectores de pantalla ya esta el boton, y asi no hay dos paradas iguales.
   let marc: ReactNode;
-  const classeMarc = "captura-marc relative block aspect-[16/10] overflow-hidden border-b border-linia bg-fons-3";
+  const classeMarc = "captura-marc relative block aspect-[16/10] shrink-0 overflow-hidden border-b border-linia bg-fons-3";
   if (dades.demo && enMarxa) {
     marc = (
       <a
@@ -273,6 +275,13 @@ function Capcalera() {
 export function Projectes() {
   const { t } = useIdioma();
   const { llista, estat } = useProjectesCtx();
+  const quiet = useReducedMotion();
+  const movil = useMovil();
+  // En escritorio y tableta, el anillo giratorio en 3D. En el movil y con movimiento reducido
+  // cae al carrusel plano de siempre, usable y sin giro.
+  const tresD = !quiet && !movil;
+
+  const tarjetes = llista.map((dades) => <Targeta key={dades.nom} dades={dades} />);
 
   return (
     <>
@@ -288,11 +297,22 @@ export function Projectes() {
         </p>
       ) : null}
 
-      <Carrusel>
-        {llista.map((dades) => (
-          <Targeta key={dades.nom} dades={dades} />
-        ))}
-      </Carrusel>
+      {tresD ? (
+        <Entrada>
+          <Galeria3D
+            variant="gal3d--anell"
+            colocar={anell}
+            perspectiva={3200}
+            autoPasos={0.13}
+            alturaEscenari={(alt) => Math.round(alt * 1.22 + 32)}
+            etiqueta={t("car.aria")}
+          >
+            {tarjetes}
+          </Galeria3D>
+        </Entrada>
+      ) : (
+        <Carrusel>{tarjetes}</Carrusel>
+      )}
     </>
   );
 }
