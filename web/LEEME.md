@@ -186,6 +186,10 @@ la API, no el navegador.
 - **`relat/tabla.ts` es la única fuente de la coreografía, y sus cifras salen de los altos de la
   historia** (titular de 60svh y cuatro bloques de 80svh, 380svh en total). Si cambia un alto en
   `index.css`, hay que recalcular `CENTRO` y `OPACIDAD` con la cuenta que explica el fichero.
+  Todo lo que mueve el chip es una función continua de q y p (posición, tamaño, máscara,
+  despiece, peso de cada capa y brillo): entre punto y punto se pasa con curva y lo que acaba
+  la portada empalma con lo que empieza la historia. Un escalón en una tabla se ve como un salto
+  del chip. Por eso tampoco sube con el scroll: sale de donde estaba el retrato y se desliza.
 - **La placa del fondo no se pinta detrás de `[data-tapa]`.** `#dalt` lo lleva siempre; en la
   película `#escenari` lleva `data-tapa="tot"`, que tapa hasta su final aunque quede por debajo
   de la ventana. Así la placa no asoma durante la historia y vuelve con el fundido de 160 px

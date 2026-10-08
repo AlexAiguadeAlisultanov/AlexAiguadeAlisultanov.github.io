@@ -16,8 +16,10 @@
 //
 // Modo pelicula (escritorio, ver relat/Escenari.tsx): el lienzo vive en una capa fijada que
 // cubre la portada y la historia, y la escena recibe dos recorridos de scroll, q (la portada
-// saliendo) y p (la historia). Con q el chip sale de detras del retrato y viaja al 62 % / 50 %
-// de la capa; con p se despieza por capas, una por capitulo, y al final se vuelve a montar.
+// saliendo) y p (la historia). Con q el chip se queda donde estaba el retrato mientras este se
+// va con la pagina, y se desliza hasta el 62 % / 50 % de la capa encogiendo y empezando a
+// separarse; con p se despieza por capas, una por capitulo, y al final se vuelve a montar.
+// Todo sale de funciones continuas de q y p, asi que es un solo movimiento, bajando o subiendo.
 // Todo eso va detras de `if (progres)`: sin progres la portada se comporta como siempre. Las
 // cifras de la coreografia estan en relat/tabla.ts.
 //
@@ -44,7 +46,7 @@ import {
   Vector4,
   WebGLRenderer
 } from "three";
-import { PESOS, PESOS_MS, RAFAGA, SEP, VIAJE, forca, pesos, tramos, ventana } from "./relat/tabla";
+import { PESOS_MS, RAFAGA, SEP, VIAJE, forca, pesos, suau, tramos, ventana } from "./relat/tabla";
 
 /* ---------- Ajustes ---------- */
 
@@ -472,13 +474,14 @@ export default function Escena({ onFalla, ancla, sortida, progres }: Props) {
       if (my !== maskY) canvas.style.setProperty("--my", (maskY = my));
     };
 
-    /** Pelicula: el ancla va del retrato al 62 % / 50 % de la capa, y el lado del chip, de 2,1
-     *  veces el retrato a min(58svh, 40vw), interpolado en logaritmo para que el cambio de
-     *  tamaño se vea igual de suave al principio que al final. */
+    /** Pelicula: el ancla va de donde esta el retrato con la pagina arriba al 62 % / 50 % de la
+     *  capa, y el lado del chip, de 2,1 veces el retrato a min(58svh, 40vw), interpolado en
+     *  logaritmo para que encoja igual de suave al principio que al final. El chip no sube con
+     *  el scroll: se queda y se desliza mientras el retrato se va y lo deja a la vista. */
     const situarPelicula = (caixa: DOMRect, perPixel: number) => {
       const q = sortida ? sortida.get() : 1;
       qSituada = q;
-      const s = ventana(q, VIAJE.desde, 1);
+      const s = suau(q);
       const fx = caixa.left + caixa.width * VIAJE.ancla[0];
       const fy = caixa.top + caixa.height * VIAJE.ancla[1];
       const ladoFinal = Math.max(1, Math.min(VIAJE.lado.svh * window.innerHeight, VIAJE.lado.vw * window.innerWidth));
@@ -487,8 +490,9 @@ export default function Escena({ onFalla, ancla, sortida, progres }: Props) {
       let lado0 = ladoFinal;
       const foto = retrat()?.getBoundingClientRect();
       if (foto && foto.width > 0) {
+        // Se le suma lo que ha subido la pagina: es su sitio con el scroll arriba (con el iman).
         x0 = foto.left + foto.width / 2;
-        y0 = foto.top + foto.height / 2;
+        y0 = foto.top + foto.height / 2 + window.scrollY;
         lado0 = foto.width * MIDA_RESPECTE_FOTO;
       }
       const x = x0 + (fx - x0) * s;
@@ -579,27 +583,46 @@ export default function Escena({ onFalla, ancla, sortida, progres }: Props) {
     let rafaga = 0;
     const centre = new Vector3();
 
-    // Estado de la pelicula. El puntero despieza el chip solo al principio del viaje; despues
-    // manda p. Los pesos se acercan a los del capitulo en unos 200 ms.
-    let obrirPunter = SEPARACION_REPOSO;
+    // Estado de la pelicula. Todo sale de q y p con funciones continuas: el despiece va de 0,22
+    // a 0,36 durante el viaje y luego sigue SEP; el del puntero se apaga con curva entre q = 0 y
+    // 0,3, igual que la inclinacion baja a la mitad; los pesos y el brillo siguen sus tablas.
+    let punterX = 0;
+    let punterY = 0;
+    let punterDins = false;
     let inclina = 1;
     let brillo = 1;
     let pAnterior = progres ? progres.get() : 0;
     let rafagaArmada = pAnterior < RAFAGA.en;
     const pes = uniformes.uPes.value;
+    const objectiu = [1, 1, 1, 1];
 
     const pelicula = (dt: number) => {
       if (!progres) return;
       const q = sortida ? sortida.get() : 1;
       const p = progres.get();
       const enHistoria = q >= 1;
-      destiObrir = enHistoria ? tramos(SEP, p) : q < VIAJE.puntero ? obrirPunter : SEPARACION_REPOSO;
-      inclina = q > VIAJE.puntero ? VIAJE.inclinacion : 1;
-      brillo = enHistoria ? forca(p) : 1;
+      const viatge = ventana(q, 0, VIAJE.puntero);
 
-      const w = enHistoria ? pesos(p) : PESOS.todo.w;
+      // La cercania del raton se mide en cada fotograma: el chip se mueve aunque el raton no.
+      let punter = 0;
+      if (punterDins && viatge < 1) {
+        const c = centrePantalla();
+        const f = Math.max(0, 1 - Math.hypot(punterX - c.x, punterY - c.y) / RADIO_CERCA);
+        punter = f * f * (1 - SEPARACION_REPOSO) * (1 - viatge);
+      }
+      const base = enHistoria ? tramos(SEP, p) : SEPARACION_REPOSO + (SEP[0][1] - SEPARACION_REPOSO) * suau(q);
+      destiObrir = Math.min(1, base + punter);
+      inclina = 1 - (1 - VIAJE.inclinacion) * viatge;
+      brillo = forca(p);
+
+      pesos(p, objectiu);
       const k = 1 - Math.exp((-3000 * dt) / PESOS_MS);
-      pes.set(pes.x + (w[0] - pes.x) * k, pes.y + (w[1] - pes.y) * k, pes.z + (w[2] - pes.z) * k, pes.w + (w[3] - pes.w) * k);
+      pes.set(
+        pes.x + (objectiu[0] - pes.x) * k,
+        pes.y + (objectiu[1] - pes.y) * k,
+        pes.z + (objectiu[2] - pes.z) * k,
+        pes.w + (objectiu[3] - pes.w) * k
+      );
 
       // La rafaga sale una vez al pasar por 0,64 bajando y se rearma al volver por debajo de
       // 0,61: rondar el umbral con la rueda no la dispara en bucle.
@@ -657,7 +680,7 @@ export default function Escena({ onFalla, ancla, sortida, progres }: Props) {
       // en cada fotograma; si no, el chip se quedaria atras.
       if (progres) {
         const q = sortida ? sortida.get() : 1;
-        if ((q > 0 && q < 1) || q !== qSituada || mostres % 10 === 0) situar();
+        if (q < 1 || q !== qSituada || mostres % 10 === 0) situar();
       } else if (mostres % 10 === 0) {
         situar();
       }
@@ -700,13 +723,18 @@ export default function Escena({ onFalla, ancla, sortida, progres }: Props) {
     const moure = (event: PointerEvent) => {
       destiX = event.clientX / window.innerWidth - 0.5;
       destiY = event.clientY / window.innerHeight - 0.5;
+      if (progres) {
+        // En la pelicula la cercania se calcula en el bucle (ver pelicula()).
+        punterX = event.clientX;
+        punterY = event.clientY;
+        punterDins = true;
+        return;
+      }
       // Cuanto mas cerca del chip, mas se despieza.
       const c = centrePantalla();
       const d = Math.hypot(event.clientX - c.x, event.clientY - c.y);
       const f = Math.max(0, 1 - d / RADIO_CERCA);
-      const separacio = SEPARACION_REPOSO + f * f * (1 - SEPARACION_REPOSO);
-      if (progres) obrirPunter = separacio;
-      else destiObrir = separacio;
+      destiObrir = SEPARACION_REPOSO + f * f * (1 - SEPARACION_REPOSO);
     };
 
     // La rafaga del clic es cosa de la portada. En la pelicula el lienzo cubre la ventana
@@ -722,7 +750,7 @@ export default function Escena({ onFalla, ancla, sortida, progres }: Props) {
 
     const sortir = (event: MouseEvent) => {
       if (event.relatedTarget) return;
-      if (progres) obrirPunter = SEPARACION_REPOSO;
+      if (progres) punterDins = false;
       else destiObrir = SEPARACION_REPOSO;
     };
 
