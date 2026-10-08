@@ -12,10 +12,11 @@
 // pasar por el estado de React.
 //
 // Tiene dos formas. La de siempre sangra hasta los bordes de la ventana (proyectos). La
-// compacta (compacte) queda contenida en su columna, con piezas pequenas (la portada pone en
-// cada una una columna de dos tarjetas), sin entrada propia y con un hueco a la izquierda de
-// los botones para una accion suya (la portada pone ahi "despertar todas"). En las dos la
-// logica, las medidas y las garantias son las mismas: lo que cambia entre ellas vive en el CSS.
+// compacta (compacte) queda contenida en su columna, con piezas que son una columna de dos
+// tarjetas verticales (es lo que pone la portada), sin entrada propia y con un hueco a la
+// izquierda de los botones para una accion suya (la portada pone ahi "despertar todas"). En las
+// dos la logica, las medidas y las garantias son las mismas: lo que cambia entre ellas vive en
+// el CSS.
 //
 // Por que lado entran las piezas al avanzar sola la cinta lo decide `entra`. De siempre es por
 // la izquierda (las piezas se desplazan hacia la derecha). Con entra="dreta" es al reves: las

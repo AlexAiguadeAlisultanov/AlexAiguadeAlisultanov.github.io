@@ -273,21 +273,25 @@ img { max-width: 100%; display: block; }
 
 /* ---------- Carrusel compacto (portada) ----------
    Contenido en su columna: no sangra hasta los bordes de la ventana. Cada pieza es una columna
-   de dos tarjetas horizontales (components/Portada.tsx) y mide lo que la ventana dicta menos
+   de dos tarjetas verticales (components/Portada.tsx) y mide lo que la ventana dicta menos
    un resto, para que el principio de la siguiente asome y avise de que hay mas (cqw es el
-   ancho de la ventana del carrusel). Con tope de 30 rem: en pantallas muy anchas la columna no
+   ancho de la ventana del carrusel). Con tope de 40 rem: en pantallas muy anchas la columna no
    se estira, asoma mas de la siguiente. El hueco se queda en 16 px; con el resaltado de raton
-   (2 % hacia la vecina, que retrocede un 1 %) pierde como mucho 5 px, asi que no se tocan.
-   La barra de botones solo sale con ancho para ello: en el movil se desliza con el dedo. */
+   (1,5 % hacia la vecina, que retrocede un 0,75 %) pierde como mucho 7 px, asi que no se tocan.
+   La barra de botones solo sale con ancho para ello: en el movil se desliza con el dedo.
+
+   --col es el ancho de una pieza. Va en una variable porque lo necesitan dos sitios: la pieza
+   (su width) y la captura de la tarjeta, que calcula su alto a partir de el. */
 
 .carrusel--compacte {
+  --col: clamp(15rem, calc(100cqw - 56px), 40rem);
   margin-inline: 0;
   padding-block: 8px;
   container-type: inline-size;
 }
 
 .carrusel--compacte .carrusel__cinta { gap: 16px; }
-.carrusel--compacte .carrusel__peca { width: clamp(15rem, calc(100cqw - 56px), 30rem); }
+.carrusel--compacte .carrusel__peca { width: var(--col); }
 
 .carrusel--compacte.carrusel--quiet { scroll-padding-inline: 0; }
 .carrusel--compacte.carrusel--quiet .carrusel__cinta { padding-inline: 0; }
@@ -307,9 +311,9 @@ img { max-width: 100%; display: block; }
 /* En el movil la fila llega al borde derecho de la ventana (el margen negativo es el de la
    pagina) y la primera columna arranca alineada con el texto; la segunda asoma. */
 @media (max-width: 767px) {
-  .carrusel--compacte { margin-right: calc(-1 * var(--marc)); }
-  .carrusel--compacte .carrusel__peca {
-    width: max(15rem, min(calc(100cqw - var(--marc) - 32px), 28rem));
+  .carrusel--compacte {
+    --col: max(15rem, min(calc(100cqw - var(--marc) - 32px), 28rem));
+    margin-right: calc(-1 * var(--marc));
   }
   .carrusel--compacte.carrusel--quiet .carrusel__cinta { padding-right: var(--marc); }
 }
@@ -334,11 +338,13 @@ img { max-width: 100%; display: block; }
   filter: brightness(0.55);
 }
 
-/* En el compacto la pieza es una columna de dos tarjetas: sube y se aparta menos (un 2 %), y
-   solo la tarjeta que tiene el raton encima lleva el borde del acento. */
-.carrusel--compacte .carrusel__peca[data-calenta] .carrusel__cos { transform: scale(1.02); }
+/* En el compacto la pieza es una columna de dos tarjetas: sube y se aparta menos (un 1,5 %), y
+   solo la tarjeta que tiene el raton encima lleva el borde del acento. Con la columna tan alta
+   (casi 960 px a 2560) un 2 % le sacaba mas de 8 px por arriba y por abajo, que es el margen
+   que le deja la ventana, y el borde se cortaba. Un 1,5 % son 7 px en el peor caso. */
+.carrusel--compacte .carrusel__peca[data-calenta] .carrusel__cos { transform: scale(1.015); }
 .carrusel--compacte .carrusel__cinta[data-calenta] .carrusel__peca:not([data-calenta]) .carrusel__cos {
-  transform: scale(0.98);
+  transform: scale(0.985);
 }
 .carrusel--compacte .carrusel__peca[data-calenta] .targeta { border-color: var(--color-linia); }
 .carrusel--compacte .carrusel__peca[data-calenta] .targeta:hover {
@@ -383,6 +389,13 @@ img { max-width: 100%; display: block; }
 .targeta:focus-within .captura--plana {
   transform: scale(1.05);
   transition: transform 1.4s var(--ease-suau);
+}
+
+/* En la tarjeta de la portada el marco es mas apaisado que 16:10 y su alto cambia con la
+   ventana (--alt, en .portada__captura): se recorre justo lo que sobra, sea cuanto sea. */
+.portada__targeta:hover .captura--alta,
+.portada__targeta:focus-within .captura--alta {
+  transform: translateY(min(0px, calc(var(--alt) - 100%)));
 }
 
 /* Fundido abajo para que la captura se asiente en la tarjeta. */
@@ -644,49 +657,68 @@ html:has(.menu-fulla[open]) { overflow: hidden; }
 
 .portada__col > :only-child { grid-row: 1 / -1; }
 
-/* Tarjeta horizontal: la captura a la izquierda, siempre 16:10, y el texto a la derecha. Manda
-   el texto: se le reservan 192 px, que es lo que mide "Planificador Volkswagen" en una linea,
-   y la captura se queda con el resto, entre 88 y 168 px. Va centrada en vertical; el texto se
-   estira y deja el boton abajo. */
+/* Tarjeta vertical: la captura arriba, tan ancha como la tarjeta (menos 26 px de relleno y
+   borde), y debajo el nombre, el stack y el boton. El texto estira y deja el boton abajo, asi
+   que los botones de las tarjetas de una misma fila quedan a la misma altura aunque una lleve
+   nota. */
 .portada__targeta {
-  display: grid;
-  grid-template-columns: clamp(88px, calc(100% - 204px), 168px) minmax(0, 1fr);
-  align-items: center;
+  display: flex;
+  flex-direction: column;
   gap: 12px;
   height: 100%;
   padding: 12px;
 }
 
-.portada__captura { aspect-ratio: 16 / 10; }
+/* Alto de la captura. Mas ancha que alta, con el recorte por abajo (object-position: top) para
+   que se vea la cabecera de la aplicacion. --alt es el alto y lo lee tambien el recorrido de las
+   capturas altas al pasar el raton (index.css, "Tarjeta de proyecto"). --col es lo que mide la
+   columna del carrusel (la declara .carrusel--compacte). En el movil, 16:9 de lo que mida. */
+.portada__captura {
+  --alt: calc((var(--col) - 26px) * 9 / 16);
+  flex: none;
+  height: var(--alt);
+}
 
 .portada__text {
   display: flex;
+  flex: 1 1 auto;
   flex-direction: column;
-  align-self: stretch;
 }
 
-/* En el movil la columna es mas estrecha: el hueco entre la captura y el texto baja a 8 px y se
-   reservan 190 px para el texto, que es lo que necesita "Volkswagen build planner" en una linea.
-   Los telefonos pequenos se quedan en la captura minima (y ahi ese titulo pasa a dos lineas) y los
-   grandes la estiran hasta 112. */
-@media (max-width: 767px) {
-  .portada__targeta {
-    grid-template-columns: clamp(88px, calc(100% - 198px), 112px) minmax(0, 1fr);
-    gap: 8px;
-  }
+/* Stack a la izquierda y, si la hay, la nota a la derecha. Si juntos no caben, la nota baja. */
+.portada__pila {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  column-gap: 12px;
+  margin-top: 2px;
+  font-size: 13px;
+  line-height: 18px;
+  color: var(--color-tinta-3);
 }
 
-/* "Ver todos los proyectos": la ultima tarjeta, con la salida hacia #projectes. El anillo de
-   foco global le quitaria el radio, asi que se lo devolvemos, y va por dentro del borde: la
-   ventana del carrusel recorta lo que sobresale, y esta tarjeta llega justo al borde cuando el
-   foco la trae a la vista. */
+/* "Ver todos los proyectos": la ultima tarjeta, con la salida hacia #projectes. Mide lo mismo
+   que las demas y se reparte en dos: el numero de proyectos en contorno arriba y el enlace
+   abajo. El anillo de foco global le quitaria el radio, asi que se lo devolvemos, y va por
+   dentro del borde: la ventana del carrusel recorta lo que sobresale, y esta tarjeta llega
+   justo al borde cuando el foco la trae a la vista. */
 .portada__tots {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 12px;
+  height: 100%;
+  padding: 20px;
+}
+
+.portada__tots-num { align-self: flex-start; }
+
+.portada__tots-pie {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  height: 100%;
-  padding: 12px 16px 12px 20px;
 }
 
 .portada__tots:focus-visible {
@@ -722,6 +754,11 @@ html:has(.menu-fulla[open]) { overflow: hidden; }
   .portada__reixa {
     --retrat: clamp(96px, 11.7vw, 120px);
     --ritme: 24px;
+    /* Lo que no es captura, para calcular el alto de las capturas (.portada__captura): el relleno
+       de arriba y de abajo de la portada y lo que ocupa la cabecera del bloque de demos (titulo,
+       nota y barra de botones, hasta la primera tarjeta). */
+    --pad-v: 96px;
+    --cap: 104px;
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 40px;
   }
@@ -831,11 +868,16 @@ html:has(.menu-fulla[open]) { overflow: hidden; }
 }
 
 @media (min-width: 1280px) {
+  /* Menos relleno: la columna de las demos aprovecha casi todo el alto de la portada. */
+  .portada { padding-block: 16px 24px; }
+
   .portada__reixa {
-    /* El retrato crece con la columna central (3/12 del ancho util) sin llegar a tocar las
-       otras dos. */
-    --retrat: clamp(240px, calc(23.3vw - 28px), 340px);
-    grid-template-columns: minmax(0, 4.5fr) minmax(0, 3fr) minmax(0, 4.5fr);
+    /* El retrato sigue a la columna central (2,7 de 12,1 partes del ancho util) sin llegar a
+       tocar las otras dos. */
+    --retrat: clamp(224px, calc(20.4vw - 20px), 340px);
+    --pad-v: 40px;
+    /* La columna de las demos es la mas ancha: ahi viven las capturas. */
+    grid-template-columns: minmax(0, 4.4fr) minmax(0, 2.7fr) minmax(0, 5fr);
     align-items: center;
   }
 
@@ -859,12 +901,26 @@ html:has(.menu-fulla[open]) { overflow: hidden; }
   .portada__h1 { font-size: min(5.6vw, 9.6svh); }
 }
 
-/* Pantallas anchas pero bajas (1366 x 768, 1280 x 720): se aprieta el ritmo vertical y la
-   ficha pierde la segunda linea de cada celda. Lo que sobra (los chips del stack, la pista)
-   se queda por debajo del pliegue. */
+/* Pantallas anchas pero bajas (1366 x 768, 1280 x 720): se aprieta el ritmo vertical, la
+   ficha pierde la segunda linea de cada celda y la nota de las demos sigue ahi para los
+   lectores de pantalla pero ya no se ve (la cabecera del bloque pierde sus 25 px). Lo que
+   sobra (los chips del stack, la pista) se queda por debajo del pliegue. */
 @media (min-width: 1280px) and (max-height: 820px) {
-  .portada { padding-block: 24px 72px; }
-  .portada__reixa { --ritme: 16px; }
+  .portada__reixa {
+    --ritme: 16px;
+    --cap: 79px;
+  }
+
+  .portada__nota {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
   .portada__h1 { font-size: min(5vw, 10svh); }
 
   .portada__lema {
@@ -874,6 +930,30 @@ html:has(.menu-fulla[open]) { overflow: hidden; }
 
   .fitxa__cel { padding: 10px 14px; }
   .fitxa__n { display: none; }
+}
+
+/* Alto de las capturas con ventana de escritorio. La captura quiere ser 16:9, pero las dos
+   tarjetas de la primera columna tienen que caber enteras en el primer pantallazo, asi que su
+   alto no pasa de lo que deja la ventana: se resta lo que no es captura (la cabecera de 56 px,
+   el relleno de la portada, la cabecera del bloque, lo que mide una tarjeta sin su captura,
+   el hueco de 12 px entre las dos y los 16 px de la ventana del carrusel) y el resto se reparte
+   entre las dos. Nunca baja de 2,8:1, que ya es una tira: por debajo de eso la segunda
+   tarjeta se corta por abajo antes que aplastar las capturas. Una tarjeta sin captura mide
+   132 px: 26 de relleno y borde, 12 de hueco, 90 de texto (22 de nombre, 2, 18 de stack, 8 y
+   el boton de 40) y 4 de holgura para el boton de 44 del dedo. En el movil no hay nada que
+   restar: la pagina baja, y 16:9 de lo que mida la columna. */
+@supports (height: 1svh) {
+  @media (min-width: 768px) {
+    .portada__captura {
+      --alt: max(
+        calc((var(--col) - 26px) / 2.8),
+        min(
+          calc((var(--col) - 26px) * 9 / 16),
+          calc((100svh - var(--barra) - var(--pad-v) - var(--cap) - 2 * 132px - 28px) / 2)
+        )
+      );
+    }
+  }
 }
 
 /* ---------- Historia (en flujo normal) ----------
