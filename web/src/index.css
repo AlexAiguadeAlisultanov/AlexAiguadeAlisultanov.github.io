@@ -907,8 +907,10 @@ html:has(.menu-fulla[open]) { overflow: hidden; }
   background: color-mix(in srgb, var(--color-fons-2) 92%, transparent);
 }
 
+/* El hueco crece con el numero en contorno: con 96 px e interlineado de 0,8 su caja de texto
+   bajaba 5 px sobre la del titulo. No se tocaban los trazos, pero si las cajas. */
 .historia__nom {
-  margin-top: 12px;
+  margin-top: clamp(12px, 1.4vw, 20px);
   font-size: clamp(1.75rem, 3.2vw, 3rem);
 }
 
@@ -1019,6 +1021,96 @@ html:has(.menu-fulla[open]) { overflow: hidden; }
 .historia--pelicula .historia__tarjeta { max-width: 44ch; }
 .historia--pelicula .historia__tarjeta--fi { max-width: 32rem; }
 .historia--pelicula .historia__frase { font-size: clamp(1.25rem, 1.7vw, 1.75rem); }
+
+/* El rail de la pelicula (relat/Rail.tsx), abajo a la derecha: cuatro segmentos de 48 x 2 px
+   con 8 px entre ellos, cada uno dentro de un boton de 44 px de alto, y la salida a los
+   proyectos. El nombre sale encima al pasar el raton o con el foco. */
+.rail {
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+  z-index: 40;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  transition: opacity 0.2s var(--ease-suau);
+}
+
+.rail[data-visible="false"] {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.rail__llista {
+  display: flex;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.rail__boto {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 44px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.rail__pista {
+  position: relative;
+  width: 48px;
+  height: 2px;
+  overflow: hidden;
+  border-radius: 9999px;
+  background: var(--color-linia);
+}
+
+.rail__ple {
+  position: absolute;
+  inset: 0;
+  background: var(--color-accent);
+  transform-origin: left;
+}
+
+.rail__boto[aria-current="step"] .rail__pista { background: #3C3C44; }
+
+.rail__nom {
+  position: absolute;
+  bottom: calc(100% + 4px);
+  left: 50%;
+  padding: 4px 8px;
+  border: 1px solid var(--color-linia);
+  border-radius: 8px;
+  background: var(--color-fons-2);
+  font-size: 13px;
+  line-height: 1.4;
+  white-space: nowrap;
+  color: var(--color-tinta);
+  opacity: 0;
+  transform: translate(-50%, 4px);
+  transition: opacity 0.2s var(--ease-suau), transform 0.2s var(--ease-suau);
+  pointer-events: none;
+}
+
+.rail__boto:hover .rail__nom,
+.rail__boto:focus-visible .rail__nom {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
+
+.rail__salt {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  font-size: 14px;
+  color: var(--color-tinta-2);
+  transition: color 0.2s var(--ease-suau);
+}
+
+.rail__salt:hover { color: var(--color-tinta); }
 
 /* ---------- Trayectoria ----------
    Dos columnas con un filete vertical a la izquierda. El filete cian crece con el scroll

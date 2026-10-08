@@ -86,7 +86,6 @@ web/
       Portafoli.tsx     cabecera, contacto, pie y el montaje de la página
       MenuMobil.tsx     la hoja del menú en el móvil
       Portada.tsx       la portada: ficha, contacto rápido, retrato y carrusel de demos
-      Historia.tsx      la historia en flujo normal: hardware, software y seguridad
       XipCapes.tsx      las capas del chip dibujadas en SVG, marca de cada capítulo
       Projectes.tsx     tarjetas de proyecto y panel de arranque de las demos
       Carrusel.tsx      la cinta de tarjetas: la de proyectos y la compacta de la portada
@@ -96,8 +95,15 @@ web/
       Titol.tsx         encabezado de sección con el número en contorno
       Curriculum.tsx    la vista #cv
       Moviment.tsx      entrada escalonada, imán, fondo y anillo del puntero
-      Fons3D.tsx        decide si la portada lleva escena o fondo estático, y carga three
-      Escena.tsx        la malla de nodos en 3D, con sus shaders y su bucle
+      Fons3D.tsx        decide si hay escena o fondo estático y carga three; exporta capac()
+      Escena.tsx        el procesador en 3D, con sus shaders y su bucle (portada y película)
+      relat/            la historia y el modo película
+        Escenari.tsx    #escenari: la capa fijada con la escena, los recorridos q y p y RelatCtx
+        Historia.tsx    #historia en los dos modos: película (380svh) o bloques en flujo normal
+        Rail.tsx        los cuatro segmentos de capítulo y «Saltar a los proyectos»
+        tabla.ts        la coreografía: cuándo se ve cada tarjeta y cuánto se despieza cada capa
+        usePelicula.ts  cuándo hay película y cuándo se vuelve al modo normal
+      fons/             el fondo animado de placa base (motor.tsx y placa.ts)
       Idiomes.tsx       selector de idioma
       Icones.tsx        iconos de línea y banderas, todo dibujado a mano
 ```
@@ -127,6 +133,8 @@ la API, no el navegador.
   recortado al círculo (sin margen transparente): el chip sale a 2,1 veces el retrato.
   `alex-400.webp` y `alex-800.webp` salen de `Img/alex.png` (el de la raíz del repositorio, que
   es el original) pasado por un canvas, recortado a su círculo y codificado a calidad 0,85.
+  En la película la escena no lo busca: `Escenari` le pasa la ref `retrat`, que la portada
+  pone en ese mismo `<img>`.
 - **Hay dos carruseles y comparten código.** El de `#projectes` sangra hasta los bordes de la
   ventana; el de la portada es la variante `compacte` de `Carrusel.tsx`, contenida en su
   columna. En el móvil la de la portada es la fila quieta con snap (`quieta`). Cualquier
@@ -159,6 +167,32 @@ la API, no el navegador.
   núcleos y memoria antes de pedir el módulo; debajo siempre hay un fondo estático de CSS
   que ya es un fondo acabado. Con `prefers-reduced-motion` se dibuja un fotograma y se
   para, y el bucle se detiene con la pestaña oculta o cuando la portada sale de pantalla.
+- **El modo película solo existe en escritorio y siempre tiene salida.** `relat/usePelicula.ts`
+  lo enciende con 1024 px o más, ratón, sin movimiento reducido y con `capac()`. Si la escena
+  falla (contexto perdido, un shader que no compila, el módulo que no llega o una excepción en
+  el bucle), la página vuelve al modo normal en el mismo fotograma y deja a la vista lo que se
+  estaba leyendo: nunca puede quedar el hueco de 380svh sin escena. En `Escena.tsx` todo lo de
+  la película va detrás de `if (progres)`; sin esa prop la portada sale idéntica, píxel a
+  píxel, a la de antes.
+- **q y p se calculan en un listener de scroll propio, en `Escenari`, y no con `useScroll`.**
+  Framer actualiza `useScroll` en su propio fotograma, después de que la escena haya leído el
+  valor, y el chip se quedaba un fotograma por detrás del retrato. El evento de scroll llega
+  antes que los `requestAnimationFrame` del mismo fotograma.
+- **La capa fijada va dentro de una pista absoluta (`.escenari__pista`) del alto de
+  `#escenari`**, no en el flujo con un margen inferior negativo. Chrome limita el sticky por la
+  caja de margen, y con ese margen la capa se salía 844 px del escenario y seguía fijada encima
+  de Proyectos. La pista no puede llevar `overflow`: sería el contenedor del sticky y la capa
+  dejaría de fijarse a la ventana.
+- **`relat/tabla.ts` es la única fuente de la coreografía, y sus cifras salen de los altos de la
+  historia** (titular de 60svh y cuatro bloques de 80svh, 380svh en total). Si cambia un alto en
+  `index.css`, hay que recalcular `CENTRO` y `OPACIDAD` con la cuenta que explica el fichero.
+- **La placa del fondo no se pinta detrás de `[data-tapa]`.** `#dalt` lo lleva siempre; en la
+  película `#escenari` lleva `data-tapa="tot"`, que tapa hasta su final aunque quede por debajo
+  de la ventana. Así la placa no asoma durante la historia y vuelve con el fundido de 160 px
+  cuando la capa se suelta. Si lo tapado cubre la ventana entera, `motor.tsx` ni pinta.
+- **El rail va abajo a la derecha a propósito.** Las tarjetas suben por la columna de la
+  izquierda y un rail fijo en esa esquina se cruzaba con todas. Fuera de la historia se apaga y
+  queda `inert`, así que el tabulador no se para en botones que no se ven.
 - **El trozo de `three` pesa unos 130 kB comprimidos y va en su propio fichero.** Se pide
   después de pintar la página, así que la primera carga sigue costando lo mismo que antes.
   Si se importa three desde cualquier otro sitio, ese trozo se cuela en el bundle principal.

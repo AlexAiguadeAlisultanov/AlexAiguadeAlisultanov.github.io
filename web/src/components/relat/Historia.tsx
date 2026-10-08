@@ -21,6 +21,7 @@ import { Entrada } from "../Moviment";
 import { XipCapes } from "../XipCapes";
 import type { Capa } from "../XipCapes";
 import { useRelat } from "./Escenari";
+import { Rail } from "./Rail";
 import { CENTRO, CIERRE, TITULAR, opacidad, ventana } from "./tabla";
 
 type Xip = string | { clau: Clau };
@@ -146,6 +147,8 @@ export function Historia() {
 
   return (
     <section id="historia" className={pelicula ? "historia historia--pelicula" : "historia"}>
+      {/* El rail va fijo en pantalla; aqui solo cuenta su sitio en el orden del tabulador. */}
+      {pelicula ? <Rail /> : null}
       <div className="ample">
         <div ref={titol} className="historia__cap" data-ancora>
           {pelicula ? (
