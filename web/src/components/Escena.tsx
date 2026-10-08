@@ -72,7 +72,7 @@ import {
   tramos,
   tramos8
 } from "./relat/despiece";
-import { VIAJE, ventana } from "./relat/tabla";
+import { VIAJE, sitioFinal, ventana } from "./relat/tabla";
 import { FINESTRA, NOMS, ROTOLS } from "./relat/rotols";
 
 /* ---------- Ajustes ---------- */
@@ -791,9 +791,11 @@ export default function Escena({ onFalla, ancla, sortida, progres }: Props) {
       const q = sortida ? sortida.get() : 1;
       qSituada = q;
       const s = suau(q);
-      const fx = caixa.left + caixa.width * VIAJE.ancla[0];
+      // Con la ventana estrecha el chip se aparta de la tarjeta y se encoge (ver VIAJE.estrecha).
+      const sitio = sitioFinal(window.innerWidth);
+      const fx = caixa.left + caixa.width * sitio.ancla;
       const fy = caixa.top + caixa.height * VIAJE.ancla[1];
-      const ladoFinal = Math.max(1, Math.min(VIAJE.lado.svh * window.innerHeight, VIAJE.lado.vw * window.innerWidth));
+      const ladoFinal = Math.max(1, Math.min(VIAJE.lado.svh * window.innerHeight, sitio.vw * window.innerWidth));
       let x0 = fx;
       let y0 = fy;
       let lado0 = ladoFinal;

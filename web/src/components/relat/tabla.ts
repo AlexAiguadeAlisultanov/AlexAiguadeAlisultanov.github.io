@@ -52,6 +52,11 @@ export const VIAJE = {
   ancla: [0.62, 0.5],
   /** Lado final del encapsulado: min(58svh, 40vw). Sale a 2,1 veces el retrato. */
   lado: { svh: 0.58, vw: 0.4 },
+  /** Con la ventana estrecha (de 1024 a 1280 px) la tarjeta ocupa casi media pantalla y se comia la
+   *  esquina izquierda del chip. De forma continua con el ancho, el chip se aparta a la derecha y
+   *  se encoge un poco: a 1024 px su centro esta al 70 % de la capa y su lado es 34vw. De 1280 en
+   *  adelante vale lo de siempre (ancla y lado de arriba). */
+  estrecha: { desde: 1024, hasta: 1280, ancla: 0.7, vw: 0.34 },
   /** Entre q = 0 y esta q se apaga, con curva, el despiece por cercania del puntero, y la
    *  inclinacion baja a la mitad. */
   puntero: 0.3,
@@ -62,6 +67,16 @@ export const VIAJE = {
 } as const;
 
 export const clamp01 = (x: number) => (x < 0 ? 0 : x > 1 ? 1 : x);
+
+/** Donde acaba el chip segun el ancho de la ventana: la fraccion horizontal de su centro y la
+ *  fraccion del ancho que da su lado. Ver VIAJE.estrecha. */
+export function sitioFinal(ancho: number): { ancla: number; vw: number } {
+  const { desde, hasta, ancla, vw } = VIAJE.estrecha;
+  // El exponente deja el chip cerca de su sitio estrecho mas tiempo: la tarjeta mide siempre lo
+  // mismo, asi que a 1180 px todavia le hace falta casi todo el apartado.
+  const t = clamp01((ancho - desde) / (hasta - desde)) ** 1.6;
+  return { ancla: ancla + (VIAJE.ancla[0] - ancla) * t, vw: vw + (VIAJE.lado.vw - vw) * t };
+}
 
 /** smoothstep: 0 hasta a, 1 desde b y una curva suave en medio. */
 export function ventana(x: number, a: number, b: number): number {

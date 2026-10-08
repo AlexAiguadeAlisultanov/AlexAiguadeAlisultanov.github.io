@@ -1100,6 +1100,12 @@ html:has(.menu-fulla[open]) { overflow: hidden; }
 
 .historia--pelicula .historia__tarjeta { max-width: 44ch; }
 .historia--pelicula .historia__tarjeta--fi { max-width: 32rem; }
+
+/* Con la ventana estrecha el cierre mide lo mismo que el resto de tarjetas: todas acaban en el
+   mismo borde y el chip (relat/tabla.ts, VIAJE.estrecha) cabe a la derecha de ese borde. */
+@media (max-width: 1279px) {
+  .historia--pelicula .historia__tarjeta--fi { max-width: 44ch; }
+}
 .historia--pelicula .historia__frase { font-size: clamp(1.25rem, 1.7vw, 1.75rem); }
 
 /* El rail de la pelicula (relat/Rail.tsx), abajo a la derecha: cuatro segmentos de 48 x 2 px
