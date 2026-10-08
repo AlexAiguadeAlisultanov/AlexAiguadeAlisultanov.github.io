@@ -19,6 +19,7 @@ import {
 import { BotoDemo, CTA, progres } from "./BotoDemo";
 import { Carrusel } from "./Carrusel";
 import { GitHub } from "./Icones";
+import { Entrada } from "./Moviment";
 
 // Etiqueta pequena en mayusculas, con la medida de las de la portada (.portada__etiqueta).
 const ETIQUETA = "text-[12px] font-medium uppercase leading-normal tracking-[0.14em] text-tinta-3";
@@ -244,32 +245,34 @@ function Capcalera() {
   const { comptes: c, apagat, despertarTotes } = useDespertarTotes();
 
   return (
-    <div className="mb-8 mt-6 flex flex-col gap-5 sm:mb-10 sm:mt-8 lg:flex-row lg:items-end lg:justify-between lg:gap-12">
-      <p className="max-w-[56ch] text-[15px] leading-relaxed text-tinta-2 sm:text-[16px]">
-        {t("proj.intro", { n: compte })}
-      </p>
+    <Entrada y={8} duracio={0.24} className="mb-8 mt-6 sm:mb-10 sm:mt-8">
+      <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between lg:gap-12">
+        <p className="max-w-[56ch] text-[15px] leading-relaxed text-tinta-2 sm:text-[16px]">
+          {t("proj.intro", { n: compte })}
+        </p>
 
-      {c.total > 0 ? (
-        <div className="flex shrink-0 flex-wrap items-center gap-x-5 gap-y-3 max-sm:justify-between">
-          {/* Cada vez que una contesta, el numero cambia y se anuncia solo. */}
-          <p role="status" className="flex items-center gap-2.5 text-[14px] tabular-nums text-tinta-2">
-            <span
-              aria-hidden
-              className={c.waking ? "pols" : `size-2 rounded-full ${c.on > 0 ? "bg-accent" : "bg-tinta-3"}`}
-            />
-            {t("proj.compte", { k: c.on, n: c.total })}
-          </p>
-          <button
-            type="button"
-            aria-disabled={apagat}
-            onClick={despertarTotes}
-            className="inline-flex min-h-11 items-center rounded-[8px] border border-accent/50 px-3 text-[14px] font-medium text-accent-2 transition-colors duration-200 hover:border-accent hover:bg-accent-bg aria-[disabled=true]:cursor-default aria-[disabled=true]:opacity-60 aria-[disabled=true]:hover:border-accent/50 aria-[disabled=true]:hover:bg-transparent"
-          >
-            {t("proj.totes")}
-          </button>
-        </div>
-      ) : null}
-    </div>
+        {c.total > 0 ? (
+          <div className="flex shrink-0 flex-wrap items-center gap-x-5 gap-y-3 max-sm:justify-between">
+            {/* Cada vez que una contesta, el numero cambia y se anuncia solo. */}
+            <p role="status" className="flex items-center gap-2.5 text-[14px] tabular-nums text-tinta-2">
+              <span
+                aria-hidden
+                className={c.waking ? "pols" : `size-2 rounded-full ${c.on > 0 ? "bg-accent" : "bg-tinta-3"}`}
+              />
+              {t("proj.compte", { k: c.on, n: c.total })}
+            </p>
+            <button
+              type="button"
+              aria-disabled={apagat}
+              onClick={despertarTotes}
+              className="inline-flex min-h-11 items-center rounded-[8px] border border-accent/50 px-3 text-[14px] font-medium text-accent-2 transition-colors duration-200 hover:border-accent hover:bg-accent-bg aria-[disabled=true]:cursor-default aria-[disabled=true]:opacity-60 aria-[disabled=true]:hover:border-accent/50 aria-[disabled=true]:hover:bg-transparent"
+            >
+              {t("proj.totes")}
+            </button>
+          </div>
+        ) : null}
+      </div>
+    </Entrada>
   );
 }
 
