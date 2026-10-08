@@ -48,6 +48,14 @@ type Fitxa = {
   destacat?: 1 | 2 | 3 | 4;
   /** Para probar la demo hay que crear una cuenta. */
   registre?: true;
+  /** Año en que empezó: el del primer commit del repositorio. */
+  anyInici?: number;
+  /** Cuántas personas lo hicieron, contando a Alex. Sin el campo, individual. */
+  persones?: number;
+  /** La pila entera, para los chips de la tarjeta grande. `tec` se queda corta a propósito: la leen las pequeñas. */
+  pila?: Tec[];
+  /** Lo que hizo Alex, dos o tres frases cortas. En los proyectos de equipo, su parte. */
+  aportacio?: Multi[];
 };
 
 const CONEGUTS: Record<string, Fitxa> = {
@@ -78,7 +86,26 @@ const CONEGUTS: Record<string, Fitxa> = {
       en: "Books, members and loans for a library."
     },
     captura: capLibros,
-    alta: true
+    alta: true,
+    anyInici: 2024,
+    pila: ["Java", "Spring Boot", "JPA", "Thymeleaf", "MySQL", "JavaScript"],
+    aportacio: [
+      {
+        es: "Libros, usuarios y los préstamos entre ellos",
+        ca: "Llibres, usuaris i els préstecs entre ells",
+        en: "Books, members and the loans between them"
+      },
+      {
+        es: "Buscar, filtrar y ordenar sin recargar",
+        ca: "Cercar, filtrar i ordenar sense recarregar",
+        en: "Search, filter and sort with no reload"
+      },
+      {
+        es: "Interfaz rehecha en 2026, en tres idiomas",
+        ca: "Interfície refeta el 2026, en tres idiomes",
+        en: "Interface rebuilt in 2026, in three languages"
+      }
+    ]
   },
   "qrcodegenerator": {
     titol: { es: "Taquilla de fútbol", ca: "Taquilla de futbol", en: "Football ticket office" },
@@ -96,7 +123,27 @@ const CONEGUTS: Record<string, Fitxa> = {
       en: "Football tickets with a QR code for the gate."
     },
     captura: capTaquilla,
-    alta: true
+    alta: true,
+    anyInici: 2024,
+    persones: 2,
+    pila: ["Java", "Spring Boot", "Thymeleaf", "MySQL", "ZXing", "Stripe"],
+    aportacio: [
+      {
+        es: "Cada entrada lleva su propio código QR",
+        ca: "Cada entrada porta el seu propi codi QR",
+        en: "Every ticket carries its own QR code"
+      },
+      {
+        es: "Cámara en la puerta: solo vale el día del partido",
+        ca: "Càmera a la porta: només val el dia del partit",
+        en: "Camera at the gate: valid on match day only"
+      },
+      {
+        es: "Interfaz rehecha en 2026, en tres idiomas",
+        ca: "Interfície refeta el 2026, en tres idiomes",
+        en: "Interface rebuilt in 2026, in three languages"
+      }
+    ]
   },
   "app-gestio-incidencies": {
     titol: { es: "Gestor de incidencias", ca: "Gestor d'incidències", en: "Issue tracker" },
@@ -115,7 +162,27 @@ const CONEGUTS: Record<string, Fitxa> = {
     },
     captura: capIncidencias,
     alta: true,
-    destacat: 1
+    destacat: 1,
+    anyInici: 2024,
+    persones: 2,
+    pila: ["PHP", "Laravel", "MySQL", "Tailwind", "Alpine.js"],
+    aportacio: [
+      {
+        es: "Altas, cambios y bajas, con categoría y estado",
+        ca: "Altes, canvis i baixes, amb categoria i estat",
+        en: "Create, edit and delete, with category and status"
+      },
+      {
+        es: "Cada profesor ve las suyas y avisa por WhatsApp",
+        ca: "Cada professor veu les seves i avisa per WhatsApp",
+        en: "Teachers see their own and alert via WhatsApp"
+      },
+      {
+        es: "Interfaz rehecha en 2026, en tres idiomas",
+        ca: "Interfície refeta el 2026, en tres idiomes",
+        en: "Interface rebuilt in 2026, in three languages"
+      }
+    ]
   },
   "MVC-AJAX": {
     titol: { es: "Gestor de inventario", ca: "Gestor d'inventari", en: "Inventory manager" },
@@ -138,7 +205,29 @@ const CONEGUTS: Record<string, Fitxa> = {
     },
     captura: capInventario,
     alta: false,
-    destacat: 2
+    destacat: 2,
+    anyInici: 2023,
+    persones: 2,
+    // Sin AJAX a proposito: en la version actual buscar, ordenar y filtrar pasan en el
+    // navegador y las altas son formularios de siempre, asi que no se anuncia.
+    pila: ["PHP", "MVC", "MySQL", "JavaScript"],
+    aportacio: [
+      {
+        es: "Alta, edición y archivo, con foto validada",
+        ca: "Alta, edició i arxiu, amb foto validada",
+        en: "Add, edit and archive, with a validated photo"
+      },
+      {
+        es: "Buscar, ordenar y filtrar lo que hay que reponer",
+        ca: "Cercar, ordenar i filtrar el que cal reposar",
+        en: "Search, sort and filter what needs restocking"
+      },
+      {
+        es: "Interfaz rehecha en 2026, en tres idiomas",
+        ca: "Interfície refeta el 2026, en tres idiomes",
+        en: "Interface rebuilt in 2026, in three languages"
+      }
+    ]
   },
   // Las cuatro herramientas de empresa de septiembre de 2026.
   "gestor-ausencias": {
@@ -157,7 +246,26 @@ const CONEGUTS: Record<string, Fitxa> = {
       en: "Holidays and leave on the team calendar."
     },
     captura: capAusencias,
-    alta: false
+    alta: false,
+    anyInici: 2026,
+    pila: ["TypeScript", "React", "Node", "Express", "SQLite", "Vitest"],
+    aportacio: [
+      {
+        es: "El saldo cuenta solo días laborables",
+        ca: "El saldo compta només dies laborables",
+        en: "The balance counts working days only"
+      },
+      {
+        es: "El responsable ve quién falta antes de aprobar",
+        ca: "El responsable veu qui falta abans d'aprovar",
+        en: "Managers see who else is off before approving"
+      },
+      {
+        es: "Nadie aprueba lo suyo: lo impone el servidor",
+        ca: "Ningú aprova el que és seu: ho imposa el servidor",
+        en: "Nobody approves their own: the server enforces it"
+      }
+    ]
   },
   "reserva-espacios": {
     titol: { es: "Reserva de espacios", ca: "Reserva d'espais", en: "Desk and room booking" },
@@ -176,7 +284,26 @@ const CONEGUTS: Record<string, Fitxa> = {
       en: "Rooms and desks you book on the floor plan."
     },
     captura: capReservas,
-    alta: false
+    alta: false,
+    anyInici: 2026,
+    pila: ["TypeScript", "React", "Node", "Express", "SQLite", "Vitest"],
+    aportacio: [
+      {
+        es: "Plano SVG: se reserva pulsando el sitio",
+        ca: "Plànol SVG: es reserva clicant el lloc",
+        en: "SVG floor plan: pick a spot to book it"
+      },
+      {
+        es: "Reservas semanales: todas o ninguna",
+        ca: "Reserves setmanals: totes o cap",
+        en: "Weekly bookings: all or nothing"
+      },
+      {
+        es: "Check-in en 15 minutos o el sitio se libera solo",
+        ca: "Check-in en 15 minuts o el lloc s'allibera sol",
+        en: "Check in within 15 minutes or it frees up"
+      }
+    ]
   },
   "notas-de-gasto": {
     titol: { es: "Notas de gasto", ca: "Notes de despesa", en: "Expense reports" },
@@ -194,7 +321,26 @@ const CONEGUTS: Record<string, Fitxa> = {
       en: "Receipts, mileage and approvals in one place."
     },
     captura: capGastos,
-    alta: false
+    alta: false,
+    anyInici: 2026,
+    pila: ["TypeScript", "React", "Node", "Express", "SQLite", "Vitest"],
+    aportacio: [
+      {
+        es: "Ticket en foto o PDF, comprobado por su contenido",
+        ca: "Tiquet en foto o PDF, comprovat pel contingut",
+        en: "Receipt photo or PDF, checked by its contents"
+      },
+      {
+        es: "IVA en céntimos: base y cuota siempre cuadran",
+        ca: "IVA en cèntims: base i quota sempre quadren",
+        en: "VAT in cents: net plus VAT always add up"
+      },
+      {
+        es: "El tope diario avisa, pero no bloquea el envío",
+        ca: "El límit diari avisa i no bloqueja l'enviament",
+        en: "The daily limit warns but never blocks"
+      }
+    ]
   },
   "crm-ventas": {
     titol: { es: "CRM de ventas", ca: "CRM de vendes", en: "Sales CRM" },
@@ -214,7 +360,26 @@ const CONEGUTS: Record<string, Fitxa> = {
     },
     captura: capCrm,
     alta: true,
-    destacat: 4
+    destacat: 4,
+    anyInici: 2026,
+    pila: ["TypeScript", "React", "Node", "Express", "SQLite", "Vitest"],
+    aportacio: [
+      {
+        es: "Tablero de seis etapas, con arrastrar y soltar",
+        ca: "Tauler de sis etapes, amb arrossegar i deixar anar",
+        en: "Six-stage board with drag and drop"
+      },
+      {
+        es: "Previsión ponderada, con gráficos SVG propios",
+        ca: "Previsió ponderada, amb gràfics SVG propis",
+        en: "Weighted forecast with hand-written SVG charts"
+      },
+      {
+        es: "CIF con dígito de control e importación de CSV",
+        ca: "CIF amb dígit de control i importació de CSV",
+        en: "Tax ID (CIF) check digit and CSV import"
+      }
+    ]
   },
   "jondasiviz": {
     titol: {
@@ -246,7 +411,28 @@ const CONEGUTS: Record<string, Fitxa> = {
     captura: capVolkswagen,
     alta: false,
     destacat: 3,
-    registre: true
+    registre: true,
+    anyInici: 2026,
+    persones: 6,
+    pila: ["TypeScript", "React", "Vite", "Node", "SQLite", "Tauri"],
+    // El reparto de cada uno sale del historial del repositorio y esta en el README del proyecto.
+    aportacio: [
+      {
+        es: "El motor de presupuestos y la primera interfaz",
+        ca: "El motor de pressupostos i la primera interfície",
+        en: "The budget engine and the first interface"
+      },
+      {
+        es: "Base de datos, API, cuentas y suscripción",
+        ca: "Base de dades, API, comptes i subscripció",
+        en: "Database, API, accounts and subscriptions"
+      },
+      {
+        es: "Recambios, app de escritorio y despliegue",
+        ca: "Recanvis, app d'escriptori i desplegament",
+        en: "Spare parts, desktop app and deployment"
+      }
+    ]
   }
 };
 
@@ -299,6 +485,14 @@ export type Projecte = {
   alta: boolean;
   destacat?: 1 | 2 | 3 | 4;
   registre: boolean;
+  /** Año en que empezó. 0 si la ficha no lo dice (un repositorio nuevo que aun no esta escrito). */
+  anyInici: number;
+  /** Personas que lo hicieron: 1 individual, 0 si la ficha no lo dice. */
+  persones: number;
+  /** La pila entera. Sin ficha, lo mismo que `tec`. */
+  pila: string[];
+  /** Lo que hizo Alex. Vacio si la ficha no lo cuenta. */
+  aportacio: string[];
 };
 
 export type EstatFeed = "" | "feed.loading" | "feed.cache" | "feed.offline";
@@ -414,6 +608,9 @@ export async function demanar(): Promise<Repo[]> {
 const enIdioma = (valor: Multi | undefined, idioma: Idioma) =>
   valor ? valor[idioma] || valor.es : "";
 
+const textTec = (una: Tec, idioma: Idioma) =>
+  typeof una === "string" ? una : traduir(idioma, una.clau);
+
 // La direccion de la demo sale de la ficha y, si no la tiene, de la web que lleve puesta
 // el repositorio en GitHub. Para estrenar una demo nueva basta con rellenar "demo".
 function adrecaDemo(repo: Repo): string {
@@ -435,9 +632,7 @@ export function projecte(repo: Repo, idioma: Idioma, rol: Rol): Projecte {
   if (fitxa) {
     titol = enIdioma(fitxa.titol, idioma) || repo.nom;
     text = enIdioma(fitxa.text, idioma);
-    tec = (fitxa.tec || []).map((una) =>
-      typeof una === "string" ? una : traduir(idioma, una.clau)
-    );
+    tec = (fitxa.tec || []).map((una) => textTec(una, idioma));
     tipus = fitxa.tipus || "web";
   } else {
     text = repo.desc || traduir(idioma, "feed.nodesc");
@@ -470,7 +665,11 @@ export function projecte(repo: Repo, idioma: Idioma, rol: Rol): Projecte {
     captura: fitxa?.captura ?? "",
     alta: !!fitxa?.alta,
     destacat: fitxa?.destacat,
-    registre: !!fitxa?.registre
+    registre: !!fitxa?.registre,
+    anyInici: fitxa?.anyInici ?? 0,
+    persones: fitxa ? (fitxa.persones ?? 1) : 0,
+    pila: fitxa?.pila ? fitxa.pila.map((una) => textTec(una, idioma)) : tec,
+    aportacio: (fitxa?.aportacio ?? []).map((frase) => enIdioma(frase, idioma)).filter(Boolean)
   };
 }
 

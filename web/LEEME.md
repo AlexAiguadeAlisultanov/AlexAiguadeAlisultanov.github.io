@@ -75,7 +75,8 @@ web/
     lib/
       idioma.tsx        las tres traducciones y el contexto de idioma
       acces.ts          entrar, comprobar la sesión guardada, guardarla y olvidarla
-      projectes.ts      diccionario de fichas + lectura de la API de GitHub
+      projectes.ts      diccionario de fichas (con los datos de la tarjeta grande) + lectura de
+                        la API de GitHub
       demos.ts          estado de las demos que se duermen
       ProveidorProjectes.tsx  la lista de proyectos y el estado de las demos, una sola vez
                         para toda la página (portada y proyectos leen de aquí)
@@ -87,7 +88,8 @@ web/
       MenuMobil.tsx     la hoja del menú en el móvil
       Portada.tsx       la portada: ficha, contacto rápido, retrato y carrusel de demos
       XipCapes.tsx      las capas del chip dibujadas en SVG, marca de cada capítulo
-      Projectes.tsx     tarjetas de proyecto y panel de arranque de las demos
+      Projectes.tsx     la cabecera de #projectes (nota, contador y «Despertar todas») y las
+                        tarjetas detalladas del carrusel grande
       Carrusel.tsx      la cinta de tarjetas: la de proyectos y la compacta de la portada
       BotoDemo.tsx      el botón de una demo con sus fases (probar, arrancando, abrir)
       Trajectoria.tsx   experiencia y formación con línea de tiempo, herramientas e idiomas
@@ -123,6 +125,24 @@ la API, no el navegador.
   (una por una o con "Despertar todas").
 - **Los dos botones de una demo nunca conviven**: o está el de iniciar o está el de
   probar, en el mismo hueco.
+- **Lo que cuenta cada tarjeta grande sale de la ficha, y es verdad comprobada.** Cada ficha de
+  `lib/projectes.ts` lleva `anyInici` (el año del primer commit del repositorio), `persones`
+  (quienes lo hicieron según el historial; sin el campo es individual), `pila` (todo el stack,
+  que `tec` deja corto para las tarjetas pequeñas) y `aportacio` (qué hizo Alex; en los de
+  equipo, su parte). El reparto del Volkswagen es el del README de ese proyecto. No se anuncia
+  lo que el código no hace: el inventario ya no pide nada al servidor al buscar, así que su
+  `pila` no lleva AJAX aunque `tec` y la descripción larga sí lo digan. Una frase por línea en
+  escritorio (unos 50 caracteres) para que las tarjetas salgan parejas; en el móvil se ven las
+  dos primeras.
+- **El pie de las tarjetas grandes es igual en todas.** Solo lleva `BotoDemo`. El enlace
+  «Código» va a la derecha de la fila de arriba (año y equipo), porque los repositorios privados
+  (inventario y Volkswagen) no lo tienen y con el enlace abajo su botón quedaba más bajo que el
+  de las demás. El estado de la demo lo cuenta el botón (los mismos colores y fases que el mini)
+  y una línea de 2 px en la base de la captura; ya no hay pastilla ni nota sobre la tarjeta. Si
+  la demo falla, la explicación solo se oye (`sr-only`) para que la tarjeta no crezca.
+- **La cabecera de `#projectes` es una sola nota, el contador y el botón.** `useDespertarTotes`
+  (en `ProveidorProjectes`) da el contador y el gesto de despertar todas, con la misma regla que
+  el botón del carrusel de la portada.
 - **Las banderas van dibujadas en SVG.** Windows no pinta los emoji de bandera y la
   senyera ni siquiera existe como emoji.
 - **`prefers-reduced-motion` deja todo quieto, no lento.** Imán, entrada escalonada, línea

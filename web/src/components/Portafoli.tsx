@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useIdioma } from "../lib/idioma";
 import type { Clau } from "../lib/idioma";
 import type { Rol } from "../lib/acces";
-import { ProveidorProjectes, useProjectesCtx } from "../lib/ProveidorProjectes";
+import { ProveidorProjectes } from "../lib/ProveidorProjectes";
 import { CORREU, GITHUB, LINKEDIN, WHATSAPP } from "../lib/contacte";
 import { Entrada } from "./Moviment";
 import { CV_NOM, CV_PDF } from "../lib/cv";
@@ -225,7 +225,6 @@ function Contacte() {
 
 function Pagina({ sortir }: { sortir: () => void }) {
   const { t } = useIdioma();
-  const { compte } = useProjectesCtx();
 
   return (
     <>
@@ -249,9 +248,7 @@ function Pagina({ sortir }: { sortir: () => void }) {
         <section id="projectes" className="py-14 sm:py-20 lg:py-28">
           <div className={AMPLE}>
             <Titol numero="04" text={t("proj.h")} />
-            <p className="mb-12 mt-6 max-w-[62ch] text-[15px] leading-relaxed text-tinta-2 sm:text-[16px]">
-              {t("proj.intro", { n: compte })}
-            </p>
+            {/* La nota, el contador y "Despertar todas" van en la cabecera de Projectes. */}
             <Projectes />
           </div>
         </section>

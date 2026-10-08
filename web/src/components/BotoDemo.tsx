@@ -6,12 +6,12 @@
 // Mientras la demo no conteste el boton la despierta y cuenta los segundos; cuando contesta,
 // el mismo hueco pasa a ser el enlace que la abre. Nunca los dos a la vez.
 //
-// Dos tamanos:
-//   normal  el del carrusel (48 px, ancho completo). Conserva el aspecto y los textos de
-//           siempre: relleno de cian en todas las fases. Cuando la tarjeta pierda su
-//           pastilla y su nota (paso 7 del plan), pasa a verse y a leerse como mini.
-//   mini    el de la portada (40 px, 44 con el dedo). Borde cian para probar y arrancar,
-//           relleno cuando contesta y rojo apagado solo cuando no responde.
+// Dos tamanos, con las mismas fases y los mismos colores:
+//   normal  el del carrusel de #projectes (48 px, ancho completo).
+//   mini    el de la portada (40 px, 44 con el dedo).
+// Borde cian para probar y arrancar, relleno cuando contesta y rojo apagado solo cuando no
+// responde. Se leen igual salvo la fase de reposo: la normal dice "Probar la demo", que
+// cabe, y la mini "Probar". Una demo que se despierta en una tarjeta sale ya lista en la otra.
 //
 // La barra de progreso (opcional) es una linea de 2 px en el borde de abajo del boton que
 // avanza con los segundos y se queda al 90 % hasta que la demo contesta. Con movimiento
@@ -24,12 +24,15 @@ import { Fletxa } from "./Icones";
 
 // Base del boton principal de una tarjeta, en el cian de la web.
 export const CTA =
-  "inline-flex min-h-[48px] w-full items-center justify-center gap-2 rounded-[12px] px-5 " +
+  "relative inline-flex min-h-[48px] w-full items-center justify-center gap-2 overflow-hidden rounded-[12px] px-5 " +
   "text-[15px] font-semibold transition-[background-color,border-color,transform] duration-200 " +
-  "active:scale-[0.98] aria-[disabled=true]:cursor-default aria-[disabled=true]:opacity-70 " +
-  "aria-[disabled=true]:active:scale-100";
+  "active:scale-[0.98] aria-[disabled=true]:cursor-default aria-[disabled=true]:active:scale-100";
 
 const CTA_PLE = `${CTA} bg-accent text-sobre-accent hover:bg-accent-2 aria-[disabled=true]:hover:bg-accent`;
+const CTA_VORA =
+  `${CTA} border border-accent/50 text-accent-2 hover:border-accent hover:bg-accent-bg ` +
+  "aria-[disabled=true]:hover:border-accent/50 aria-[disabled=true]:hover:bg-transparent";
+const CTA_ERROR = `${CTA} border border-malament/50 text-malament hover:border-malament hover:bg-malament/10`;
 
 const MINI =
   "relative inline-flex min-h-10 w-full items-center justify-center gap-2 overflow-hidden rounded-[12px] px-3 " +
@@ -59,7 +62,7 @@ type Props = {
 export function BotoDemo({ url, titol, mida = "normal", barra = false, descrit }: Props) {
   const { t } = useIdioma();
   const quiet = useReducedMotion();
-  const { demos, fase, enMarxa, segons } = useEstatDemo(url);
+  const { demos, dorm, fase, enMarxa, segons } = useEstatDemo(url);
   const despertar = useDespertar();
   const mini = mida === "mini";
 
@@ -72,7 +75,8 @@ export function BotoDemo({ url, titol, mida = "normal", barra = false, descrit }
         onClick={() => demos.visita(url)}
         className={mini ? MINI_PLE : CTA_PLE}
       >
-        {t(mini ? "boto.open" : "card.try")}
+        {/* Una demo que no duerme nunca no ha tenido que despertar: no hay nada que "abrir". */}
+        {t(mini || dorm ? "boto.open" : "card.try")}
         <Fletxa />
       </a>
     );
@@ -81,12 +85,11 @@ export function BotoDemo({ url, titol, mida = "normal", barra = false, descrit }
   const arrencant = fase === "waking";
   const fallit = fase === "fail";
 
-  let text: string;
-  if (mini) {
-    text = arrencant ? t("boto.waking", { s: segons }) : fallit ? t("boto.fail") : t("boto.try");
-  } else {
-    text = arrencant ? t("card.waking", { s: segons }) : fallit ? t("estat.again") : t("card.try");
-  }
+  const text = arrencant
+    ? t("boto.waking", { s: segons })
+    : fallit
+      ? t("boto.fail")
+      : t(mini ? "boto.try" : "card.try");
 
   return (
     <button
@@ -94,9 +97,9 @@ export function BotoDemo({ url, titol, mida = "normal", barra = false, descrit }
       aria-describedby={descrit}
       aria-disabled={arrencant}
       onClick={() => despertar(url, titol)}
-      className={!mini ? CTA_PLE : fallit ? MINI_ERROR : MINI_VORA}
+      className={fallit ? (mini ? MINI_ERROR : CTA_ERROR) : mini ? MINI_VORA : CTA_VORA}
     >
-      {mini && arrencant ? <span aria-hidden className="pols" /> : null}
+      {arrencant ? <span aria-hidden className="pols" /> : null}
       {text}
       {barra && arrencant && !quiet ? (
         <span

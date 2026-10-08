@@ -12,7 +12,7 @@ import { useIdioma } from "./idioma";
 import { deCasa, demanar, desats, destacats as triarDestacats, projecte } from "./projectes";
 import type { EstatFeed, Projecte, Repo, Rol } from "./projectes";
 import { esAdormida, useDemos } from "./demos";
-import type { Demos, Fase } from "./demos";
+import type { Comptes, Demos, Fase } from "./demos";
 
 export type ContextProjectes = {
   /** Todos los proyectos, ya en el idioma y con el rol de ahora. */
@@ -120,4 +120,25 @@ export function useDespertar(): (url: string, titol: string) => void {
     demos.anunciar(t("wake.live.starting", { t: titol }));
     demos.despertar(url);
   };
+}
+
+/**
+ * "Despertar todas": cuantas demos hay, cuantas contestan ya y el gesto de arrancar las que
+ * faltan. Queda apagado mientras alguna arranca y cuando ya contestan todas.
+ */
+export function useDespertarTotes(): { comptes: Comptes; apagat: boolean; despertarTotes: () => void } {
+  const { t } = useIdioma();
+  const { demos } = useProjectesCtx();
+  const comptes = demos.comptes;
+  const apagat = comptes.waking > 0 || (comptes.total > 0 && comptes.on === comptes.total);
+
+  const despertarTotes = () => {
+    if (apagat) return;
+    const quantes = demos.encendre();
+    if (quantes) {
+      demos.anunciar(quantes === 1 ? t("wake.live.on.one") : t("wake.live.on", { n: quantes }));
+    }
+  };
+
+  return { comptes, apagat, despertarTotes };
 }
