@@ -424,6 +424,85 @@ img { max-width: 100%; display: block; }
   .carrusel__cos { transition: none; }
 }
 
+/* ---------- Galerias 3D ----------
+   Dos escaparates en 3D hechos solo con transforms de CSS: cada tarjeta sigue siendo DOM de
+   verdad (su captura, titulo, chips, boton de la demo, enlaces) y la profundidad sale de
+   perspective mas rotateY/translateZ y opacidad, nunca de WebGL ni de desenfoque por fotograma.
+   El movil y el movimiento reducido no montan nada de esto: cae el carrusel plano de siempre
+   (components/galeria/Galeria3D.tsx decide el transform de cada tarjeta en cada fotograma).
+
+   Abajo, en #projectes, un anillo giratorio: tarjetas grandes tendidas en un cilindro, la de
+   delante manda y las demas orbitan de canto y se apagan. Arriba, en la portada, un escaparate
+   de profundidad contenido en su columna (ver .gal3d--escaparata, mas abajo con la portada). */
+
+.gal3d { position: relative; }
+
+.gal3d__escenari {
+  position: relative;
+  width: 100%;
+  overflow: clip;
+  transform-style: preserve-3d;
+  outline-offset: 4px;
+  touch-action: pan-y;
+}
+
+.gal3d__cinta {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  transform-style: preserve-3d;
+}
+.gal3d__cinta[data-arrossega] { cursor: grabbing; user-select: none; }
+
+.gal3d__barra {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.gal3d__peca {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  backface-visibility: hidden;
+  will-change: transform, opacity;
+}
+
+/* Anillo (#projectes). Cada tarjeta mide lo que pide su contenido; el escenario las centra y
+   la perspectiva hace grande la de delante. Una sombra blanda les da cuerpo y un velo radial
+   calma el fondo de placa para que el texto se lea. */
+.gal3d--anell { --anell-ample: clamp(18rem, 23vw, 22.5rem); }
+.gal3d--anell .gal3d__escenari {
+  background:
+    radial-gradient(34% 52% at 50% 48%, color-mix(in srgb, var(--color-accent) 12%, transparent), transparent 70%),
+    radial-gradient(64% 80% at 50% 46%, rgb(8 9 11 / 0.66), transparent 78%);
+}
+.gal3d--anell .gal3d__peca { width: var(--anell-ample); }
+.gal3d--anell .targeta { box-shadow: 0 32px 64px -28px rgb(0 0 0 / 0.75); }
+.gal3d--anell .gal3d__peca[data-front] .targeta {
+  border-color: color-mix(in srgb, var(--color-accent) 45%, var(--color-linia));
+  box-shadow: 0 36px 70px -26px rgb(0 0 0 / 0.8), 0 0 48px -18px color-mix(in srgb, var(--color-accent) 60%, transparent);
+}
+
+/* Escaparate de profundidad (portada): contenido en su columna. Reutiliza la tarjeta vertical
+   de la portada (TargetaMini); solo cambia el ancho de la pieza y el alto de su captura, que
+   aqui es un 16:9 simple en vez del calculo del carrusel plano. La del centro manda y las
+   vecinas asoman inclinadas por los lados, que la ventana del escenario recorta. */
+.gal3d--escaparata { --esc-ample: clamp(14rem, 23vw, 20.5rem); }
+.gal3d--escaparata .gal3d__peca { width: var(--esc-ample); }
+.gal3d--escaparata .portada__targeta {
+  height: auto;
+  box-shadow: 0 26px 50px -26px rgb(0 0 0 / 0.72);
+}
+.gal3d--escaparata .portada__captura { height: calc(var(--esc-ample) * 9 / 16); }
+.gal3d--escaparata .gal3d__peca[data-front] .portada__targeta {
+  border-color: color-mix(in srgb, var(--color-accent) 42%, var(--color-linia));
+  box-shadow: 0 30px 56px -24px rgb(0 0 0 / 0.78), 0 0 42px -16px color-mix(in srgb, var(--color-accent) 55%, transparent);
+}
+
 /* ---------- Menu en movil ----------
    Hoja inferior (components/MenuMobil.tsx). Es un <dialog> modal, asi que vive en la capa
    superior del navegador y no le afectan el blur ni el z-index de la cabecera. Sube en

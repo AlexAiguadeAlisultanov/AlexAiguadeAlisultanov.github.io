@@ -90,7 +90,10 @@ web/
       XipCapes.tsx      las capas del chip dibujadas en SVG, marca de cada capítulo
       Projectes.tsx     la cabecera de #projectes (nota, contador y «Despertar todas») y las
                         tarjetas detalladas del carrusel grande
-      Carrusel.tsx      la cinta de tarjetas: la de proyectos y la compacta de la portada
+      Carrusel.tsx      la cinta plana de tarjetas (respaldo de móvil y movimiento reducido)
+      galeria/          las dos galerías 3D, solo con transforms de CSS (sin WebGL)
+        Galeria3D.tsx   el motor común: giro, pausa, arrastre, botones, teclado y foco
+        formes.ts       dónde va cada tarjeta: anillo (proyectos) y escaparate (portada)
       BotoDemo.tsx      el botón de una demo con sus fases (probar, arrancando, abrir)
       Trajectoria.tsx   experiencia y formación con línea de tiempo, herramientas e idiomas
       Fila.tsx          fila de lista con fecha; con `hito` es un nodo de la línea de tiempo
@@ -151,7 +154,8 @@ la API, no el navegador.
 - **Las banderas van dibujadas en SVG.** Windows no pinta los emoji de bandera y la
   senyera ni siquiera existe como emoji.
 - **`prefers-reduced-motion` deja todo quieto, no lento.** Imán, entrada escalonada, línea
-  de tiempo, carruseles y anillo del puntero se apagan enteros.
+  de tiempo, carruseles, galerías 3D (que caen al carrusel plano) y anillo del puntero se
+  apagan enteros.
 - **El retrato es la primera `<img>` de `#dalt` y no puede haber otra antes.** `Escena.tsx`
   se coloca buscándola y escala el chip con su ancho, y su máscara se centra en ella. Por eso
   es un solo elemento que cambia de sitio con la rejilla de la portada, y por eso el webp está
@@ -160,13 +164,25 @@ la API, no el navegador.
   es el original) pasado por un canvas, recortado a su círculo y codificado a calidad 0,85.
   En la película la escena no lo busca: `Escenari` le pasa la ref `retrat`, que la portada
   pone en ese mismo `<img>`.
-- **Hay dos carruseles y comparten código.** El de `#projectes` sangra hasta los bordes de la
-  ventana; el de la portada es la variante `compacte` de `Carrusel.tsx`, contenida en su
-  columna. En el móvil la de la portada es la fila quieta con snap (`quieta`). Cualquier
-  cambio en la lógica del carrusel vale para los dos, y lo que solo es de uno va en el CSS:
-  `.carrusel--compacte` y `.portada__*` para la portada, nada que el grande lea.
-- **Cada paso del carrusel de la portada es una columna de dos proyectos**, uno encima de
-  otro. Para `Carrusel.tsx` la columna es una sola pieza, así que «siguiente», Tab y el
+- **Hay dos galerías 3D, y las dos son DOM de verdad.** En `#projectes` las tarjetas se tienden
+  en un anillo giratorio (la de delante manda, las demás orbitan de canto y se apagan); en la
+  portada, un escaparate de profundidad dentro de su columna (la del centro de frente, las
+  vecinas inclinadas y hacia atrás). La profundidad sale solo de `perspective`, `rotateY`,
+  `translateZ` y opacidad en `components/galeria/`, nunca de WebGL ni de dependencias nuevas:
+  las tarjetas conservan su captura, título, viñetas, chips, botón de la demo y enlaces, y el
+  foco funciona. Cada tarjeta recibe su transform en un solo bucle, sin pasar por el estado de
+  React, y no se desenfoca nada por fotograma (daría tirones). `Galeria3D.tsx` lleva el giro
+  automático con pausa al pasar el ratón, el arrastre y el swipe, los botones anterior/pausa/
+  siguiente, las flechas del teclado y Tab (que trae la tarjeta enfocada al frente); `formes.ts`,
+  solo la geometría de cada una. El estilo vive en `.gal3d*` de `index.css`.
+- **El anillo y el escaparate solo son para escritorio y tableta.** En el móvil (menos de 768 px)
+  y con `prefers-reduced-motion` cae el carrusel plano de siempre (`Carrusel.tsx`): el de
+  `#projectes` sangra a los bordes de la ventana y el de la portada es su variante `compacte`
+  en columnas de dos, con la fila quieta y snap en el móvil (`quieta`). Es el mismo componente
+  de antes; las galerías no lo tocan. `Projectes.tsx` y `Portada.tsx` eligen una u otra versión
+  con `!useReducedMotion() && !useMovil()`.
+- **En la versión plana, cada paso del carrusel de la portada es una columna de dos proyectos**,
+  uno encima de otro. Para `Carrusel.tsx` la columna es una sola pieza, así que «siguiente», Tab y el
   resaltado del ratón trabajan por columna, y Tab recorre primero la tarjeta de arriba y
   luego la de abajo. La tarjeta es vertical: la captura arriba, tan ancha como la tarjeta, y
   debajo el nombre, el stack y `BotoDemo` a todo el ancho. La nota «Pide crear cuenta» del
