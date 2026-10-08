@@ -2,9 +2,10 @@
 // pantalla. Desde 1280 px son tres columnas: quien soy y como contactar, el retrato (con el
 // chip 3D detras) y un carrusel con todos los proyectos, que se pueden probar ahi mismo (las
 // cuatro destacadas van primero). Cada paso del carrusel es una columna con dos proyectos, uno
-// encima de otro, en tarjetas horizontales. De 768 a 1279 quedan dos columnas, y en el movil
-// una sola con las demos en una fila deslizable. La rejilla y los tamanos viven en index.css
-// (.portada*), que es donde estan tambien los cortes de ventana.
+// encima de otro, en tarjetas verticales: la captura arriba y debajo el nombre, el stack y el
+// boton. De 768 a 1279 quedan dos columnas, y en el movil una sola con las demos en una fila
+// deslizable. La rejilla y los tamanos viven en index.css (.portada*), que es donde estan
+// tambien los cortes de ventana.
 //
 // El retrato es la primera <img> de la seccion y tiene que seguir siendolo: Escena.tsx se
 // coloca buscandola y escala el chip con su ancho. Por eso es un solo elemento que cambia de
@@ -196,20 +197,31 @@ function Stack() {
 /* ---------- Las demos: un carrusel de columnas de dos proyectos ---------- */
 
 /**
- * La tarjeta pequena del carrusel, en horizontal para que quepan dos una encima de otra: la
- * captura a la izquierda y, a su lado, el nombre, el stack y el boton de la demo.
+ * La tarjeta del carrusel, vertical: la captura arriba, tan ancha como la tarjeta, y debajo el
+ * nombre, el stack y el boton de la demo. Dos de estas, una encima de otra, son cada paso del
+ * carrusel. El alto de la captura lo fija index.css (.portada__captura) para que las dos
+ * tarjetas de la primera columna quepan enteras en el primer pantallazo.
  */
 function TargetaMini({ dades, prioritaria }: { dades: Projecte; prioritaria: boolean }) {
   const { t } = useIdioma();
   const quiet = useReducedMotion();
   const { fase, segons } = useEstatDemo(dades.demo);
 
-  // La marca de equipo no es una tecnologia: en la tarjeta pequena va en una sola palabra.
+  // La marca de equipo no es una tecnologia: en la tarjeta va en una sola palabra.
   const equip = t("chip.equip");
   const stack = dades.tec
     .slice(0, 3)
     .map((una) => (una === equip ? t("demos.equip") : una))
     .join(" · ");
+
+  // Lo que va a la derecha del stack, en la misma linea para no sumar alto a todas las tarjetas
+  // (las filas del carrusel miden lo que mide la mas alta): la nota de que la demo pide crear
+  // una cuenta o, si no hay demo que abrir, en que punto esta el proyecto.
+  const nota = dades.registre
+    ? t("demos.registre")
+    : !dades.demo && !dades.tancat && dades.marca
+      ? t(dades.marca)
+      : "";
 
   // Lo mismo que la tarjeta grande: si el rol no puede abrirla, lo dice; si no tiene demo,
   // lleva al codigo o cuenta en que punto esta.
@@ -264,14 +276,13 @@ function TargetaMini({ dades, prioritaria }: { dades: Projecte; prioritaria: boo
       </div>
 
       <div className="portada__text">
-        <h3 className="line-clamp-2 text-[15px] font-semibold leading-snug text-tinta">{dades.curt}</h3>
-        <p className="mt-0.5 truncate text-[12px] leading-snug text-tinta-3">{stack}</p>
-        {dades.registre ? (
-          <p className="mt-0.5 text-[12px] leading-snug text-tinta-3">{t("demos.registre")}</p>
-        ) : null}
-        {!dades.demo && !dades.tancat && dades.marca ? (
-          <p className="mt-0.5 text-[12px] leading-snug text-tinta-3">{t(dades.marca)}</p>
-        ) : null}
+        <h3 className="line-clamp-2 text-[16px] font-semibold leading-[22px] text-tinta">{dades.curt}</h3>
+        {/* El stack a la izquierda y, si la hay, la nota a la derecha. Si juntos no caben (un
+            movil estrecho) la nota pasa a la linea de abajo en vez de cortar el stack. */}
+        <div className="portada__pila">
+          <p className="min-w-0 truncate">{stack}</p>
+          {nota ? <p className="shrink-0 whitespace-nowrap text-tinta-2">{nota}</p> : null}
+        </div>
         {pie ? <div className="mt-auto pt-2">{pie}</div> : null}
       </div>
     </article>
@@ -280,15 +291,21 @@ function TargetaMini({ dades, prioritaria }: { dades: Projecte; prioritaria: boo
 
 /**
  * Cierra el carrusel con la salida hacia la seccion de proyectos. Mide lo mismo que una
- * tarjeta mini, para que la columna en la que cae no cambie de altura.
+ * tarjeta, para que la columna en la que cae no cambie de altura: el numero de proyectos en
+ * contorno, como el de las secciones, y abajo el enlace.
  */
-function TargetaTots() {
+function TargetaTots({ n }: { n: number }) {
   const { t } = useIdioma();
   return (
     <a href="#projectes" className="targeta portada__tots rounded-[20px] border border-linia bg-fons-2">
-      <span className="text-[15px] font-semibold leading-snug text-tinta">{t("demos.tots")}</span>
-      <span aria-hidden className="portada__tots-fletxa">
-        <Dreta className="text-[18px]" />
+      <span aria-hidden className="num portada__tots-num">
+        {n}
+      </span>
+      <span className="portada__tots-pie">
+        <span className="text-[16px] font-semibold leading-snug text-tinta">{t("demos.tots")}</span>
+        <span aria-hidden className="portada__tots-fletxa">
+          <Dreta className="text-[18px]" />
+        </span>
       </span>
     </a>
   );
@@ -371,7 +388,7 @@ function Demos() {
                 peca.dades ? (
                   <TargetaMini key={peca.clau} dades={peca.dades} prioritaria={c < 2} />
                 ) : (
-                  <TargetaTots key={peca.clau} />
+                  <TargetaTots key={peca.clau} n={compte} />
                 )
               )}
             </div>
