@@ -210,10 +210,7 @@ function TargetaMini({ dades, prioritaria }: { dades: Projecte; prioritaria: boo
 
   // La marca de equipo no es una tecnologia: en la tarjeta va en una sola palabra.
   const equip = t("chip.equip");
-  const stack = dades.tec
-    .slice(0, 3)
-    .map((una) => (una === equip ? t("demos.equip") : una))
-    .join(" · ");
+  const stack = dades.tec.slice(0, 3).map((una) => (una === equip ? t("demos.equip") : una));
 
   // Lo que va a la derecha del stack, en la misma linea para no sumar alto a todas las tarjetas
   // (las filas del carrusel miden lo que mide la mas alta): la nota de que la demo pide crear
@@ -271,10 +268,15 @@ function TargetaMini({ dades, prioritaria }: { dades: Projecte; prioritaria: boo
 
       <div className="portada__text">
         <h3 className="line-clamp-2 text-[16px] font-semibold leading-[22px] text-tinta">{dades.curt}</h3>
-        {/* El stack a la izquierda y, si la hay, la nota a la derecha. Si juntos no caben (un
-            movil estrecho) la nota pasa a la linea de abajo en vez de cortar el stack. */}
+        {/* El stack a la izquierda y, si la hay, la nota a la derecha, siempre en una linea: una
+            nota que bajara de linea alargaria la fila de todas las columnas. El stack ocupa lo que
+            deja la nota y ensena las piezas enteras que caben (index.css, .portada__pila-lista). */}
         <div className="portada__pila">
-          <p className="min-w-0 truncate">{stack}</p>
+          <p className="portada__pila-lista">
+            {stack.map((una) => (
+              <span key={una}>{una}</span>
+            ))}
+          </p>
           {nota ? <p className="shrink-0 whitespace-nowrap text-tinta-2">{nota}</p> : null}
         </div>
         {pie ? <div className="mt-auto pt-2">{pie}</div> : null}

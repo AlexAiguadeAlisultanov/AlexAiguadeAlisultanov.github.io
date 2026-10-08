@@ -685,17 +685,38 @@ html:has(.menu-fulla[open]) { overflow: hidden; }
   flex-direction: column;
 }
 
-/* Stack a la izquierda y, si la hay, la nota a la derecha. Si juntos no caben, la nota baja. */
+/* Stack a la izquierda y, si la hay, la nota a la derecha, siempre en una linea: si la nota bajara,
+   esa tarjeta mediria 18 px mas y, como las filas de todas las columnas miden lo que la mas alta,
+   las demas tambien. */
 .portada__pila {
   display: flex;
-  flex-wrap: wrap;
   align-items: baseline;
-  justify-content: space-between;
-  column-gap: 12px;
+  column-gap: 8px;
   margin-top: 2px;
   font-size: 13px;
   line-height: 18px;
   color: var(--color-tinta-3);
+}
+
+/* El stack ocupa lo que deja la nota y ensena las piezas enteras que caben. Cada pieza es un span
+   que no se parte; la que no cabe baja a una segunda linea que el alto fijo y el overflow dejan
+   oculta, con su separador (el punto va por delante de cada pieza menos la primera). Asi no hay
+   puntos suspensivos a media palabra ni piezas cortadas, en ningun idioma ni ancho de columna. */
+.portada__pila-lista {
+  display: flex;
+  flex: 1 1 0;
+  flex-wrap: wrap;
+  column-gap: 0.3em;
+  height: 18px;
+  margin: 0;
+  overflow: hidden;
+}
+
+.portada__pila-lista > span { white-space: nowrap; }
+
+.portada__pila-lista > span + span::before {
+  content: "·";
+  margin-right: 0.3em;
 }
 
 /* "Ver todos los proyectos": la ultima tarjeta, con la salida hacia #projectes. Mide lo mismo
@@ -951,6 +972,21 @@ html:has(.menu-fulla[open]) { overflow: hidden; }
           calc((var(--col) - 26px) * 9 / 16),
           calc((100svh - var(--barra) - var(--pad-v) - var(--cap) - 2 * 132px - 28px) / 2)
         )
+      );
+    }
+  }
+}
+
+/* En el movil la captura es 16:9 de lo que mida la columna, y con la pantalla baja (360 x 740) eso
+   deja el boton de la primera tarjeta por debajo del pliegue. Por debajo de 780 px de alto la
+   captura cede un pixel por cada pixel que falta, sin bajar de 2,5:1: de 780 para arriba es la de
+   siempre y no hay escalon entre un alto y el siguiente. */
+@supports (height: 1svh) {
+  @media (max-width: 767px) {
+    .portada__captura {
+      --alt: max(
+        calc((var(--col) - 26px) / 2.5),
+        calc((var(--col) - 26px) * 9 / 16 - max(0px, 780px - 100svh))
       );
     }
   }
