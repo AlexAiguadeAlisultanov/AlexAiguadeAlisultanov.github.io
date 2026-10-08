@@ -198,6 +198,9 @@ const es = {
   "cont.frase": "Si tienes un puesto de técnico o quieres ver algo más a fondo, escríbeme.",
   "cont.pdf": "Descargar CV (PDF)",
 
+  "carrega.err": "No se ha podido cargar la página. Mira la conexión y vuelve a intentarlo.",
+  "carrega.retry": "Recargar",
+
   "porta.eyebrow": "Portafolio",
   "porta.titular": "Técnico de informática · Sistemas · Ciberseguridad",
   "porta.user": "Usuario",
@@ -406,6 +409,9 @@ const ca: Partial<Record<Clau, string>> = {
   "cont.frase": "Si tens una feina de tècnic o vols veure alguna cosa més a fons, escriu-me.",
   "cont.pdf": "Descarregar el CV (PDF)",
 
+  "carrega.err": "No s'ha pogut carregar la pàgina. Mira la connexió i torna-ho a provar.",
+  "carrega.retry": "Recarregar",
+
   "porta.eyebrow": "Portafoli",
   "porta.titular": "Tècnic d'informàtica · Sistemes · Ciberseguretat",
   "porta.user": "Usuari",
@@ -611,6 +617,9 @@ const en: Partial<Record<Clau, string>> = {
   "tray.vol": "Volunteering",
   "cont.frase": "If you have an IT technician role or want to look at something in more depth, write to me.",
   "cont.pdf": "Download CV (PDF)",
+
+  "carrega.err": "The page could not load. Check your connection and try again.",
+  "carrega.retry": "Reload",
 
   "porta.eyebrow": "Portfolio",
   "porta.titular": "IT technician · Systems · Cybersecurity",
