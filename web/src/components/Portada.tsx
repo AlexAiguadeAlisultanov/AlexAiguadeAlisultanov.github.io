@@ -25,6 +25,7 @@ import { Carrusel } from "./Carrusel";
 import { Fons3D } from "./Fons3D";
 import { Baixa, Correu, Dreta, GitHub, LinkedIn, Xat } from "./Icones";
 import { Entrada, Iman, useMovil } from "./Moviment";
+import { useRelat } from "./relat/Escenari";
 import retrat400 from "../assets/alex-400.webp";
 import retrat800 from "../assets/alex-800.webp";
 
@@ -424,21 +425,26 @@ function Pista({ seccio }: { seccio: RefObject<HTMLElement | null> }) {
 
 export function Portada() {
   const { t } = useIdioma();
+  const { pelicula, retrat } = useRelat();
   const seccio = useRef<HTMLElement>(null);
 
   return (
-    <section id="dalt" ref={seccio} className="portada">
-      {/* La escena vive solo detras de la portada. Mas abajo estorbaria a la lectura y no
-          habria por que estar pintando nada. */}
-      <div aria-hidden className="absolute inset-0 -z-10 overflow-hidden">
-        <Fons3D />
-      </div>
+    <section id="dalt" ref={seccio} className="portada" data-tapa>
+      {/* En modo normal la escena vive solo detras de la portada: mas abajo estorbaria a la
+          lectura y no habria por que estar pintando nada. En la pelicula la pone la capa fijada
+          de relat/Escenari.tsx, que la lleva de la portada a la historia. */}
+      {pelicula ? null : (
+        <div aria-hidden className="absolute inset-0 -z-10 overflow-hidden">
+          <Fons3D />
+        </div>
+      )}
 
       <div className="ample portada__reixa">
         {/* Primera <img> de la seccion: ver la nota de arriba. */}
         <Entrada className="portada__retrat" retard={0.06} y={8} duracio={0.24}>
           <Iman className="size-full">
             <img
+              ref={retrat}
               src={retrat400}
               srcSet={`${retrat400} 400w, ${retrat800} 800w`}
               sizes="(min-width: 1280px) 340px, 120px"

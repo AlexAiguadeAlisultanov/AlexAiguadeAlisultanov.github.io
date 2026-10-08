@@ -23,6 +23,7 @@ export const COLOR = "95, 198, 212";  // rgb del acento del portfolio
 const SEGUIMIENTO_FOCO = 12;           // rapidez con la que la linterna alcanza al cursor
 const FPS_MOVIL = 30;                  // tope de fotogramas fuera de escritorio
 const FUNDIDO_PORTADA = 160;           // px del degradado con el que el fondo asoma bajo la portada
+const CABECERA = 56;                   // alto de la cabecera fija (--barra en index.css)
 
 export const rgba = (alfa: number) => `rgba(${COLOR}, ${alfa})`;
 export const MONO = '"Cascadia Code", ui-monospace, "SF Mono", Consolas, monospace';
@@ -89,22 +90,43 @@ export const elegir = <T,>(lista: T[]): T => lista[Math.floor(Math.random() * li
 
 /* ---------- Componente ---------- */
 
-/** Borra lo pintado detras de la portada y deja un fundido donde termina. Ahi ya esta
+type Tapa = { desde: number; corte: number; limite: number };
+
+/** Lo que no se pinta: cada [data-tapa], que son la portada y, en la pelicula, #escenari
+ * entero (ver relat/Escenari.tsx). Lo de encima de una zona que empieza bajo la cabecera
+ * tambien se borra. Una zona marcada data-tapa="tot" se borra hasta su final de verdad,
+ * aunque quede por debajo de la ventana: asi, mientras dura la historia fijada, la placa no
+ * asoma por abajo, y vuelve con el fundido cuando el escenario se acaba. */
+function zonasTapadas(alt: number): Tapa[] {
+  const zonas: Tapa[] = [];
+  for (const el of document.querySelectorAll("[data-tapa]")) {
+    const r = el.getBoundingClientRect();
+    const limite = el.getAttribute("data-tapa") === "tot" ? r.bottom : Math.min(alt, r.bottom);
+    if (limite <= 0 || r.top >= alt) continue;
+    zonas.push({ desde: r.top <= CABECERA ? 0 : r.top, corte: limite - FUNDIDO_PORTADA, limite });
+  }
+  return zonas;
+}
+
+/** La ventana entera queda tapada: no hace falta pintar la placa. */
+const todoTapado = (zonas: Tapa[], alt: number) => zonas.some((z) => z.desde <= 0 && z.corte >= alt);
+
+/** Borra lo pintado detras de las zonas tapadas y deja un fundido donde terminan. Ahi ya esta
  * la escena 3D y las dos juntas se pisaban. */
-export function taparPortada(ctx: CanvasRenderingContext2D, ample: number, alt: number): void {
-  const portada = document.getElementById("dalt");
-  const limite = Math.min(alt, portada ? portada.getBoundingClientRect().bottom : 0);
-  if (limite <= 0) return;
-  const corte = limite - FUNDIDO_PORTADA;
+export function taparPortada(ctx: CanvasRenderingContext2D, ample: number, alt: number, zonas = zonasTapadas(alt)): void {
+  if (!zonas.length) return;
   ctx.save();
   ctx.globalCompositeOperation = "destination-out";
-  ctx.fillStyle = "#000";
-  if (corte > 0) ctx.fillRect(0, 0, ample, corte);
-  const g = ctx.createLinearGradient(0, corte, 0, limite);
-  g.addColorStop(0, "rgba(0,0,0,1)");
-  g.addColorStop(1, "rgba(0,0,0,0)");
-  ctx.fillStyle = g;
-  ctx.fillRect(0, corte, ample, FUNDIDO_PORTADA);
+  for (const { desde, corte, limite } of zonas) {
+    ctx.fillStyle = "#000";
+    if (corte > desde) ctx.fillRect(0, desde, ample, Math.min(corte, alt) - desde);
+    if (corte >= alt) continue;
+    const g = ctx.createLinearGradient(0, corte, 0, limite);
+    g.addColorStop(0, "rgba(0,0,0,1)");
+    g.addColorStop(1, "rgba(0,0,0,0)");
+    ctx.fillStyle = g;
+    ctx.fillRect(0, corte, ample, FUNDIDO_PORTADA);
+  }
   ctx.restore();
 }
 
@@ -130,6 +152,9 @@ type Estado = {
 function pintarFrame(e: Estado, ahora: number): void {
   const { ctx, ample, alt, dpr, cursor } = e;
   ctx.clearRect(0, 0, ample, alt);
+  // Con la historia fijada la escena cubre toda la ventana: no se pinta para borrarlo despues.
+  const zonas = zonasTapadas(alt);
+  if (todoTapado(zonas, alt)) return;
   ctx.drawImage(e.base, 0, 0, ample, alt);
 
   if (cursor.luz > 0.01) {
@@ -157,7 +182,7 @@ function pintarFrame(e: Estado, ahora: number): void {
   }
 
   e.figura.dibujar(ctx, ahora, cursor);
-  taparPortada(ctx, ample, alt);
+  taparPortada(ctx, ample, alt, zonas);
 }
 
 export function FonsCanvas({ crear }: { crear: CrearFigura }) {

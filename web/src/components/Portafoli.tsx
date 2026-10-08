@@ -6,11 +6,12 @@ import { ProveidorProjectes, useProjectesCtx } from "../lib/ProveidorProjectes";
 import { CORREU, GITHUB, LINKEDIN, WHATSAPP } from "../lib/contacte";
 import { Entrada } from "./Moviment";
 import { CV_NOM, CV_PDF } from "../lib/cv";
-import { Historia } from "./Historia";
 import { Idiomes } from "./Idiomes";
 import { MenuMobil } from "./MenuMobil";
 import { CopiarCorreu, Portada } from "./Portada";
 import { Projectes } from "./Projectes";
+import { Escenari } from "./relat/Escenari";
+import { Historia } from "./relat/Historia";
 import { Titol } from "./Titol";
 import { Trajectoria } from "./Trajectoria";
 import { Correu, Fletxa, GitHub, Baixa, LinkedIn, Xat } from "./Icones";
@@ -238,8 +239,12 @@ function Pagina({ sortir }: { sortir: () => void }) {
       <Capcalera sortir={sortir} />
 
       <main id="contingut">
-        <Portada />
-        <Historia />
+        {/* La portada y la historia comparten escenario: en escritorio, la capa fijada con el
+            chip 3D que pasa de una a otra (relat/Escenari.tsx). */}
+        <Escenari>
+          <Portada />
+          <Historia />
+        </Escenari>
 
         <section id="projectes" className="py-14 sm:py-20 lg:py-28">
           <div className={AMPLE}>

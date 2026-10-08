@@ -945,6 +945,81 @@ html:has(.menu-fulla[open]) { overflow: hidden; }
   }
 }
 
+/* ---------- Pelicula (escritorio) ----------
+   relat/Escenari.tsx y relat/Historia.tsx. #escenari envuelve la portada y la historia. Su
+   primer hijo es una pista absoluta de su mismo alto (fuera del flujo, asi que la portada
+   empieza donde empezaba) y dentro va la capa fijada con la escena 3D y la sombra que respira.
+   La capa se suelta justo cuando acaba #escenari. El contenido va por delante y la capa no
+   recibe el raton. Solo existe en modo pelicula: con movimiento reducido, en tactil o por
+   debajo de 1024 px no hay capa ni sticky. */
+
+.escenari { position: relative; }
+
+.escenari > .portada,
+.escenari > .historia {
+  position: relative;
+  z-index: 10;
+}
+
+/* Sin overflow: con overflow la pista seria el contenedor de scroll del sticky y la capa no se
+   fijaria a la ventana. */
+.escenari__pista {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.escenari__capa {
+  position: sticky;
+  top: var(--barra);
+  height: calc(100vh - var(--barra));
+  height: calc(100svh - var(--barra));
+  overflow: hidden;
+}
+
+/* Oscurece la columna de las tarjetas para que el chip no compita con el texto. La opacidad
+   la pone Escenari: 0,3 mas 0,7 veces la tarjeta mas visible. */
+.escenari__ombra {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, rgb(12 12 12 / 0.86), transparent 58%);
+}
+
+/* 380svh: titular de 60 y cuatro bloques de 80. De ahi salen las cifras de relat/tabla.ts, asi
+   que si cambia un alto hay que recalcularlas. */
+.historia--pelicula {
+  height: 380vh;
+  height: 380svh;
+}
+
+.historia--pelicula .historia__cap,
+.historia--pelicula .historia__bloc {
+  display: flex;
+  align-items: center;
+  padding-block: 0;
+}
+
+.historia--pelicula .historia__cap {
+  height: 60vh;
+  height: 60svh;
+}
+
+.historia--pelicula .historia__bloc {
+  height: 80vh;
+  height: 80svh;
+}
+
+/* Todo en la columna de la izquierda: la derecha es del chip. */
+.historia--pelicula .historia__titol {
+  max-width: 13ch;
+  font-size: clamp(2.75rem, 4.6vw, 5.5rem);
+}
+
+.historia--pelicula .historia__tarjeta { max-width: 44ch; }
+.historia--pelicula .historia__tarjeta--fi { max-width: 32rem; }
+.historia--pelicula .historia__frase { font-size: clamp(1.25rem, 1.7vw, 1.75rem); }
+
 /* ---------- Trayectoria ----------
    Dos columnas con un filete vertical a la izquierda. El filete cian crece con el scroll
    (Trajectoria.tsx) y cada nodo se enciende cuando su fila cruza la franja central (Fila.tsx).
