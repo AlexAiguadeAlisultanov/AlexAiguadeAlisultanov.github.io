@@ -143,15 +143,34 @@ la API, no el navegador.
 - **Cada paso del carrusel de la portada es una columna de dos proyectos**, uno encima de
   otro. Para `Carrusel.tsx` la columna es una sola pieza, así que «siguiente», Tab y el
   resaltado del ratón trabajan por columna, y Tab recorre primero la tarjeta de arriba y
-  luego la de abajo. La tarjeta mini es horizontal: captura 16:10 a la izquierda (entre 88 y
-  168 px, lo que sobra después de reservar 192 px para el texto, 190 en el móvil) y a la
-  derecha nombre, stack y `BotoDemo`. Van primero incidencias, inventario, Volkswagen y CRM,
-  y luego el resto. Detrás del último proyecto va la tarjeta «Ver todos los proyectos»
-  (`TargetaTots`), que baja a `#projectes`: con nueve proyectos completa la última columna y,
-  si la cuenta fuera par, ocupa ella sola la columna entera. Las filas de todas las columnas
-  miden lo mismo (la nota «Pide crear cuenta» del Volkswagen es la que fija la altura), así
-  que los bordes quedan alineados. Un título largo que parta en dos líneas en la tarjeta
-  mini se arregla con `curt` en la ficha de `lib/projectes.ts`.
+  luego la de abajo. La tarjeta es vertical: la captura arriba, tan ancha como la tarjeta, y
+  debajo el nombre, el stack y `BotoDemo` a todo el ancho. La nota «Pide crear cuenta» del
+  Volkswagen va a la derecha del stack, en su misma línea (si no caben juntos, baja a la
+  siguiente). Va así a propósito: las filas de todas las columnas miden lo mismo (manda la
+  tarjeta más alta) y una línea propia para la nota sumaría 18 px a todas. Van primero
+  incidencias, inventario, Volkswagen y CRM, y luego el resto. Detrás del último proyecto va
+  la tarjeta «Ver todos los proyectos» (`TargetaTots`: el número de proyectos en contorno,
+  como el de las secciones, y el enlace abajo), que baja a `#projectes`: con nueve proyectos
+  completa la última columna y, si la cuenta fuera par, ocupa ella sola la columna entera.
+  Un título largo que parta en dos líneas se arregla con `curt` en la ficha de
+  `lib/projectes.ts`.
+- **El alto de la captura de la portada sale de la ventana, no es fijo.** A partir de 1280 px
+  la rejilla de la portada es 4,4 / 2,7 / 5 partes (identidad, retrato y demos), y la pieza
+  del carrusel mide `--col`, que declara `.carrusel--compacte` (la ventana menos 56 px, entre
+  15 y 40 rem; en el móvil, la ventana menos el margen y 32 px, hasta 28 rem). Con `--col`,
+  `.portada__captura` calcula su alto: 16:9, pero sin pasar de lo que deja la ventana
+  (`100svh` menos la cabecera de 56 px, el relleno de la portada `--pad-v`, la cabecera del
+  bloque `--cap` y 132 px por cada tarjeta sin su captura) y sin bajar de 2,8:1. Así las dos
+  tarjetas de la primera columna caben enteras, con sus botones, en 1440 × 900, 1920 × 1080,
+  1366 × 768 y 1280 × 720. En el móvil no se resta nada: la página baja y la captura es 16:9
+  de lo que mida la columna. **Si cambia el alto de algo que no es captura en la columna de
+  las demos** (la cabecera del bloque, el texto o el relleno de la tarjeta), hay que retocar
+  `--cap`, `--pad-v` o los 132 px en `index.css`; si no, la segunda tarjeta se corta por
+  abajo o sobra hueco. Con ventana baja (1280 × 720 y 1366 × 768) la nota de las demos se
+  queda solo para los lectores de pantalla y `--cap` baja de 104 a 79 px. Las capturas altas
+  (800 × 750) recorren al pasar el ratón justo lo que les sobra (`--alt` menos su alto). El
+  retrato (`--retrat`) sigue a la columna central para que su anillo no toque a las otras
+  dos: a 1440 queda a unos 31 px de cada lado.
 - **Las columnas de la portada entran por la derecha y salen por la izquierda** (`entra="dreta"`
   en `Carrusel.tsx`): tras la primera llega la segunda, y «Ver todos» queda al final del
   recorrido. Lo que hace la prop es cambiar el signo de la velocidad de la cinta, nada más; el
