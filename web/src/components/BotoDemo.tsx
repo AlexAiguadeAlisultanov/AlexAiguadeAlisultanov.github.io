@@ -13,11 +13,11 @@
 // responde. Se leen igual salvo la fase de reposo: la normal dice "Probar la demo", que
 // cabe, y la mini "Probar". Una demo que se despierta en una tarjeta sale ya lista en la otra.
 //
-// La barra de progreso (opcional) es una linea de 2 px en el borde de abajo del boton que
-// avanza con los segundos y se queda al 90 % hasta que la demo contesta. Con movimiento
-// reducido no se pinta, y el punto que late tampoco late.
+// El avance de la espera no va en el boton: es una linea de 2 px en la base de la captura de la
+// tarjeta (Portada.tsx y Projectes.tsx), que crece con los segundos segun progres() y se queda al
+// 90 % hasta que la demo contesta. Con movimiento reducido no se pinta, y el punto que late del
+// boton tampoco late.
 
-import { useReducedMotion } from "framer-motion";
 import { useIdioma } from "../lib/idioma";
 import { useDespertar, useEstatDemo } from "../lib/ProveidorProjectes";
 import { Fletxa } from "./Icones";
@@ -46,7 +46,8 @@ const MINI_VORA =
   "aria-[disabled=true]:hover:border-accent/50 aria-[disabled=true]:hover:bg-transparent";
 const MINI_ERROR = `${MINI} border border-malament/50 text-malament hover:border-malament hover:bg-malament/10`;
 
-/** Cuanto lleva de los 60 s que suele tardar, sin pasar del 90 % antes de que conteste. */
+/** Cuanto lleva de los 60 s que suele tardar, sin pasar del 90 % antes de que conteste. Lo usan las
+ *  tarjetas para la linea de avance de su captura. */
 export const progres = (segons: number) => Math.min(0.9, segons / 60);
 
 type Props = {
@@ -54,14 +55,12 @@ type Props = {
   /** Nombre de la demo, para anunciar en voz alta que esta arrancando. */
   titol: string;
   mida?: "mini" | "normal";
-  barra?: boolean;
   /** Id del texto que explica el estado, para lectores de pantalla. */
   descrit?: string;
 };
 
-export function BotoDemo({ url, titol, mida = "normal", barra = false, descrit }: Props) {
+export function BotoDemo({ url, titol, mida = "normal", descrit }: Props) {
   const { t } = useIdioma();
-  const quiet = useReducedMotion();
   const { demos, dorm, fase, enMarxa, segons } = useEstatDemo(url);
   const despertar = useDespertar();
   const mini = mida === "mini";
@@ -101,13 +100,6 @@ export function BotoDemo({ url, titol, mida = "normal", barra = false, descrit }
     >
       {arrencant ? <span aria-hidden className="pols" /> : null}
       {text}
-      {barra && arrencant && !quiet ? (
-        <span
-          aria-hidden
-          className="absolute inset-x-0 bottom-0 h-[2px] origin-left bg-accent transition-transform duration-1000 ease-linear"
-          style={{ transform: `scaleX(${progres(segons)})` }}
-        />
-      ) : null}
     </button>
   );
 }

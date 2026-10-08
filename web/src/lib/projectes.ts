@@ -475,12 +475,10 @@ export type Projecte = {
   /** El titulo corto si la ficha lo tiene; si no, el de siempre. */
   curt: string;
   url: string;
-  text: string;
   tec: string[];
   demo: string;
   marca: Clau | "";
   tancat: boolean;
-  data: string;
   lema: string;
   captura: string;
   alta: boolean;
@@ -656,12 +654,10 @@ export function projecte(repo: Repo, idioma: Idioma, rol: Rol): Projecte {
     titol,
     curt: enIdioma(fitxa?.curt, idioma) || titol,
     url,
-    text,
     tec,
     demo,
     marca,
     tancat,
-    data: repo.data,
     lema,
     captura: fitxa?.captura ?? "",
     alta: !!fitxa?.alta,
@@ -689,41 +685,4 @@ export function destacats(llista: Projecte[]): Projecte[] {
   return fixes
     .map((p) => p ?? reserva.shift())
     .filter((p): p is Projecte => !!p);
-}
-
-/** "hace 3 dias", con las palabras del idioma que este puesto. */
-export function quanFa(idioma: Idioma, iso: string): string {
-  const moment = Date.parse(iso);
-  if (isNaN(moment)) return "";
-
-  const segons = Math.round((moment - Date.now()) / 1000);
-  const passos: [number, Intl.RelativeTimeFormatUnit, number][] = [
-    [60, "second", 1],
-    [3600, "minute", 60],
-    [86400, "hour", 3600],
-    [2592000, "day", 86400],
-    [31536000, "month", 2592000]
-  ];
-
-  let unitat: Intl.RelativeTimeFormatUnit = "year";
-  let divisor = 31536000;
-  const absoluts = Math.abs(segons);
-  for (const pas of passos) {
-    if (absoluts < pas[0]) {
-      unitat = pas[1];
-      divisor = pas[2];
-      break;
-    }
-  }
-
-  try {
-    return new Intl.RelativeTimeFormat(idioma, { numeric: "auto" })
-      .format(Math.round(segons / divisor), unitat);
-  } catch {
-    try {
-      return new Date(moment).toLocaleDateString(idioma);
-    } catch {
-      return "";
-    }
-  }
 }

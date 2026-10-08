@@ -134,7 +134,6 @@ img { max-width: 100%; display: block; }
 /* Tamanos en vw con tope. Los topes suben con el contenedor nuevo: en 1920 y 2560 el
    titular de la portada ocupa de verdad su columna en vez de quedarse pequeno en medio
    de un hueco. */
-.titular--xxl { font-size: clamp(2.5rem, 8.4vw, 12rem); }
 .titular--xl  { font-size: clamp(2.25rem, 7.5vw, 7.5rem); }
 .titular--l   { font-size: clamp(1.75rem, 4.2vw, 4.5rem); }
 

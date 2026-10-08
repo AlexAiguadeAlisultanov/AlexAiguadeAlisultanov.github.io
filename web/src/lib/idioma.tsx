@@ -42,9 +42,6 @@ const es = {
 
   "wake.live.on": "Iniciando {n} demos. Puede tardar cerca de un minuto.",
   "wake.live.on.one": "Iniciando una demo. Puede tardar cerca de un minuto.",
-  "wake.live.ready": "{t}: ya contesta, la puedes abrir.",
-  "wake.live.fail": "{t}: no ha contestado.",
-  "wake.live.done": "Todas las demos contestan.",
   "wake.live.starting": "{t}: arrancando. Puede tardar cerca de un minuto.",
   "estat.fail.why": "Se ha esperado dos minutos y medio sin respuesta. Prueba otra vez.",
 
@@ -256,9 +253,6 @@ const ca: Partial<Record<Clau, string>> = {
 
   "wake.live.on": "Iniciant {n} demos. Pot trigar prop d'un minut.",
   "wake.live.on.one": "Iniciant una demo. Pot trigar prop d'un minut.",
-  "wake.live.ready": "{t}: ja contesta, la pots obrir.",
-  "wake.live.fail": "{t}: no ha contestat.",
-  "wake.live.done": "Totes les demos contesten.",
   "wake.live.starting": "{t}: arrencant. Pot trigar prop d'un minut.",
   "estat.fail.why": "S'han esperat dos minuts i mig sense resposta. Prova-ho un altre cop.",
 
@@ -465,9 +459,6 @@ const en: Partial<Record<Clau, string>> = {
 
   "wake.live.on": "Starting {n} demos. It can take close to a minute.",
   "wake.live.on.one": "Starting one demo. It can take close to a minute.",
-  "wake.live.ready": "{t}: answering now, you can open it.",
-  "wake.live.fail": "{t}: no answer.",
-  "wake.live.done": "Every demo answers.",
   "wake.live.starting": "{t}: starting up. It can take close to a minute.",
   "estat.fail.why": "Two and a half minutes went by with no answer. Give it another go.",
 

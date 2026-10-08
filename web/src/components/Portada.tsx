@@ -20,7 +20,7 @@ import type { Clau } from "../lib/idioma";
 import { CORREU, GITHUB, LINKEDIN, WHATSAPP } from "../lib/contacte";
 import { CV_NOM, CV_PDF } from "../lib/cv";
 import type { Projecte } from "../lib/projectes";
-import { useEstatDemo, useProjectesCtx } from "../lib/ProveidorProjectes";
+import { useDespertarTotes, useEstatDemo, useProjectesCtx } from "../lib/ProveidorProjectes";
 import { BotoDemo, progres } from "./BotoDemo";
 import { Captura } from "./Captura";
 import { Carrusel } from "./Carrusel";
@@ -311,7 +311,9 @@ type Peca = { clau: string; dades?: Projecte };
 
 function Demos() {
   const { t } = useIdioma();
-  const { llista, destacats, demos, compte } = useProjectesCtx();
+  const { llista, destacats, compte } = useProjectesCtx();
+  // "Despertar todas" toca todas las demos de la lista, no solo las que se ven.
+  const { comptes: c, apagat, despertarTotes } = useDespertarTotes();
   const movil = useMovil();
 
   // Primero las cuatro destacadas, en su orden fijo, y despues el resto de la lista: el
@@ -323,18 +325,6 @@ function Demos() {
   const peces: Peca[] = [...totes.map((dades) => ({ clau: dades.nom, dades })), { clau: "tots" }];
   const columnes: Peca[][] = [];
   for (let i = 0; i < peces.length; i += 2) columnes.push(peces.slice(i, i + 2));
-
-  // "Despertar todas" toca todas las demos de la lista, no solo las que se ven.
-  const c = demos.comptes;
-  const apagat = c.waking > 0 || (c.total > 0 && c.on === c.total);
-
-  const despertarTotes = () => {
-    if (apagat) return;
-    const quantes = demos.encendre();
-    if (quantes) {
-      demos.anunciar(quantes === 1 ? t("wake.live.on.one") : t("wake.live.on", { n: quantes }));
-    }
-  };
 
   if (!totes.length) return null;
 
