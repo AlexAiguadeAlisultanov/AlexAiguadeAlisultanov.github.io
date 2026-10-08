@@ -98,12 +98,14 @@ web/
       Curriculum.tsx    la vista #cv
       Moviment.tsx      entrada escalonada, imán, fondo y anillo del puntero
       Fons3D.tsx        decide si hay escena o fondo estático y carga three; exporta capac()
-      Escena.tsx        el procesador en 3D, con sus shaders y su bucle (portada y película)
+      Escena.tsx        el procesador en 3D: geometría, shaders, bucle y etiquetas de la película
       relat/            la historia y el modo película
         Escenari.tsx    #escenari: la capa fijada con la escena, los recorridos q y p y RelatCtx
         Historia.tsx    #historia en los dos modos: película (380svh) o bloques en flujo normal
         Rail.tsx        los cuatro segmentos de capítulo y «Saltar a los proyectos»
-        tabla.ts        la coreografía: cuándo se ve cada tarjeta y cuánto se despieza cada capa
+        tabla.ts        lo que comparten tarjetas, rail y escena: centros, opacidades y el viaje
+        despiece.ts     la coreografía del chip: altura, apertura y brillo de cada grupo, cámara
+        rotols.ts       las etiquetas de las piezas, con sus textos en es, ca y en
         usePelicula.ts  cuándo hay película y cuándo se vuelve al modo normal
       fons/             el fondo animado de placa base (motor.tsx y placa.ts)
       Idiomes.tsx       selector de idioma
@@ -223,13 +225,29 @@ la API, no el navegador.
   caja de margen, y con ese margen la capa se salía 844 px del escenario y seguía fijada encima
   de Proyectos. La pista no puede llevar `overflow`: sería el contenedor del sticky y la capa
   dejaría de fijarse a la ventana.
-- **`relat/tabla.ts` es la única fuente de la coreografía, y sus cifras salen de los altos de la
-  historia** (titular de 60svh y cuatro bloques de 80svh, 380svh en total). Si cambia un alto en
+- **La coreografía vive en dos ficheros y en ningún otro sitio.** `relat/tabla.ts` lleva lo que
+  comparten las tarjetas, el rail y la escena, y sus cifras salen de los altos de la historia
+  (titular de 60svh y cuatro bloques de 80svh, 380svh en total): si cambia un alto en
   `index.css`, hay que recalcular `CENTRO` y `OPACIDAD` con la cuenta que explica el fichero.
-  Todo lo que mueve el chip es una función continua de q y p (posición, tamaño, máscara,
-  despiece, peso de cada capa y brillo): entre punto y punto se pasa con curva y lo que acaba
-  la portada empalma con lo que empieza la historia. Un escalón en una tabla se ve como un salto
-  del chip. Por eso tampoco sube con el scroll: sale de donde estaba el retrato y se desliza.
+  `relat/despiece.ts` lleva lo que solo mueve el chip. Están separados por peso: lo que importa
+  la página va en el trozo inicial y lo que solo importa la escena, en el suyo. No importar
+  `despiece.ts` desde fuera de `Escena.tsx`.
+- **Todo lo que mueve el chip es una función continua de q y p** (posición, tamaño, máscara,
+  despiece de cada grupo, peso, brillo y cámara): entre fila y fila de cada tabla se pasa con
+  curva y lo que acaba la portada empalma con lo que empieza la historia. Un escalón en una
+  tabla se ve como un salto del chip. Por eso tampoco sube con el scroll: sale de donde estaba
+  el retrato y se desliza. Entre capítulos, el grupo que entra se enciende antes de que se
+  apague el que sale, para que el chip no pase nunca por un momento a oscuras.
+- **El chip tiene ocho grupos de piezas** (bolas BGA, sustrato con condensadores, pistas,
+  silicio en bloques, capas de metal, pasta térmica, escudo y tapa IHS), cada uno con su número
+  `aGrup` en los shaders. Las piezas nuevas llevan `aNou` y solo se ven en la película
+  (`uNou`), así que la portada normal sale igual que antes, píxel a píxel. El resplandor son
+  las mismas líneas instanciadas un píxel o dos alrededor (un solo dibujo más), y en la portada
+  no se dibuja. Tres llamadas de dibujo en total.
+- **Las etiquetas de las piezas son decoración** (`aria-hidden`) y llevan su propio diccionario
+  en `relat/rotols.ts`, no en `idioma.tsx`, para que sus textos viajen con la escena y no
+  engorden el trozo inicial. El tipo obliga a que es, ca y en tengan las mismas claves. Van en
+  una columna a la derecha, por encima del rail y lejos de las tarjetas.
 - **La placa del fondo no se pinta detrás de `[data-tapa]`.** `#dalt` lo lleva siempre; en la
   película `#escenari` lleva `data-tapa="tot"`, que tapa hasta su final aunque quede por debajo
   de la ventana. Así la placa no asoma durante la historia y vuelve con el fundido de 160 px
