@@ -103,7 +103,8 @@ export function Galeria3D({
     escenariAmple: 0,
     arr: null as null | { id: number; x0: number; pos0: number; activa: boolean; tipus: string; mostres: { t: number; x: number }[] },
     nomesClic: false,
-    tBoto: 0
+    tBoto: 0,
+    front: -1 // tarjeta de delante, para marcarla
   });
 
   const items = () => Array.from(cinta.current?.children ?? []) as HTMLElement[];
@@ -128,6 +129,8 @@ export function Galeria3D({
     const s = m.current;
     const lis = items();
     if (!s.ample || lis.length !== n) return;
+    let front = 0;
+    let prop = Infinity;
     for (let i = 0; i < lis.length; i++) {
       const d = deltaCurt(i, s.pos, n);
       const lloc = colocar(d, { n, ample: s.ample, escenari: s.escenariAmple });
@@ -142,6 +145,18 @@ export function Galeria3D({
         li.dataset.actiu = actiu;
         li.style.pointerEvents = lloc.actiu ? "" : "none";
       }
+      const ad = Math.abs(d);
+      if (ad < prop) {
+        prop = ad;
+        front = i;
+      }
+    }
+    // La de delante lleva una marca para resaltarla (borde del acento), que solo se cambia
+    // cuando cambia de tarjeta.
+    if (front !== s.front) {
+      lis[s.front]?.removeAttribute("data-front");
+      lis[front].setAttribute("data-front", "");
+      s.front = front;
     }
   }, [colocar, n]);
 

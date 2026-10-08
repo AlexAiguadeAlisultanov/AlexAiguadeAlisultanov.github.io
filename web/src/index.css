@@ -456,6 +456,13 @@ img { max-width: 100%; display: block; }
 }
 .gal3d__cinta[data-arrossega] { cursor: grabbing; user-select: none; }
 
+.gal3d__barra {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
 .gal3d__peca {
   position: absolute;
   top: 50%;
@@ -475,6 +482,26 @@ img { max-width: 100%; display: block; }
 }
 .gal3d--anell .gal3d__peca { width: var(--anell-ample); }
 .gal3d--anell .targeta { box-shadow: 0 32px 64px -28px rgb(0 0 0 / 0.75); }
+.gal3d--anell .gal3d__peca[data-front] .targeta {
+  border-color: color-mix(in srgb, var(--color-accent) 45%, var(--color-linia));
+  box-shadow: 0 36px 70px -26px rgb(0 0 0 / 0.8), 0 0 48px -18px color-mix(in srgb, var(--color-accent) 60%, transparent);
+}
+
+/* Escaparate de profundidad (portada): contenido en su columna. Reutiliza la tarjeta vertical
+   de la portada (TargetaMini); solo cambia el ancho de la pieza y el alto de su captura, que
+   aqui es un 16:9 simple en vez del calculo del carrusel plano. La del centro manda y las
+   vecinas asoman inclinadas por los lados, que la ventana del escenario recorta. */
+.gal3d--escaparata { --esc-ample: clamp(14rem, 23vw, 20.5rem); }
+.gal3d--escaparata .gal3d__peca { width: var(--esc-ample); }
+.gal3d--escaparata .portada__targeta {
+  height: auto;
+  box-shadow: 0 26px 50px -26px rgb(0 0 0 / 0.72);
+}
+.gal3d--escaparata .portada__captura { height: calc(var(--esc-ample) * 9 / 16); }
+.gal3d--escaparata .gal3d__peca[data-front] .portada__targeta {
+  border-color: color-mix(in srgb, var(--color-accent) 42%, var(--color-linia));
+  box-shadow: 0 30px 56px -24px rgb(0 0 0 / 0.78), 0 0 42px -16px color-mix(in srgb, var(--color-accent) 55%, transparent);
+}
 
 /* ---------- Menu en movil ----------
    Hoja inferior (components/MenuMobil.tsx). Es un <dialog> modal, asi que vive en la capa

@@ -35,11 +35,11 @@ export const anell: Colocar = (d, { n, ample }) => {
 export const escaparata: Colocar = (d, { ample }) => {
   const ad = Math.abs(d);
   const dir = Math.sign(d);
-  const x = dir * Math.min(ad, 2.4) * (ample * 0.46);
-  const z = -Math.min(ad, 3) * 118;
-  const ry = Math.max(-40, Math.min(40, -d * 24));
+  const x = dir * Math.min(ad, 2.5) * (ample * 0.4);
+  const z = -Math.min(ad, 3) * 150;
+  const ry = Math.max(-44, Math.min(44, -d * 26));
   const transform = `translate(-50%,-50%) translateX(${x.toFixed(1)}px) translateZ(${z.toFixed(1)}px) rotateY(${ry.toFixed(1)}deg)`;
-  const opacitat = ad < 0.6 ? 1 : Math.max(0, 1 - (ad - 0.6) * 0.55);
+  const opacitat = ad < 0.6 ? 1 : Math.max(0, 1 - (ad - 0.6) * 0.62);
   return {
     transform,
     opacitat,

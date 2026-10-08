@@ -24,6 +24,8 @@ import { useDespertarTotes, useEstatDemo, useProjectesCtx } from "../lib/Proveid
 import { BotoDemo, progres } from "./BotoDemo";
 import { Captura } from "./Captura";
 import { Carrusel } from "./Carrusel";
+import { Galeria3D } from "./galeria/Galeria3D";
+import { escaparata } from "./galeria/formes";
 import { Fons3D } from "./Fons3D";
 import { Baixa, Correu, Dreta, GitHub, LinkedIn, Xat } from "./Icones";
 import { Entrada, Iman, useMovil } from "./Moviment";
@@ -314,19 +316,39 @@ function Demos() {
   const { llista, destacats, compte } = useProjectesCtx();
   // "Despertar todas" toca todas las demos de la lista, no solo las que se ven.
   const { comptes: c, apagat, despertarTotes } = useDespertarTotes();
+  const quiet = useReducedMotion();
   const movil = useMovil();
+  // En escritorio y tableta, el escaparate 3D de profundidad. En el movil y con movimiento
+  // reducido cae la fila plana de siempre, con scroll y snap.
+  const tresD = !quiet && !movil;
 
-  // Primero las cuatro destacadas, en su orden fijo, y despues el resto de la lista: el
-  // carrusel lleva todos los proyectos. Cada paso del carrusel es una columna de dos, y detras
-  // del ultimo proyecto va la tarjeta que baja a #projectes. Con nueve proyectos esa tarjeta
-  // completa la ultima columna, y con una cuenta par se queda sola ocupando la columna entera.
+  // Primero las cuatro destacadas, en su orden fijo, y despues el resto de la lista: la galeria
+  // lleva todos los proyectos. Detras del ultimo va la tarjeta que baja a #projectes.
   const destacades = new Set(destacats.map((p) => p.nom));
   const totes = [...destacats, ...llista.filter((p) => !destacades.has(p.nom))];
+
+  if (!totes.length) return null;
+
+  // Boton de despertarlas todas, el mismo en las dos versiones. Va a la izquierda de los botones.
+  const despertarBtn =
+    c.total > 0 ? (
+      <button
+        type="button"
+        aria-disabled={apagat}
+        onClick={despertarTotes}
+        className="inline-flex min-h-11 items-center rounded-[8px] border border-accent/50 px-3 text-[14px] font-medium text-accent-2 transition-colors duration-200 hover:border-accent hover:bg-accent-bg aria-[disabled=true]:cursor-default aria-[disabled=true]:opacity-60 aria-[disabled=true]:hover:border-accent/50 aria-[disabled=true]:hover:bg-transparent"
+      >
+        {apagat ? t("proj.compte", { k: c.on, n: c.total }) : t("proj.totes")}
+      </button>
+    ) : null;
+
+  const targetes = totes.map((dades, i) => <TargetaMini key={dades.nom} dades={dades} prioritaria={i < 2} />);
+
+  // La fila plana del movil y el movimiento reducido: columnas de dos tarjetas (como hasta ahora),
+  // que entran por la derecha. "Ver todos" cierra el recorrido.
   const peces: Peca[] = [...totes.map((dades) => ({ clau: dades.nom, dades })), { clau: "tots" }];
   const columnes: Peca[][] = [];
   for (let i = 0; i < peces.length; i += 2) columnes.push(peces.slice(i, i + 2));
-
-  if (!totes.length) return null;
 
   return (
     <>
@@ -346,40 +368,38 @@ function Demos() {
       <p className="portada__nota">{t("demos.nota")}</p>
 
       <div className="portada__carrusel">
-        {/* El movil lleva la fila quieta con scroll nativo y snap: el dedo la mueve mejor que
-            una cinta que avanza sola, y la portada no se mueve mientras se lee. Las columnas
-            entran por la derecha y salen por la izquierda: tras la primera llega la segunda, y
-            "Ver todos" queda al final del recorrido en vez de ser lo primero que aparece. */}
-        <Carrusel
-          compacte
-          entra="dreta"
-          quieta={movil}
-          etiqueta={t("demos.titol")}
-          acciones={
-            c.total > 0 ? (
-              <button
-                type="button"
-                aria-disabled={apagat}
-                onClick={despertarTotes}
-                className="inline-flex min-h-11 items-center rounded-[8px] border border-accent/50 px-3 text-[14px] font-medium text-accent-2 transition-colors duration-200 hover:border-accent hover:bg-accent-bg aria-[disabled=true]:cursor-default aria-[disabled=true]:opacity-60 aria-[disabled=true]:hover:border-accent/50 aria-[disabled=true]:hover:bg-transparent"
-              >
-                {apagat ? t("proj.compte", { k: c.on, n: c.total }) : t("proj.totes")}
-              </button>
-            ) : null
-          }
-        >
-          {columnes.map((columna, c) => (
-            <div key={columna.map((peca) => peca.clau).join("+")} className="portada__col">
-              {columna.map((peca) =>
-                peca.dades ? (
-                  <TargetaMini key={peca.clau} dades={peca.dades} prioritaria={c < 2} />
-                ) : (
-                  <TargetaTots key={peca.clau} n={compte} />
-                )
-              )}
-            </div>
-          ))}
-        </Carrusel>
+        {tresD ? (
+          // Escaparate: la del centro de frente y entera, las vecinas inclinadas y hacia atras,
+          // asomando por los lados de la columna. Es DOM de verdad (captura, nombre, stack y boton
+          // de la demo); la profundidad sale solo de transforms de CSS.
+          <Galeria3D
+            variant="gal3d--escaparata"
+            colocar={escaparata}
+            perspectiva={1050}
+            autoPasos={0.11}
+            alturaEscenari={(alt) => Math.round(alt * 1.06 + 20)}
+            etiqueta={t("demos.titol")}
+            barraDalt
+            acciones={despertarBtn}
+          >
+            {targetes}
+            <TargetaTots key="tots" n={compte} />
+          </Galeria3D>
+        ) : (
+          <Carrusel compacte entra="dreta" quieta={movil} etiqueta={t("demos.titol")} acciones={despertarBtn}>
+            {columnes.map((columna, col) => (
+              <div key={columna.map((peca) => peca.clau).join("+")} className="portada__col">
+                {columna.map((peca) =>
+                  peca.dades ? (
+                    <TargetaMini key={peca.clau} dades={peca.dades} prioritaria={col < 2} />
+                  ) : (
+                    <TargetaTots key={peca.clau} n={compte} />
+                  )
+                )}
+              </div>
+            ))}
+          </Carrusel>
+        )}
       </div>
     </>
   );
