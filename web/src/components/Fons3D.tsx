@@ -9,9 +9,14 @@
 // telefono se nota en la bateria y en la temperatura, y ademas la mitad de la escena es la
 // reaccion al puntero, que en una pantalla tactil no existe. Ahi el fondo estatico dice lo
 // mismo y no cuesta nada.
+//
+// Dos modos. "portada" es el de siempre: el fondo vive dentro de #dalt. "pelicula" lo monta
+// relat/Escenari.tsx en su capa fijada y le pasa el retrato y los dos recorridos de scroll;
+// si la escena falla ahi, se avisa hacia arriba (onFalla) para volver al modo normal.
 
 import { Component, Suspense, lazy, useCallback, useEffect, useState } from "react";
-import type { ReactNode } from "react";
+import type { ReactNode, RefObject } from "react";
+import type { MotionValue } from "framer-motion";
 
 const Escena = lazy(() => import("./Escena"));
 
@@ -43,8 +48,26 @@ function Estatic() {
   );
 }
 
-/** Hay WebGL de verdad y el equipo tiene con que moverlo. */
-function capac(): boolean {
+/** Se prueba una vez por visita: la grafica no cambia mientras la pagina esta abierta. */
+let webgl: boolean | undefined;
+
+function teWebGL(): boolean {
+  if (webgl !== undefined) return webgl;
+  try {
+    const prova = document.createElement("canvas");
+    const gl = (prova.getContext("webgl2") ||
+      prova.getContext("webgl")) as WebGLRenderingContext | null;
+    // El contexto de prueba se cierra: no hace falta gastar uno de los pocos que hay.
+    gl?.getExtension("WEBGL_lose_context")?.loseContext();
+    webgl = !!gl;
+  } catch {
+    webgl = false;
+  }
+  return webgl;
+}
+
+/** Hay WebGL de verdad y el equipo tiene con que moverlo. Lo usa tambien la pelicula. */
+export function capac(): boolean {
   try {
     if (window.innerWidth < 768) return false;
     if (!window.matchMedia("(hover: hover) and (pointer: fine)").matches) return false;
@@ -54,13 +77,7 @@ function capac(): boolean {
     if (nuclis < 4) return false;
     if (typeof memoria === "number" && memoria < 4) return false;
 
-    const prova = document.createElement("canvas");
-    const gl = (prova.getContext("webgl2") ||
-      prova.getContext("webgl")) as WebGLRenderingContext | null;
-    if (!gl) return false;
-    // El contexto de prueba se cierra: no hace falta gastar uno de los pocos que hay.
-    gl.getExtension("WEBGL_lose_context")?.loseContext();
-    return true;
+    return teWebGL();
   } catch {
     return false;
   }
@@ -83,13 +100,30 @@ class Xarxa extends Component<{ children: ReactNode; avisar: () => void }, { tre
   }
 }
 
-export function Fons3D() {
+type Props = {
+  modo?: "portada" | "pelicula";
+  /** Pelicula: el retrato del que sale el chip. */
+  ancla?: RefObject<HTMLElement | null>;
+  /** Pelicula: q, la portada saliendo. */
+  sortida?: MotionValue<number>;
+  /** Pelicula: p, el recorrido de la historia. */
+  progres?: MotionValue<number>;
+  /** Se llama si la escena falla, despues de quitarla. */
+  onFalla?: () => void;
+};
+
+export function Fons3D({ modo = "portada", ancla, sortida, progres, onFalla }: Props) {
   const [amb3D, setAmb3D] = useState(false);
-  const fallar = useCallback(() => setAmb3D(false), []);
+  const fallar = useCallback(() => {
+    setAmb3D(false);
+    onFalla?.();
+  }, [onFalla]);
 
   useEffect(() => {
     if (capac()) setAmb3D(true);
   }, []);
+
+  const pelicula = modo === "pelicula" ? { ancla, sortida, progres } : null;
 
   return (
     <div aria-hidden className="absolute inset-0 overflow-hidden">
@@ -98,7 +132,7 @@ export function Fons3D() {
         <div className="absolute inset-0">
           <Xarxa avisar={fallar}>
             <Suspense fallback={null}>
-              <Escena onFalla={fallar} />
+              <Escena onFalla={fallar} {...pelicula} />
             </Suspense>
           </Xarxa>
         </div>
