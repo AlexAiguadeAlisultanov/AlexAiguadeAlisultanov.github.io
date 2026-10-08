@@ -22,6 +22,7 @@ import { CV_NOM, CV_PDF } from "../lib/cv";
 import type { Projecte } from "../lib/projectes";
 import { useEstatDemo, useProjectesCtx } from "../lib/ProveidorProjectes";
 import { BotoDemo, progres } from "./BotoDemo";
+import { Captura } from "./Captura";
 import { Carrusel } from "./Carrusel";
 import { Fons3D } from "./Fons3D";
 import { Baixa, Correu, Dreta, GitHub, LinkedIn, Xat } from "./Icones";
@@ -253,14 +254,7 @@ function TargetaMini({ dades, prioritaria }: { dades: Projecte; prioritaria: boo
     <article className="targeta portada__targeta rounded-[20px] border border-linia bg-fons-2">
       <div className="portada__captura relative overflow-hidden rounded-[8px] border border-linia bg-fons-3">
         {dades.captura ? (
-          <img
-            src={dades.captura}
-            alt={t("card.shot", { t: dades.titol })}
-            loading={prioritaria ? "eager" : "lazy"}
-            decoding="async"
-            draggable={false}
-            className={`captura ${dades.alta ? "captura--alta" : "captura--plana"}`}
-          />
+          <Captura src={dades.captura} titol={dades.titol} alta={dades.alta} prioritaria={prioritaria} />
         ) : (
           <span aria-hidden className="composicio absolute inset-0" />
         )}

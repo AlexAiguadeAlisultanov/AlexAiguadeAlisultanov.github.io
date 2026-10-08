@@ -17,6 +17,7 @@ import {
   useProjectesCtx
 } from "../lib/ProveidorProjectes";
 import { BotoDemo, CTA, progres } from "./BotoDemo";
+import { Captura } from "./Captura";
 import { Carrusel } from "./Carrusel";
 import { GitHub } from "./Icones";
 import { Entrada } from "./Moviment";
@@ -69,14 +70,7 @@ function Targeta({ dades }: { dades: Projecte }) {
   const despertar = () => despertarDemo(dades.demo, dades.titol);
 
   const imatge = dades.captura ? (
-    <img
-      src={dades.captura}
-      alt={t("card.shot", { t: dades.titol })}
-      loading="lazy"
-      decoding="async"
-      draggable={false}
-      className={`captura ${dades.alta ? "captura--alta" : "captura--plana"}`}
-    />
+    <Captura src={dades.captura} titol={dades.titol} alta={dades.alta} />
   ) : (
     <Composicio titol={dades.titol} />
   );
