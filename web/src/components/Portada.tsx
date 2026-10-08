@@ -343,9 +343,12 @@ function Demos() {
 
       <div className="portada__carrusel">
         {/* El movil lleva la fila quieta con scroll nativo y snap: el dedo la mueve mejor que
-            una cinta que avanza sola, y la portada no se mueve mientras se lee. */}
+            una cinta que avanza sola, y la portada no se mueve mientras se lee. Las columnas
+            entran por la derecha y salen por la izquierda: tras la primera llega la segunda, y
+            "Ver todos" queda al final del recorrido en vez de ser lo primero que aparece. */}
         <Carrusel
           compacte
+          entra="dreta"
           quieta={movil}
           etiqueta={t("demos.titol")}
           acciones={

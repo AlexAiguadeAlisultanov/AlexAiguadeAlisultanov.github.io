@@ -144,6 +144,11 @@ la API, no el navegador.
   miden lo mismo (la nota «Pide crear cuenta» del Volkswagen es la que fija la altura), así
   que los bordes quedan alineados. Un título largo que parta en dos líneas en la tarjeta
   mini se arregla con `curt` en la ficha de `lib/projectes.ts`.
+- **Las columnas de la portada entran por la derecha y salen por la izquierda** (`entra="dreta"`
+  en `Carrusel.tsx`): tras la primera llega la segunda, y «Ver todos» queda al final del
+  recorrido. Lo que hace la prop es cambiar el signo de la velocidad de la cinta, nada más; el
+  de `#projectes` no la pasa y sigue entrando por la izquierda. «Siguiente» y la flecha
+  derecha traen la columna que viene por la derecha en los dos carruseles.
 - **El anillo que sigue al ratón no sustituye al puntero del sistema**, lo acompaña, y
   desaparece en pantallas táctiles.
 - **El ancho de la página lo fija `.ample` en `index.css`**, no un contenedor con tope

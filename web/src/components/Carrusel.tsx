@@ -16,6 +16,13 @@
 // cada una una columna de dos tarjetas), sin entrada propia y con un hueco a la izquierda de
 // los botones para una accion suya (la portada pone ahi "despertar todas"). En las dos la
 // logica, las medidas y las garantias son las mismas: lo que cambia entre ellas vive en el CSS.
+//
+// Por que lado entran las piezas al avanzar sola la cinta lo decide `entra`. De siempre es por
+// la izquierda (las piezas se desplazan hacia la derecha). Con entra="dreta" es al reves: las
+// piezas llegan por la derecha y salen por la izquierda, como si se pulsara "siguiente" sin
+// parar, y tras la primera viene la segunda. Solo cambia el signo de la velocidad de la
+// cinta: el arrastre, el lanzamiento, la aceleracion con el scroll, los botones, las flechas
+// y el foco no saben de ese sentido y valen igual en los dos.
 
 import { Children, useCallback, useEffect, useId, useRef, useState } from "react";
 import type { FocusEvent, KeyboardEvent, PointerEvent as PEvent, ReactNode } from "react";
@@ -59,11 +66,27 @@ type Props = {
   etiqueta?: string;
   /** Accion que comparte fila con los botones, a su izquierda. Solo en la version compacta. */
   acciones?: ReactNode;
+  /**
+   * Lado por el que entran las piezas cuando la cinta avanza sola. "esquerra" (el de siempre):
+   * entran por la izquierda y salen por la derecha. "dreta": entran por la derecha y salen por
+   * la izquierda, en el orden del documento.
+   */
+  entra?: "esquerra" | "dreta";
 };
 
-export function Carrusel({ children, compacte = false, quieta = false, etiqueta, acciones }: Props) {
+export function Carrusel({
+  children,
+  compacte = false,
+  quieta = false,
+  etiqueta,
+  acciones,
+  entra = "esquerra"
+}: Props) {
   const { t } = useIdioma();
   const quiet = !!useReducedMotion() || quieta;
+  // Signo de la velocidad de la cinta: positivo la desplaza hacia la derecha (las piezas entran
+  // por la izquierda), negativo hacia la izquierda.
+  const signe = entra === "dreta" ? -1 : 1;
   // Dos carruseles en la misma pagina no pueden compartir id: el de proyectos conserva el de
   // siempre y el compacto saca el suyo de useId.
   const idUnic = useId();
@@ -178,7 +201,7 @@ export function Carrusel({ children, compacte = false, quieta = false, etiqueta,
           }
         } else {
           const base = Math.min(36, Math.max(21, s.V * 0.025));
-          amortir(s.vel, parada ? 0 : base + s.impuls, parada ? 0.3 : 0.6, dt);
+          amortir(s.vel, parada ? 0 : signe * (base + s.impuls), parada ? 0.3 : 0.6, dt);
           s.pos += s.vel.value * dt;
         }
         pintar();
@@ -199,7 +222,7 @@ export function Carrusel({ children, compacte = false, quieta = false, etiqueta,
         pintar();
       }
     },
-    [pintar]
+    [pintar, signe]
   );
 
   const arrencar = useCallback(() => {
