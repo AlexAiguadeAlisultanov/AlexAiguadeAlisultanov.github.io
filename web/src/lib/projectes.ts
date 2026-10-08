@@ -191,12 +191,12 @@ const CONEGUTS: Record<string, Fitxa> = {
     // unica fuente de la tarjeta, y no se ensena enlace al codigo porque daria un 404 a
     // quien no sea el dueno. La demo si es publica.
     privat: true,
-    tec: ["PHP", "MVC", "AJAX"],
+    tec: ["PHP", "MVC", "MySQL"],
     demo: "https://mvc-ajax.onrender.com",
     text: {
-      es: "Alta, consulta, edición y borrado de productos con patrón MVC y peticiones AJAX, para que la página no se recargue. Funciona igual en móvil.",
-      ca: "Alta, consulta, edició i esborrat de productes amb patró MVC i peticions AJAX, perquè la pàgina no es recarregui. Funciona igual en mòbil.",
-      en: "Create, read, update and delete products with an MVC pattern and AJAX requests, so the page never reloads. Works the same on a phone."
+      es: "Alta, edición, archivo y recuperación de productos con patrón MVC en PHP y MySQL. Buscar, ordenar y filtrar lo que hay que reponer pasa en el navegador, sin recargar la página. Funciona igual en móvil.",
+      ca: "Alta, edició, arxiu i recuperació de productes amb patró MVC en PHP i MySQL. Cercar, ordenar i filtrar el que cal reposar passa al navegador, sense recarregar la pàgina. Funciona igual en mòbil.",
+      en: "Add, edit, archive and restore products, with an MVC pattern in PHP and MySQL. Searching, sorting and filtering what needs restocking happens in the browser, without reloading the page. Works the same on a phone."
     },
     lema: {
       es: "Qué material hay, cuánto queda y dónde está.",
@@ -208,8 +208,9 @@ const CONEGUTS: Record<string, Fitxa> = {
     destacat: 2,
     anyInici: 2023,
     persones: 2,
-    // Sin AJAX a proposito: en la version actual buscar, ordenar y filtrar pasan en el
-    // navegador y las altas son formularios de siempre, asi que no se anuncia.
+    // Nada de AJAX en ningun texto: en la version actual buscar, ordenar y filtrar pasan en el
+    // navegador y las altas son formularios de siempre. El "MVC-AJAX" de la clave es solo el
+    // nombre del repositorio y del servicio, no se ensena en ninguna pantalla.
     pila: ["PHP", "MVC", "MySQL", "JavaScript"],
     aportacio: [
       {

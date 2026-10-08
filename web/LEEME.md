@@ -133,8 +133,10 @@ la API, no el navegador.
   chips de la tarjeta grande, de 5 o 6 como mucho para que quepan en una fila a partir de 1280
   px; `tec` se queda corta para las pequeñas) y `aportacio` (qué hizo Alex; en los de equipo, su
   parte). El reparto del Volkswagen es el del README de ese proyecto. No se anuncia
-  lo que el código no hace: el inventario ya no pide nada al servidor al buscar, así que su
-  `pila` no lleva AJAX aunque `tec` y la descripción larga sí lo digan. Una frase por línea en
+  lo que el código no hace: el inventario no pide nada al servidor al buscar, ordenar o filtrar
+  (pasa en el navegador) y sus altas son formularios de siempre, así que ni `pila`, ni `tec`, ni
+  la descripción larga hablan de AJAX. El `MVC-AJAX` de su clave es solo el nombre del
+  repositorio y del servicio: no se enseña en ninguna pantalla. Una frase por línea en
   escritorio (unos 50 caracteres) para que las tarjetas salgan parejas; en el móvil se ven las
   dos primeras.
 - **El pie de las tarjetas grandes es igual en todas.** Solo lleva `BotoDemo`. El enlace
