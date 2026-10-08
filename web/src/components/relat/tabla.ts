@@ -13,10 +13,8 @@
 // una tarjeta pasa por el centro de la ventana en p = (su centro en svh - 50) / 280, que es de
 // donde salen los numeros de CENTRO.
 //
-// Todo lo que toca al chip es una funcion continua de q y p, con derivada suave: entre punto y
-// punto de cada tabla se pasa con smoothstep, y donde acaba la portada (q = 1) empieza la
-// historia (p = 0) con el mismo valor. Nada cambia de golpe al cruzar un umbral, bajando o
-// subiendo.
+// Lo que solo mueve el chip (el despiece de cada grupo de piezas, la camara, el brillo) esta en
+// despiece.ts, que solo importa la escena: asi viaja en su trozo y no en el de la pagina.
 
 export type Tramos = readonly (readonly [number, number])[];
 
@@ -32,43 +30,6 @@ export const TITULAR = 0.5;
 
 /** El cierre lleva botones: solo sube, entre estas dos p, y ya no se apaga. */
 export const CIERRE = [0.8, 0.88] as const;
-
-/** Separacion de las capas (uSep) segun p. Empieza en 0,36 porque el chip ya se va separando
- *  durante el viaje (de 0,22 a 0,36 con q). La tapa, la que mas sube, llega arriba en 0,75. */
-export const SEP: Tramos = [
-  [0, 0.36],
-  [0.18, 0.55],
-  [0.46, 0.9],
-  [0.75, 1.0],
-  [1, 0.22]
-];
-
-type Pes = readonly [number, number, number, number];
-
-/** Brillo de cada capa [bolas, sustrato, silicio, tapa] a lo largo de p. Con la portada y en p = 0
- *  van las cuatro enteras; la capa de cada capitulo se enciende mientras entra su tarjeta y se
- *  cambia de una a otra alrededor de 0,32, 0,6 y 0,88, siempre con curva y sin escalones. */
-export const PESOS: readonly (readonly [number, Pes])[] = [
-  [0, [1, 1, 1, 1]],
-  [0.08, [1, 1, 0.3, 0.3]],
-  [0.28, [1, 1, 0.3, 0.3]],
-  [0.36, [0.3, 0.3, 1, 0.3]],
-  [0.56, [0.3, 0.3, 1, 0.3]],
-  [0.64, [0.3, 0.3, 0.3, 1]],
-  [0.84, [0.3, 0.3, 0.3, 1]],
-  [0.92, [1, 1, 1, 1]]
-];
-
-/** Suavizado de los pesos en el tiempo, en ms, por si el scroll llega a saltos (teclado, anclas).
- *  Sus objetivos ya son continuos: esto solo redondea. */
-export const PESOS_MS = 120;
-
-/** La rafaga de corriente sale una vez al pasar por esta p bajando, y no se rearma hasta
- *  volver por debajo de en - histeresis. */
-export const RAFAGA = { en: 0.64, histeresis: 0.03 } as const;
-
-/** Al final el chip baja de brillo: uForca pasa de 1 a 0,35 entre p 0,92 y 1. */
-export const APAGADO = { desde: 0.92, hasta: 1, valor: [1, 0.35] } as const;
 
 /** Lo que llena cada segmento del rail: Hardware, Software, Seguridad y Montado. */
 export const RAIL: Tramos = [
@@ -108,40 +69,6 @@ export function ventana(x: number, a: number, b: number): number {
   return t * t * (3 - 2 * t);
 }
 
-/** smootherstep de 0 a 1: primera y segunda derivada nulas en los dos extremos. */
-export function suau(x: number): number {
-  const t = clamp01(x);
-  return t * t * t * (t * (t * 6 - 15) + 10);
-}
-
-/** Entre los puntos de una tabla [p, valor], ordenada por p, con smoothstep en cada tramo: el
- *  valor empalma en cada punto y la pendiente tambien (vale cero en el punto). */
-export function tramos(tabla: Tramos, p: number): number {
-  if (p <= tabla[0][0]) return tabla[0][1];
-  for (let i = 1; i < tabla.length; i++) {
-    const [p1, v1] = tabla[i];
-    if (p <= p1) {
-      const [p0, v0] = tabla[i - 1];
-      return v0 + (v1 - v0) * ventana(p, p0, p1);
-    }
-  }
-  return tabla[tabla.length - 1][1];
-}
-
 /** Opacidad de una tarjeta de capitulo: entera cerca de su centro y nada lejos de el. */
 export const opacidad = (p: number, centro: number) =>
   1 - ventana(Math.abs(p - centro), OPACIDAD.dentro, OPACIDAD.fuera);
-
-/** Los cuatro pesos en p, escritos en `sortida` para no crear un vector en cada fotograma. */
-export function pesos(p: number, sortida: number[]): void {
-  let i = 1;
-  while (i < PESOS.length - 1 && p > PESOS[i][0]) i++;
-  const [p0, w0] = PESOS[i - 1];
-  const [p1, w1] = PESOS[i];
-  const t = ventana(p, p0, p1);
-  for (let k = 0; k < 4; k++) sortida[k] = w0[k] + (w1[k] - w0[k]) * t;
-}
-
-/** Brillo general del chip (uForca) en p. */
-export const forca = (p: number) =>
-  APAGADO.valor[0] + (APAGADO.valor[1] - APAGADO.valor[0]) * ventana(p, APAGADO.desde, APAGADO.hasta);
