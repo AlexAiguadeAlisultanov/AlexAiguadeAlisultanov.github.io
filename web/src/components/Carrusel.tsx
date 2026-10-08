@@ -6,7 +6,8 @@
 // No hay copias de las tarjetas: cada una se recoloca con su propio transform al salir por
 // un lado, asi que los botones de las demos existen una sola vez y su estado no se duplica.
 // Si las tarjetas no llenan el ancho (o con movimiento reducido) la cinta no da la vuelta:
-// pasa a ser una fila con scroll horizontal nativo y snap, quieta.
+// pasa a ser una fila con scroll horizontal nativo y snap, quieta. Ahi, si el foco del teclado
+// llega a una tarjeta que no se ve entera, se trae a la vista (el navegador no lo hace solo).
 //
 // Todo lo que se mueve va por transform y se escribe en el DOM desde un unico bucle, sin
 // pasar por el estado de React.
@@ -84,7 +85,8 @@ export function Carrusel({
   entra = "esquerra"
 }: Props) {
   const { t } = useIdioma();
-  const quiet = !!useReducedMotion() || quieta;
+  const reduit = !!useReducedMotion();
+  const quiet = reduit || quieta;
   // Signo de la velocidad de la cinta: positivo la desplaza hacia la derecha (las piezas entran
   // por la izquierda), negativo hacia la izquierda.
   const signe = entra === "dreta" ? -1 : 1;
@@ -483,10 +485,29 @@ export function Carrusel({
     }
   };
 
+  /**
+   * Con la fila quieta (movimiento reducido o movil) el navegador da por visible un control al que
+   * le asoma un trozo y no mueve la fila: el boton de una tarjeta de fuera se quedaba con un 6 %
+   * a la vista, y el snap nativo tampoco lo corrige. Si la tarjeta del foco no se ve entera, se
+   * trae. Solo en horizontal: el vertical lo resuelve el propio foco.
+   */
+  const portarQuieta = (el: HTMLElement) => {
+    const v = finestra.current;
+    const li = el.closest(".carrusel__peca");
+    if (!v || !li) return;
+    const marc = v.getBoundingClientRect();
+    const caixa = li.getBoundingClientRect();
+    if (caixa.left >= marc.left - 1 && caixa.right <= marc.right + 1) return;
+    el.scrollIntoView({ inline: "center", block: "nearest", behavior: reduit ? "auto" : "smooth" });
+  };
+
   const entraFocus = (e: FocusEvent<HTMLDivElement>) => {
-    if (!roda) return;
     const el = e.target as HTMLElement;
     if (el === finestra.current || !el.matches(":focus-visible")) return;
+    if (!roda) {
+      portarQuieta(el);
+      return;
+    }
     motiu("focus", true);
     const li = el.closest(".carrusel__peca");
     const s = m.current;
