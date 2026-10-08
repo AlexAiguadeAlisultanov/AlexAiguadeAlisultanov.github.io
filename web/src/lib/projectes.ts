@@ -88,7 +88,7 @@ const CONEGUTS: Record<string, Fitxa> = {
     captura: capLibros,
     alta: true,
     anyInici: 2024,
-    pila: ["Java", "Spring Boot", "JPA", "Thymeleaf", "MySQL", "JavaScript"],
+    pila: ["Java", "Spring Boot", "JPA", "Thymeleaf", "MySQL"],
     aportacio: [
       {
         es: "Libros, usuarios y los préstamos entre ellos",
@@ -126,7 +126,7 @@ const CONEGUTS: Record<string, Fitxa> = {
     alta: true,
     anyInici: 2024,
     persones: 2,
-    pila: ["Java", "Spring Boot", "Thymeleaf", "MySQL", "ZXing", "Stripe"],
+    pila: ["Java", "Spring Boot", "MySQL", "ZXing", "Stripe"],
     aportacio: [
       {
         es: "Cada entrada lleva su propio código QR",
@@ -248,7 +248,7 @@ const CONEGUTS: Record<string, Fitxa> = {
     captura: capAusencias,
     alta: false,
     anyInici: 2026,
-    pila: ["TypeScript", "React", "Node", "Express", "SQLite", "Vitest"],
+    pila: ["TypeScript", "React", "Express", "SQLite", "Vitest"],
     aportacio: [
       {
         es: "El saldo cuenta solo días laborables",
@@ -286,7 +286,7 @@ const CONEGUTS: Record<string, Fitxa> = {
     captura: capReservas,
     alta: false,
     anyInici: 2026,
-    pila: ["TypeScript", "React", "Node", "Express", "SQLite", "Vitest"],
+    pila: ["TypeScript", "React", "Express", "SQLite", "Vitest"],
     aportacio: [
       {
         es: "Plano SVG: se reserva pulsando el sitio",
@@ -323,7 +323,7 @@ const CONEGUTS: Record<string, Fitxa> = {
     captura: capGastos,
     alta: false,
     anyInici: 2026,
-    pila: ["TypeScript", "React", "Node", "Express", "SQLite", "Vitest"],
+    pila: ["TypeScript", "React", "Express", "SQLite", "Vitest"],
     aportacio: [
       {
         es: "Ticket en foto o PDF, comprobado por su contenido",
@@ -362,7 +362,7 @@ const CONEGUTS: Record<string, Fitxa> = {
     alta: true,
     destacat: 4,
     anyInici: 2026,
-    pila: ["TypeScript", "React", "Node", "Express", "SQLite", "Vitest"],
+    pila: ["TypeScript", "React", "Express", "SQLite", "Vitest"],
     aportacio: [
       {
         es: "Tablero de seis etapas, con arrastrar y soltar",

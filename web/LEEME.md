@@ -127,9 +127,10 @@ la API, no el navegador.
   probar, en el mismo hueco.
 - **Lo que cuenta cada tarjeta grande sale de la ficha, y es verdad comprobada.** Cada ficha de
   `lib/projectes.ts` lleva `anyInici` (el año del primer commit del repositorio), `persones`
-  (quienes lo hicieron según el historial; sin el campo es individual), `pila` (todo el stack,
-  que `tec` deja corto para las tarjetas pequeñas) y `aportacio` (qué hizo Alex; en los de
-  equipo, su parte). El reparto del Volkswagen es el del README de ese proyecto. No se anuncia
+  (quienes lo hicieron según el historial; sin el campo es individual), `pila` (el stack de los
+  chips de la tarjeta grande, de 5 o 6 como mucho para que quepan en una fila a partir de 1280
+  px; `tec` se queda corta para las pequeñas) y `aportacio` (qué hizo Alex; en los de equipo, su
+  parte). El reparto del Volkswagen es el del README de ese proyecto. No se anuncia
   lo que el código no hace: el inventario ya no pide nada al servidor al buscar, así que su
   `pila` no lleva AJAX aunque `tec` y la descripción larga sí lo digan. Una frase por línea en
   escritorio (unos 50 caracteres) para que las tarjetas salgan parejas; en el móvil se ven las

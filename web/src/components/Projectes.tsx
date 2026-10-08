@@ -30,7 +30,7 @@ function Chips({ pila, etiqueta }: { pila: string[]; etiqueta: string }) {
       {pila.map((una) => (
         <li
           key={una}
-          className="rounded-[8px] border border-linia bg-fons-3 px-2 py-[3px] text-[13px] leading-snug text-tinta-2"
+          className="rounded-[8px] border border-linia bg-fons-3 px-1.5 py-[3px] text-[12px] leading-snug text-tinta-2"
         >
           {una}
         </li>
@@ -175,7 +175,7 @@ function Targeta({ dades }: { dades: Projecte }) {
               {dades.aportacio.map((frase, i) => (
                 <li
                   key={frase}
-                  className={`relative pl-4 text-[14px] leading-snug text-tinta-2 before:absolute before:left-0 before:top-[0.68em] before:h-px before:w-2 before:bg-accent ${
+                  className={`relative pl-4 text-[14px] leading-5 text-tinta-2 before:absolute before:left-0 before:top-2.5 before:h-px before:w-2 before:bg-accent ${
                     i > 1 ? "max-sm:hidden" : ""
                   }`}
                 >
