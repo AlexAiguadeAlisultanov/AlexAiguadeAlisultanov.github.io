@@ -11,11 +11,12 @@
 // El teclado y el lector de pantalla no pasan por el 3D (va con aria-hidden): a su lado hay una
 // lista equivalente, oculta a la vista pero con los mismos botones de probar la demo.
 
-import { useLayoutEffect, useMemo, useRef, useState } from "react";
-import type { ReactNode, RefObject } from "react";
+import { useMemo, useRef, useState } from "react";
+import type { ComponentRef, ReactNode, RefObject } from "react";
 import * as THREE from "three";
-import { Canvas, useFrame, useLoader, useThree } from "@react-three/fiber";
+import { Canvas, useFrame, useLoader } from "@react-three/fiber";
 import type { ThreeEvent } from "@react-three/fiber";
+import { OrbitControls } from "@react-three/drei";
 import { useIdioma } from "../../lib/idioma";
 import type { Projecte } from "../../lib/projectes";
 import { esAdormida } from "../../lib/demos";
@@ -26,71 +27,46 @@ import { Estrelles, Particules, prepararMapa } from "./piezas3d";
 
 const RADI = 6; // radio del anillo y de la nube de particulas
 const ALT_IMATGE = 2.05; // alto de cada captura en el mundo; el ancho sale de su proporcion
-const DIR_CAMARA = new THREE.Vector3(0, 0.46, 1).normalize(); // por encima, para que el anillo se abra
 
-/** Encuadra el anillo dentro del lienzo, mida lo que mida la columna: aleja la camara lo justo
- *  para que la vuelta entera llene el hueco tanto de ancho como de alto, con poco margen. */
-function Encuadre() {
-  const { camera, size } = useThree();
-  useLayoutEffect(() => {
-    const cam = camera as THREE.PerspectiveCamera;
-    const aspecte = Math.max(0.3, size.width / size.height);
-    const vFov = (cam.fov * Math.PI) / 180;
-    const hFov = 2 * Math.atan(Math.tan(vFov / 2) * aspecte);
-    const fov = Math.min(vFov, hFov);
-    const radi = RADI + ALT_IMATGE * 0.5;
-    // El 0,9 deja un dedo de margen pero hace que el anillo llene casi toda la columna.
-    const dist = (radi / Math.sin(fov / 2)) * 0.9;
-    cam.position.copy(DIR_CAMARA.clone().multiplyScalar(dist));
-    cam.lookAt(0, 0, 0);
-    cam.updateProjectionMatrix();
-  }, [camera, size]);
-  return null;
-}
-
-type Peca = { projecte: Projecte; angle: number; ample: number };
-
-/** El anillo de capturas. Gira solo y, cuando el raton esta sobre el lienzo, se queda quieto para
- *  que la pieza de delante no se escape. */
-function Anell({
+/** La camara gira alrededor del anillo (arrastrando o sola) y manda cual es la pieza de delante:
+ *  la que queda del mismo lado que la camara. El zoom va apagado para que la rueda siga haciendo
+ *  scroll de la pagina; el arrastre horizontal (y un poco vertical) mueve el anillo como en la
+ *  plantilla. Al tocar el anillo se corta el giro automatico; vuelve solo un rato despues. */
+function Vista({
   peces,
-  textures,
   pausat,
-  onFront,
-  onSobre,
-  onFora,
-  onTriarPeca
+  onFront
 }: {
   peces: Peca[];
-  textures: THREE.Texture[];
   pausat: RefObject<boolean>;
   onFront: (i: number) => void;
-  onSobre: (i: number) => void;
-  onFora: () => void;
-  onTriarPeca: (i: number) => void;
 }) {
-  const grup = useRef<THREE.Group>(null);
-  const vel = useRef(0);
+  const controls = useRef<ComponentRef<typeof OrbitControls>>(null);
   const front = useRef(-1);
+  const reactiva = useRef(0);
+  const dir = useMemo(
+    () => peces.map((p) => new THREE.Vector2(Math.cos(p.angle), Math.sin(p.angle))),
+    [peces]
+  );
 
-  useFrame((_, dt) => {
-    const g = grup.current;
-    if (!g) return;
-    const pas = Math.min(0.05, dt);
-    const objectiu = pausat.current ? 0 : 0.17;
-    vel.current += (objectiu - vel.current) * (1 - Math.exp(-pas / 0.4));
-    g.rotation.y += vel.current * pas;
+  useFrame((state) => {
+    const c = controls.current;
+    if (!c) return;
+    // Giro automatico salvo mientras el raton esta encima o justo despues de soltar un arrastre.
+    const ara = state.clock.elapsedTime;
+    c.autoRotate = !pausat.current && ara > reactiva.current;
 
-    // La pieza de delante es la que queda mas cerca de mirar a la camara (angulo pi/2 en el
-    // plano del anillo). Se avisa solo cuando cambia, no cada fotograma.
-    const objetiu = Math.PI / 2 - g.rotation.y;
+    // La pieza de delante: la del mismo lado que la camara en el plano del anillo.
+    const cam = state.camera.position;
+    const cx = cam.x;
+    const cz = cam.z;
+    const norm = Math.hypot(cx, cz) || 1;
     let millor = 0;
-    let menor = Infinity;
-    for (let i = 0; i < peces.length; i++) {
-      let d = Math.abs(((peces[i].angle - objetiu + Math.PI) % (2 * Math.PI)) - Math.PI);
-      d = Math.min(d, 2 * Math.PI - d);
-      if (d < menor) {
-        menor = d;
+    let major = -Infinity;
+    for (let i = 0; i < dir.length; i++) {
+      const d = (dir[i].x * cx + dir[i].y * cz) / norm;
+      if (d > major) {
+        major = d;
         millor = i;
       }
     }
@@ -101,7 +77,47 @@ function Anell({
   });
 
   return (
-    <group ref={grup}>
+    <OrbitControls
+      ref={controls}
+      makeDefault
+      enableZoom={false}
+      enablePan={false}
+      enableRotate
+      autoRotate
+      autoRotateSpeed={0.6}
+      rotateSpeed={0.5}
+      minPolarAngle={Math.PI * 0.3}
+      maxPolarAngle={Math.PI * 0.62}
+      target={[0, 0, 0]}
+      // Al empezar a arrastrar se para el giro; se reanuda 2,5 s despues de soltar.
+      onStart={() => {
+        reactiva.current = Infinity;
+      }}
+      onEnd={() => {
+        reactiva.current = performance.now() / 1000 + 2.5;
+      }}
+    />
+  );
+}
+
+type Peca = { projecte: Projecte; angle: number; ample: number };
+
+/** El anillo de capturas, quieto: la camara es la que se mueve (ver Vista). */
+function Anell({
+  peces,
+  textures,
+  onSobre,
+  onFora,
+  onTriarPeca
+}: {
+  peces: Peca[];
+  textures: THREE.Texture[];
+  onSobre: (i: number) => void;
+  onFora: () => void;
+  onTriarPeca: (i: number) => void;
+}) {
+  return (
+    <group>
       {peces.map((peca, i) => {
         const x = RADI * Math.cos(peca.angle);
         const z = RADI * Math.sin(peca.angle);
@@ -164,7 +180,7 @@ function Escena({
 
   return (
     <>
-      <Encuadre />
+      <Vista peces={amb} pausat={pausat} onFront={onFront} />
       <ambientLight intensity={0.9} />
       <pointLight position={[8, 8, 8]} intensity={0.5} />
       <Estrelles compte={460} abast={40} />
@@ -172,8 +188,6 @@ function Escena({
       <Anell
         peces={amb}
         textures={mapes}
-        pausat={pausat}
-        onFront={onFront}
         onSobre={onSobre}
         onFora={onFora}
         onTriarPeca={onTriarPeca}
@@ -253,7 +267,7 @@ export function OrbitaDemos({ projectes, acciones }: { projectes: Projecte[]; ac
           frameloop={frameloop}
           dpr={[1, 1.5]}
           gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }}
-          camera={{ position: [0, 2, 13], fov: 50 }}
+          camera={{ position: [0, 1.8, 10], fov: 50 }}
           onCreated={({ gl }) => gl.setClearColor(0x000000, 0)}
         >
           <Escena

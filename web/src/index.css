@@ -519,12 +519,18 @@ img { max-width: 100%; display: block; }
 }
 .orbita__llenc {
   position: relative;
-  flex: 1 1 auto;
-  min-height: clamp(300px, 46svh, 500px);
+  flex: none;
+  /* Altura explicita (no min-height): el lienzo de react-three-fiber se dimensiona al 100 %
+     de su caja, y un porcentaje no resuelve contra min-height. Asi el anillo llena su hueco. */
+  height: clamp(360px, 62svh, 680px);
   overflow: clip;
-  /* Gira solo y se para con el raton; el arrastre vertical sigue desplazando la pagina. */
+  /* Arrastra para girar el anillo; el zoom va apagado, asi que la rueda sigue desplazando la
+     pagina y el arrastre vertical con un dedo tambien (en movil se usa el respaldo plano). */
   touch-action: pan-y;
   cursor: grab;
+}
+.orbita__llenc:active {
+  cursor: grabbing;
 }
 .orbita__llenc canvas {
   display: block;
