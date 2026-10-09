@@ -6,6 +6,7 @@
 // La lista y el estado de las demos vienen de ProveidorProjectes: lo que se despierte en la
 // portada se ve aqui, y la lista se pide una sola vez.
 
+import { lazy, Suspense } from "react";
 import type { ReactNode } from "react";
 import { useReducedMotion } from "framer-motion";
 import { useIdioma } from "../lib/idioma";
@@ -19,10 +20,13 @@ import {
 import { BotoDemo, CTA, progres } from "./BotoDemo";
 import { Captura } from "./Captura";
 import { Carrusel } from "./Carrusel";
-import { Galeria3D } from "./galeria/Galeria3D";
-import { anell } from "./galeria/formes";
+import { Limit, useCapaz } from "./galeria/comu3d";
 import { GitHub } from "./Icones";
 import { Entrada, useMovil } from "./Moviment";
+
+// La galaxia de verdad en 3D (three + react-three-fiber) va en su propio trozo: solo se pide en
+// escritorio con WebGL. Mientras llega o si falla, queda el carrusel plano.
+const GalaxiaProjectes = lazy(() => import("./galeria/galaxia"));
 
 // Etiqueta pequena en mayusculas, con la medida de las de la portada (.portada__etiqueta).
 const ETIQUETA = "text-[12px] font-medium uppercase leading-normal tracking-[0.14em] text-tinta-3";
@@ -277,11 +281,13 @@ export function Projectes() {
   const { llista, estat } = useProjectesCtx();
   const quiet = useReducedMotion();
   const movil = useMovil();
-  // En escritorio y tableta, el anillo giratorio en 3D. En el movil y con movimiento reducido
-  // cae al carrusel plano de siempre, usable y sin giro.
-  const tresD = !quiet && !movil;
+  const ambWebGL = useCapaz();
+  // En escritorio y tableta con WebGL, la galaxia de tarjetas flotando en 3D. En el movil, con
+  // movimiento reducido o sin WebGL cae al carrusel plano de siempre, usable y sin giro.
+  const tresD = !quiet && !movil && ambWebGL;
 
   const tarjetes = llista.map((dades) => <Targeta key={dades.nom} dades={dades} />);
+  const respaldo = <Carrusel>{tarjetes}</Carrusel>;
 
   return (
     <>
@@ -299,19 +305,14 @@ export function Projectes() {
 
       {tresD ? (
         <Entrada>
-          <Galeria3D
-            variant="gal3d--anell"
-            colocar={anell}
-            perspectiva={3200}
-            autoPasos={0.13}
-            alturaEscenari={(alt) => Math.round(alt * 1.22 + 32)}
-            etiqueta={t("car.aria")}
-          >
-            {tarjetes}
-          </Galeria3D>
+          <Limit respaldo={respaldo}>
+            <Suspense fallback={respaldo}>
+              <GalaxiaProjectes projectes={llista} />
+            </Suspense>
+          </Limit>
         </Entrada>
       ) : (
-        <Carrusel>{tarjetes}</Carrusel>
+        respaldo
       )}
     </>
   );

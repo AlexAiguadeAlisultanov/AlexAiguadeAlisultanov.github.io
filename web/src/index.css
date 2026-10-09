@@ -551,6 +551,108 @@ img { max-width: 100%; display: block; }
   width: clamp(7.5rem, 42%, 11rem);
 }
 
+/* ---------- Galaxia de proyectos (components/galeria/galaxia.tsx) ----------
+   Las nueve tarjetas flotan repartidas por un espacio 3D con un velo de estrellas; se arrastra
+   para mirar alrededor y al pulsar una se abre su detalle en un modal. El lienzo lleva altura
+   explicita (no min-height) para que react-three-fiber lo dimensione al 100 %. */
+
+.galaxia {
+  position: relative;
+  height: clamp(460px, 78svh, 760px);
+  overflow: clip;
+  cursor: grab;
+  /* Arrastre horizontal gira; el zoom esta apagado, asi que la rueda sigue haciendo scroll y el
+     arrastre vertical con un dedo tambien (en movil se usa el carrusel plano). */
+  touch-action: pan-y;
+}
+.galaxia--arrossega {
+  cursor: grabbing;
+}
+.galaxia canvas {
+  display: block;
+  outline: none;
+}
+
+/* Tarjeta flotante: va dentro de un <Html> de drei, asi que es DOM de verdad. */
+.galaxia-card {
+  width: 176px;
+  padding: 10px;
+  border-radius: 14px;
+  background: var(--color-fons-2);
+  border: 1px solid var(--color-linia);
+  box-shadow: 0 18px 38px rgba(0, 0, 0, 0.55);
+  user-select: none;
+  transition:
+    transform 0.25s var(--ease-suau),
+    border-color 0.25s var(--ease-suau),
+    box-shadow 0.25s var(--ease-suau);
+}
+.galaxia-card--sobre {
+  transform: scale(1.08);
+  border-color: rgba(95, 198, 212, 0.5);
+  box-shadow:
+    0 24px 50px rgba(95, 198, 212, 0.28),
+    0 0 22px rgba(95, 198, 212, 0.22);
+}
+.galaxia-card__img {
+  position: relative;
+  aspect-ratio: 16 / 10;
+  border-radius: 8px;
+  overflow: hidden;
+  background: var(--color-fons-3);
+  display: grid;
+  place-items: center;
+}
+.galaxia-card__img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.galaxia-card__buit {
+  font-size: 20px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  color: var(--color-accent);
+}
+.galaxia-card__nom {
+  margin-top: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  text-align: center;
+  color: var(--color-tinta);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.galaxia-card__peu {
+  margin-top: 2px;
+  font-size: 11px;
+  text-align: center;
+  color: var(--color-accent-2);
+}
+
+/* El modal con el detalle del proyecto. */
+.galaxia-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(4px);
+}
+.galaxia-modal__cos {
+  position: relative;
+  width: 100%;
+  max-width: 30rem;
+  max-height: 88dvh;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
 /* ---------- Menu en movil ----------
    Hoja inferior (components/MenuMobil.tsx). Es un <dialog> modal, asi que vive en la capa
    superior del navegador y no le afectan el blur ni el z-index de la cabecera. Sube en
