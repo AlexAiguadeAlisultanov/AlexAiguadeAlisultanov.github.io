@@ -174,7 +174,17 @@ function Contacte() {
               {t("cont.frase")}
             </p>
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-              <a href="#cv" className={PRIMARI}>
+              <a
+                href="#cv"
+                onClick={() => {
+                  try {
+                    window.sessionStorage.setItem("cv-origen", "contacte");
+                  } catch {
+                    // almacenamiento bloqueado: vale el valor por defecto
+                  }
+                }}
+                className={PRIMARI}
+              >
                 {t("contact.cv")}
               </a>
               <a href={CV_PDF} download={CV_NOM} className={SECUNDARI}>
@@ -198,7 +208,7 @@ function Contacte() {
                     <span className="sr-only shrink-0 text-[14px] uppercase tracking-[0.12em] text-tinta-3 sm:not-sr-only sm:w-[120px]">
                       {etiqueta}
                     </span>
-                    <span className="min-w-0 flex-1 truncate text-[15px] text-tinta transition-colors duration-200 group-hover:text-accent-2 sm:text-[17px]">
+                    <span className="min-w-0 flex-1 break-all text-[15px] text-tinta transition-colors duration-200 group-hover:text-accent-2 sm:text-[17px]">
                       {valor}
                     </span>
                     <Fletxa

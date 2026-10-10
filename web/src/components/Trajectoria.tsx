@@ -26,7 +26,7 @@ const EINES: { titol: Clau; xips: Xip[] }[] = [
   },
   {
     titol: "cv.g2",
-    xips: ["Kali Linux", "Nmap", "Burp Suite", "Wireshark", "Metasploit", "SQLMap", "OSINT", "SIEM"]
+    xips: ["Kali Linux", "Nmap", "Burp Suite", "Wireshark", "Metasploit", "SQLMap", "OSINT"]
   },
   { titol: "cv.g3", xips: ["Python", "Java", "PHP", "TypeScript", "MySQL"] }
 ];

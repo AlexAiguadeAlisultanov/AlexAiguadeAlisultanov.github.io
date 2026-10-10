@@ -536,6 +536,13 @@ export function Portada() {
             </a>
             <a
               href="#cv"
+              onClick={() => {
+                try {
+                  window.sessionStorage.setItem("cv-origen", "dalt");
+                } catch {
+                  // almacenamiento bloqueado: "Volver" caera en Contacto por defecto
+                }
+              }}
               className="inline-flex min-h-12 items-center justify-center rounded-[8px] border border-linia px-5 text-[15px] font-semibold text-tinta-2 transition-colors duration-200 hover:border-accent/40 hover:text-tinta max-md:hidden"
             >
               {t("hero.vercv")}

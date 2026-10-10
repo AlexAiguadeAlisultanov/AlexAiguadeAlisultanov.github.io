@@ -45,13 +45,25 @@ export default function App() {
     return () => window.removeEventListener("hashchange", alCanviar);
   }, []);
 
-  const tornar = useCallback((id = "contacte") => {
+  const tornar = useCallback((idForzat?: string) => {
+    // Se vuelve a donde se abrio el CV: a la portada (#dalt) si fue desde arriba, a Contacto si
+    // fue desde ahi. Lo deja escrito cada boton "Ver curriculum" al pulsarlo.
+    let id = idForzat ?? "contacte";
+    if (!idForzat) {
+      try {
+        id = window.sessionStorage.getItem("cv-origen") || "contacte";
+      } catch {
+        // almacenamiento bloqueado: vale el valor por defecto
+      }
+    }
     history.pushState(null, "", window.location.pathname + window.location.search);
     setCv(false);
-    // El portafolio se monta de nuevo: se espera a que pinte para colocarse en su sitio.
+    // El portafolio se monta de nuevo y la pelicula le suma alto despues de pintar: se coloca
+    // varias veces para caer en su sitio aunque el alto cambie.
     const anar = () => document.getElementById(id)?.scrollIntoView({ behavior: "instant" });
     window.requestAnimationFrame(anar);
-    window.setTimeout(anar, 500);
+    window.setTimeout(anar, 300);
+    window.setTimeout(anar, 900);
   }, []);
 
   // Con la pantalla de acceso ya pintada, el trozo del portafolio se baja mientras la persona

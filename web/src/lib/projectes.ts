@@ -76,14 +76,14 @@ const CONEGUTS: Record<string, Fitxa> = {
     tec: ["Java", "Spring Boot", "Thymeleaf", "MySQL"],
     demo: "https://inventario-de-libros.onrender.com/llibres",
     text: {
-      es: "Aplicación web que lleva los libros, los usuarios y los préstamos de una biblioteca, con los datos sobre MySQL.",
-      ca: "Aplicació web que porta els llibres, els usuaris i els préstecs d'una biblioteca, amb les dades sobre MySQL.",
-      en: "Web app that handles the books, the users and the loans of a library, with the data on MySQL."
+      es: "Aplicación web para llevar los libros y los usuarios de una biblioteca, con los datos sobre MySQL.",
+      ca: "Aplicació web per portar els llibres i els usuaris d'una biblioteca, amb les dades sobre MySQL.",
+      en: "Web app to manage the books and the members of a library, with the data on MySQL."
     },
     lema: {
-      es: "Libros, usuarios y préstamos de una biblioteca.",
-      ca: "Llibres, usuaris i préstecs d'una biblioteca.",
-      en: "Books, members and loans for a library."
+      es: "Libros y usuarios de una biblioteca.",
+      ca: "Llibres i usuaris d'una biblioteca.",
+      en: "Books and members of a library."
     },
     captura: capLibros,
     alta: true,
@@ -91,9 +91,9 @@ const CONEGUTS: Record<string, Fitxa> = {
     pila: ["Java", "Spring Boot", "JPA", "Thymeleaf", "MySQL"],
     aportacio: [
       {
-        es: "Libros, usuarios y los préstamos entre ellos",
-        ca: "Llibres, usuaris i els préstecs entre ells",
-        en: "Books, members and the loans between them"
+        es: "Libros y usuarios, con sus datos sobre MySQL",
+        ca: "Llibres i usuaris, amb les dades sobre MySQL",
+        en: "Books and members, with their data on MySQL"
       },
       {
         es: "Buscar, filtrar y ordenar sin recargar",
@@ -371,9 +371,9 @@ const CONEGUTS: Record<string, Fitxa> = {
         en: "Six-stage board with drag and drop"
       },
       {
-        es: "Previsión ponderada, con gráficos SVG propios",
-        ca: "Previsió ponderada, amb gràfics SVG propis",
-        en: "Weighted forecast with hand-written SVG charts"
+        es: "Previsión ponderada, con gráficos en HTML y CSS",
+        ca: "Previsió ponderada, amb gràfics en HTML i CSS",
+        en: "Weighted forecast with charts built in HTML and CSS"
       },
       {
         es: "CIF con dígito de control e importación de CSV",

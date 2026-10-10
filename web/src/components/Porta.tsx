@@ -126,7 +126,7 @@ export function Porta({ obrir }: { obrir: (rol: Rol) => void }) {
         <Idiomes />
       </div>
 
-      <div className="flex flex-1 items-center justify-center px-6 pb-16 sm:px-10">
+      <main className="flex flex-1 items-center justify-center px-6 pb-16 sm:px-10">
         <motion.div
           initial={quiet ? false : { opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -222,7 +222,7 @@ export function Porta({ obrir }: { obrir: (rol: Rol) => void }) {
             </p>
           </form>
         </motion.div>
-      </div>
+      </main>
     </div>
   );
 }

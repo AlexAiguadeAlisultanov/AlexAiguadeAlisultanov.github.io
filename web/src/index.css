@@ -116,6 +116,10 @@ img { max-width: 100%; display: block; }
      esa caja se queda por debajo de las tildes de las mayusculas: sin este respiro
      arriba, la tilde de FORMACIÓN se queda sin pintar. */
   padding-block-start: 0.14em;
+  /* El tracking negativo recorta el borde derecho de la ultima letra (la S de HABLEMOS perdia
+     un trozo a ciertos anchos). Un respiro a la derecha lo evita sin mover el texto, que va
+     alineado a la izquierda. */
+  padding-inline-end: 0.08em;
   color: #BBCCD7;
   background: var(--degradat);
   -webkit-background-clip: text;
