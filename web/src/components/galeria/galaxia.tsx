@@ -5,9 +5,9 @@
 // codigo), que se cierra con la X, con Escape o tocando fuera y atrapa el foco.
 //
 // Como la de la portada: vive dentro de la pagina (no ocupa la pantalla), el lienzo es
-// transparente con un velo de estrellas, OrbitControls solo gira (sin zoom ni desplazamiento, asi
-// la rueda sigue moviendo la pagina) y el bucle se apaga cuando la seccion sale de la vista. El
-// 3D va con aria-hidden; el teclado y el lector de pantalla abren el mismo modal desde una lista.
+// transparente con un velo de estrellas, y con el raton dentro se gira y se hace zoom con la rueda
+// (fuera del lienzo la rueda sigue moviendo la pagina). El bucle se apaga cuando la seccion sale de
+// la vista. El 3D va con aria-hidden; el teclado y el lector de pantalla abren el mismo modal.
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import * as THREE from "three";
@@ -104,7 +104,7 @@ function Escena({ projectes, onObrir }: { projectes: Projecte[]; onObrir: (p: Pr
   const { camera } = useThree();
 
   // La camara arranca un poco por encima para que se vean varias capas; OrbitControls la deja
-  // girar alrededor pero no acercarse ni desplazarse.
+  // girar alrededor y acercarse o alejarse con la rueda (zoom), pero no desplazarse.
   useEffect(() => {
     camera.position.set(0, 1.5, 15.5);
   }, [camera]);
@@ -130,7 +130,10 @@ function Escena({ projectes, onObrir }: { projectes: Projecte[]; onObrir: (p: Pr
 
       <OrbitControls
         makeDefault
-        enableZoom={false}
+        // Con el raton dentro la rueda hace zoom; fuera no llega aqui y sigue moviendo la pagina.
+        enableZoom
+        minDistance={7}
+        maxDistance={40}
         enablePan={false}
         enableRotate
         enableDamping
