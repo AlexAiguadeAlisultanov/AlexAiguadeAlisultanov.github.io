@@ -555,6 +555,34 @@ img { max-width: 100%; display: block; }
   width: clamp(7.5rem, 42%, 11rem);
 }
 
+/* La tarjeta del proyecto elegido, debajo del anillo: captura, nombre y el boton real de probar. */
+.orbita__fitxa {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-top: 14px;
+  padding: 12px;
+  border-radius: 14px;
+  border: 1px solid var(--color-linia);
+  background: var(--color-fons-2);
+}
+.orbita__fitxa-img {
+  width: 92px;
+  flex: none;
+  aspect-ratio: 16 / 10;
+  object-fit: cover;
+  border-radius: 8px;
+  border: 1px solid var(--color-linia);
+}
+.orbita__pista {
+  display: flex;
+  align-items: center;
+  min-height: 44px;
+  margin-top: 14px;
+  font-size: 13px;
+  color: var(--color-tinta-3);
+}
+
 /* ---------- Galaxia de proyectos (components/galeria/galaxia.tsx) ----------
    Las nueve tarjetas flotan repartidas por un espacio 3D con un velo de estrellas; se arrastra
    para mirar alrededor y al pulsar una se abre su detalle en un modal. El lienzo lleva altura
@@ -571,6 +599,11 @@ img { max-width: 100%; display: block; }
 }
 .galaxia--arrossega {
   cursor: grabbing;
+}
+/* Con el modal abierto se esconde la galaxia entera (lienzo y tarjetas flotantes, que son DOM de
+   drei con z-index altisimo): si no, se seguirian viendo por encima del modal. */
+.galaxia--amagat {
+  visibility: hidden;
 }
 .galaxia canvas {
   display: block;

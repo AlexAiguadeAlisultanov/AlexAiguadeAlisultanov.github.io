@@ -347,7 +347,7 @@ export function GalaxiaProjectes({ projectes }: { projectes: Projecte[] }) {
       <div
         ref={caixa}
         aria-hidden
-        className={`galaxia${arrossegant ? " galaxia--arrossega" : ""}`}
+        className={`galaxia${arrossegant ? " galaxia--arrossega" : ""}${obert ? " galaxia--amagat" : ""}`}
         onPointerDown={(e) => {
           baixa.current = { x: e.clientX, y: e.clientY };
         }}
