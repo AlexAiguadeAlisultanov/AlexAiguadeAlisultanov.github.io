@@ -36,12 +36,13 @@ type Peca = { projecte: Projecte; angle: number };
  *  mientras el raton esta encima o justo despues de un arrastre, para no pelearse con quien la mueve. */
 function Vista({ pausat }: { pausat: RefObject<boolean> }) {
   const controls = useRef<ComponentRef<typeof OrbitControls>>(null);
-  const reactiva = useRef(0);
 
-  useFrame((state) => {
+  useFrame(() => {
     const c = controls.current;
     if (!c) return;
-    c.autoRotate = !pausat.current && state.clock.elapsedTime > reactiva.current;
+    // Gira solo salvo mientras el raton esta encima (para leer, pulsar o arrastrar). Al sacar el
+    // raton del lienzo vuelve a girar, aunque hayas pulsado una tarjeta.
+    c.autoRotate = !pausat.current;
   });
 
   return (
@@ -56,17 +57,11 @@ function Vista({ pausat }: { pausat: RefObject<boolean> }) {
       enablePan={false}
       enableRotate
       autoRotate
-      autoRotateSpeed={0.6}
+      autoRotateSpeed={0.3}
       rotateSpeed={0.5}
       minPolarAngle={Math.PI * 0.08}
       maxPolarAngle={Math.PI * 0.92}
       target={[0, 0, 0]}
-      onStart={() => {
-        reactiva.current = Infinity;
-      }}
-      onEnd={() => {
-        reactiva.current = performance.now() / 1000 + 2.5;
-      }}
     />
   );
 }
@@ -219,6 +214,8 @@ export function OrbitaDemos({ projectes, acciones }: { projectes: Projecte[]; ac
           gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }}
           camera={{ position: [0, 1.8, 10], fov: 50 }}
           onCreated={({ gl }) => gl.setClearColor(0x000000, 0)}
+          // Pulsar en un hueco (ni una tarjeta) deselecciona el proyecto y esconde su ficha.
+          onPointerMissed={() => setTriada(null)}
         >
           <Escena peces={peces} pausat={pausat} triada={triada} onTriar={setTriada} />
         </Canvas>
