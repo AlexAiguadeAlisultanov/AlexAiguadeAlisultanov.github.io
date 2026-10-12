@@ -680,9 +680,11 @@ type Props = {
   sortida?: MotionValue<number>;
   /** Pelicula: p, el recorrido de la historia fijada (0 a 1). Con el se enciende el modo. */
   progres?: MotionValue<number>;
+  /** Pelicula: true mientras la capa entera esta oculta bajo la banda de las demos (relat/Escenari.tsx). */
+  oculta?: RefObject<boolean>;
 };
 
-export default function Escena({ onFalla, ancla, sortida, progres }: Props) {
+export default function Escena({ onFalla, ancla, sortida, progres, oculta }: Props) {
   const quiet = useReducedMotion();
   const { idioma } = useIdioma();
   const llenc = useRef<HTMLCanvasElement>(null);
@@ -1107,7 +1109,10 @@ export default function Escena({ onFalla, ancla, sortida, progres }: Props) {
     const bucle = (marca: number) => {
       rid = 0;
       try {
-        pas(marca);
+        // Con la banda de las demos cubriendo la capa entera el chip no se ve: no se pinta, pero el
+        // bucle sigue (no cuesta nada) para retomarlo en el mismo fotograma en que vuelva a verse.
+        if (oculta?.current) anterior = 0;
+        else pas(marca);
       } catch {
         // Un fallo dentro del bucle no deja la escena a medias: se para y se vuelve al fondo.
         parar();
@@ -1220,7 +1225,7 @@ export default function Escena({ onFalla, ancla, sortida, progres }: Props) {
       canvas.removeEventListener("webglcontextlost", perdut);
       alliberar();
     };
-  }, [quiet, onFalla, ancla, sortida, progres]);
+  }, [quiet, onFalla, ancla, sortida, progres, oculta]);
 
   const mascara = progres ? MASCARA_PELICULA : MASCARA;
   const noms = NOMS[idioma];

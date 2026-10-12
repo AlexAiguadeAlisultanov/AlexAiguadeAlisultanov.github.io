@@ -8,6 +8,7 @@ import { Entrada } from "./Moviment";
 import { CV_NOM, CV_PDF } from "../lib/cv";
 import { Idiomes } from "./Idiomes";
 import { MenuMobil } from "./MenuMobil";
+import { Demos } from "./Demos";
 import { CopiarCorreu, Portada } from "./Portada";
 import { Projectes } from "./Projectes";
 import { Escenari } from "./relat/Escenari";
@@ -58,9 +59,11 @@ function Capcalera({ sortir }: { sortir: () => void }) {
   }, []);
 
   useEffect(() => {
-    const nodes = SECCIONS.map((s) => document.getElementById(s.id)).filter(
-      (n): n is HTMLElement => !!n
-    );
+    // Se vigilan tambien la portada y la banda de las demos, que no tienen enlace en la cabecera:
+    // asi, al volver a ellas desde mas abajo, se apaga la seccion marcada en vez de dejar
+    // resaltada la ultima que se vio.
+    const ids = ["dalt", "demos", ...SECCIONS.map((s) => s.id)];
+    const nodes = ids.map((id) => document.getElementById(id)).filter((n): n is HTMLElement => !!n);
     if (!nodes.length || !("IntersectionObserver" in window)) return;
 
     const vigilant = new IntersectionObserver(
@@ -250,9 +253,11 @@ function Pagina({ sortir }: { sortir: () => void }) {
 
       <main id="contingut">
         {/* La portada y la historia comparten escenario: en escritorio, la capa fijada con el
-            chip 3D que pasa de una a otra (relat/Escenari.tsx). */}
+            chip 3D que pasa de una a otra (relat/Escenari.tsx). Entre las dos va la banda de las
+            demos, que es opaca y pasa por delante de esa capa como una cortina. */}
         <Escenari>
           <Portada />
+          <Demos />
           <Historia />
         </Escenari>
 

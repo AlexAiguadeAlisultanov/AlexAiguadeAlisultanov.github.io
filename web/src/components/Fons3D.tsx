@@ -108,11 +108,13 @@ type Props = {
   sortida?: MotionValue<number>;
   /** Pelicula: p, el recorrido de la historia. */
   progres?: MotionValue<number>;
+  /** Pelicula: true mientras la capa entera esta oculta (la banda de las demos la cubre): no se pinta. */
+  oculta?: RefObject<boolean>;
   /** Se llama si la escena falla, despues de quitarla. */
   onFalla?: () => void;
 };
 
-export function Fons3D({ modo = "portada", ancla, sortida, progres, onFalla }: Props) {
+export function Fons3D({ modo = "portada", ancla, sortida, progres, oculta, onFalla }: Props) {
   const [amb3D, setAmb3D] = useState(false);
   const fallar = useCallback(() => {
     setAmb3D(false);
@@ -123,7 +125,7 @@ export function Fons3D({ modo = "portada", ancla, sortida, progres, onFalla }: P
     if (capac()) setAmb3D(true);
   }, []);
 
-  const pelicula = modo === "pelicula" ? { ancla, sortida, progres } : null;
+  const pelicula = modo === "pelicula" ? { ancla, sortida, progres, oculta } : null;
 
   return (
     <div aria-hidden className="absolute inset-0 overflow-hidden">

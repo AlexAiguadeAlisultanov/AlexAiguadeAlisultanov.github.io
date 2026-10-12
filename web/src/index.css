@@ -274,12 +274,13 @@ img { max-width: 100%; display: block; }
 .carrusel--quiet .carrusel__cinta { padding-inline: var(--marc); }
 .carrusel--quiet .carrusel__peca { scroll-snap-align: start; }
 
-/* ---------- Carrusel compacto (portada) ----------
-   Contenido en su columna: no sangra hasta los bordes de la ventana. Cada pieza es una columna
-   de dos tarjetas verticales (components/Portada.tsx) y mide lo que la ventana dicta menos
+/* ---------- Carrusel compacto (fila plana de #demos) ----------
+   Contenido dentro del margen de la pagina: no sangra hasta los bordes de la ventana. Cada pieza es
+   una columna de dos tarjetas verticales (components/Demos.tsx) y mide lo que la ventana dicta menos
    un resto, para que el principio de la siguiente asome y avise de que hay mas (cqw es el
    ancho de la ventana del carrusel). Con tope de 40 rem: en pantallas muy anchas la columna no
-   se estira, asoma mas de la siguiente. El hueco se queda en 16 px; con el resaltado de raton
+   se estira, asoma mas de la siguiente (la banda #demos lo acota mas, ver mas abajo). El hueco se
+   queda en 16 px; con el resaltado de raton
    (1,5 % hacia la vecina, que retrocede un 0,75 %) pierde como mucho 7 px, asi que no se tocan.
    La barra de botones solo sale con ancho para ello: en el movil se desliza con el dedo.
 
@@ -428,16 +429,16 @@ img { max-width: 100%; display: block; }
   .carrusel__cos { transition: none; }
 }
 
-/* ---------- Galerias 3D ----------
-   Dos escaparates en 3D hechos solo con transforms de CSS: cada tarjeta sigue siendo DOM de
+/* ---------- Galerias 3D de CSS (respaldo) ----------
+   Escaparates en 3D hechos solo con transforms de CSS: cada tarjeta sigue siendo DOM de
    verdad (su captura, titulo, chips, boton de la demo, enlaces) y la profundidad sale de
    perspective mas rotateY/translateZ y opacidad, nunca de WebGL ni de desenfoque por fotograma.
    El movil y el movimiento reducido no montan nada de esto: cae el carrusel plano de siempre
    (components/galeria/Galeria3D.tsx decide el transform de cada tarjeta en cada fotograma).
 
-   Abajo, en #projectes, un anillo giratorio: tarjetas grandes tendidas en un cilindro, la de
-   delante manda y las demas orbitan de canto y se apagan. Arriba, en la portada, un escaparate
-   de profundidad contenido en su columna (ver .gal3d--escaparata, mas abajo con la portada). */
+   Hoy solo se monta el escaparate (.gal3d--escaparata), como respaldo del anillo WebGL de la banda
+   #demos cuando el equipo no tiene WebGL o el lienzo se cae. El anillo de CSS (.gal3d--anell),
+   que fue el de #projectes, ya no lo usa ninguna seccion. */
 
 .gal3d { position: relative; }
 
@@ -491,10 +492,10 @@ img { max-width: 100%; display: block; }
   box-shadow: 0 36px 70px -26px rgb(0 0 0 / 0.8), 0 0 48px -18px color-mix(in srgb, var(--color-accent) 60%, transparent);
 }
 
-/* Escaparate de profundidad (portada): contenido en su columna. Reutiliza la tarjeta vertical
-   de la portada (TargetaMini); solo cambia el ancho de la pieza y el alto de su captura, que
-   aqui es un 16:9 simple en vez del calculo del carrusel plano. La del centro manda y las
-   vecinas asoman inclinadas por los lados, que la ventana del escenario recorta. */
+/* Escaparate de profundidad (respaldo del anillo de #demos), dentro del margen de la pagina.
+   Reutiliza la tarjeta vertical de la fila plana (TargetaMini); solo cambia el ancho de la pieza y
+   el alto de su captura, que aqui es un 16:9 simple en vez del calculo del carrusel plano. La del
+   centro manda y las vecinas asoman inclinadas por los lados, que la ventana del escenario recorta. */
 .gal3d--escaparata { --esc-ample: clamp(14rem, 23vw, 20.5rem); }
 .gal3d--escaparata .gal3d__peca { width: var(--esc-ample); }
 .gal3d--escaparata .portada__targeta {
@@ -507,80 +508,182 @@ img { max-width: 100%; display: block; }
   box-shadow: 0 30px 56px -24px rgb(0 0 0 / 0.78), 0 0 42px -16px color-mix(in srgb, var(--color-accent) 55%, transparent);
 }
 
-/* ---------- Anillo 3D de la portada (WebGL, react-three-fiber) ----------
-   El lienzo vive dentro de la columna de demos. Es transparente a proposito: entre las estrellas
-   se ve la placa base del fondo, asi que no es un cielo a pantalla completa sino un velo acotado
-   en su hueco. El alto se limita con clamp para no romper el primer pantallazo. */
+/* ---------- Banda de las demos (components/Demos.tsx) ----------
+   Una seccion a todo el ancho entre la portada y la historia. Es transparente a proposito, sin fondo
+   ni contorno: detras tiene que verse la animacion de la placa base (fons/motor.tsx), y por delante
+   solo van las tarjetas del anillo y la ficha, que llevan su propio fondo. Tampoco lleva data-tapa:
+   la placa se corta bajo la portada y bajo la historia, pero no aqui. En la pelicula, la capa fijada
+   del chip se funde a transparente mientras pasa la banda (relat/Escenari.tsx). Arriba, la cabecera
+   (titulo y nota a la izquierda; "Despertar todas" y el enlace a los proyectos a la derecha) y debajo
+   el anillo 3D, el escaparate de CSS o la fila plana. */
+
+.demos {
+  /* Lo que no es captura en la fila plana (cabecera de la banda y relleno): con ellos
+     .portada__captura calcula cuanto alto le queda a cada captura sin pasarse de la ventana. */
+  --pad-v: 72px;
+  --cap: 190px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding-block: 40px 32px;
+  overflow: clip;
+}
+
+.demos__cap {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.demos__titol { margin: 0; }
+
+.demos__nota {
+  margin: 12px 0 0;
+  max-width: 52ch;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--color-tinta-3);
+  text-wrap: pretty;
+}
+
+.demos__accions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 24px;
+}
+
+/* La fila plana y el escaparate de CSS van dentro del margen de la pagina. */
+.demos__cos { padding-top: 8px; }
+
+@media (min-width: 768px) {
+  /* En una banda a todo el ancho una columna de la fila plana no se estira hasta llenarla: mide lo
+     que una tarjeta de verdad, y asoman las siguientes. */
+  .demos .carrusel--compacte { --col: clamp(18rem, 30cqw, 26rem); }
+}
+
+@media (min-width: 1024px) {
+  /* Con ancho para ello la banda llena la ventana (menos la cabecera) y su contenido se reparte
+     en el centro. El alto del anillo sale de aqui: ver .orbita__llenc. */
+  .demos {
+    min-height: calc(100vh - var(--barra));
+    min-height: calc(100svh - var(--barra));
+    justify-content: center;
+    padding-block: 32px 24px;
+  }
+
+  .demos__cap {
+    flex-direction: row;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 48px;
+  }
+
+  .demos__accions {
+    flex: none;
+    justify-content: flex-end;
+  }
+}
+
+/* ---------- Anillo 3D de las demos (WebGL, react-three-fiber) ----------
+   El lienzo llega de borde a borde de la ventana y es transparente: detras se ve la placa base, con
+   un halo muy tenue del acento justo donde gira el anillo, y los lados se funden con una mascara. */
+
 .orbita {
   display: flex;
   flex-direction: column;
-  height: 100%;
 }
-.orbita__barra {
-  display: flex;
-  justify-content: flex-end;
-  margin-bottom: 8px;
-}
+
 .orbita__llenc {
   position: relative;
   flex: none;
-  /* Altura explicita (no min-height): el lienzo de react-three-fiber se dimensiona al 100 %
-     de su caja, y un porcentaje no resuelve contra min-height. Asi el anillo llena su hueco. */
-  height: clamp(360px, 62svh, 680px);
+  width: 100%;
+  /* Altura explicita (no min-height): el lienzo de react-three-fiber se dimensiona al 100 % de su
+     caja, y un porcentaje no resuelve contra min-height. Lo que queda de la ventana tras la
+     cabecera de la pagina (56), el relleno de la banda (56), su cabecera (unos 100, algo mas con
+     el titular grande de 1920 px), el hueco (16) y el pie con la pista (56), y nunca mas de 52vw
+     para que con una ventana estrecha no salga un cuadrado: asi, cabecera, anillo y pista caben
+     juntos en la ventana. */
+  height: clamp(380px, min(calc(100vh - 296px), 52vw), 880px);
+  height: clamp(380px, min(calc(100svh - 296px), 52vw), 880px);
   overflow: clip;
-  /* Arrastra para girar el anillo; el zoom va apagado, asi que la rueda sigue desplazando la
-     pagina y el arrastre vertical con un dedo tambien (en movil se usa el respaldo plano). */
+  /* Arrastra para girar el anillo y la rueda hace zoom con el raton encima; en tactil se usa la
+     fila plana, asi que el arrastre vertical con un dedo no importa. */
   touch-action: pan-y;
   cursor: grab;
+  user-select: none;
+  background: radial-gradient(
+    48% 62% at 50% 52%,
+    color-mix(in srgb, var(--color-accent) 7%, transparent),
+    transparent 74%
+  );
+  /* Los cuatro lados se funden: las estrellas no acaban en seco, no se ve donde empieza el lienzo
+     y una tarjeta que pase por delante y se salga por abajo se apaga en vez de cortarse. */
+  -webkit-mask-image:
+    linear-gradient(to right, transparent, #000 7%, #000 93%, transparent),
+    linear-gradient(to bottom, transparent, #000 9%, #000 90%, transparent);
+  -webkit-mask-composite: source-in;
+  mask-image:
+    linear-gradient(to right, transparent, #000 7%, #000 93%, transparent),
+    linear-gradient(to bottom, transparent, #000 9%, #000 90%, transparent);
+  mask-composite: intersect;
 }
-.orbita__llenc:active {
-  cursor: grabbing;
-}
+
+.orbita__llenc--sobre { cursor: pointer; }
+.orbita__llenc:active { cursor: grabbing; }
+
+/* Con el modal de proyecto abierto el anillo se esconde, como la galaxia de abajo: el modal tapa la
+   pagina con un velo, y asi no queda nada del anillo por encima ni por debajo. */
+.orbita__llenc--amagat { visibility: hidden; }
+
 .orbita__llenc canvas {
   display: block;
   outline: none;
 }
+
+/* El nombre de la tarjeta que tiene el raton encima: va pegado al puntero, que lo mueve (inline,
+   transform) sin pasar por React, y por encima de el. */
+.orbita__nom {
+  position: absolute;
+  top: 0;
+  left: 0;
+  translate: -50% calc(-100% - 20px);
+  padding: 6px 10px;
+  border: 1px solid var(--color-linia);
+  border-radius: 8px;
+  background: var(--color-fons-2);
+  box-shadow: 0 10px 24px -10px rgb(0 0 0 / 0.7);
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.3;
+  white-space: nowrap;
+  color: var(--color-tinta);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.15s var(--ease-suau);
+}
+
+.orbita__nom[data-visible="true"] { opacity: 1; }
+
+/* Debajo del anillo, centrado: la pista de lo que se puede hacer con el. Al pulsar una tarjeta se
+   abre el modal de proyecto (ver "Modal de proyecto"), asi que aqui no sale ninguna ficha. */
 .orbita__peu {
   display: flex;
   align-items: center;
-  gap: 12px;
-  margin-top: 14px;
-  min-height: 44px;
-}
-.orbita__peu > .min-w-0 {
-  flex: 1 1 auto;
-}
-.orbita__boto {
-  flex: none;
-  width: clamp(7.5rem, 42%, 11rem);
+  justify-content: center;
+  height: 56px;
+  padding-top: 8px;
 }
 
-/* La tarjeta del proyecto elegido, debajo del anillo: captura, nombre y el boton real de probar. */
-.orbita__fitxa {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  margin-top: 14px;
-  padding: 12px;
-  border-radius: 14px;
-  border: 1px solid var(--color-linia);
-  background: var(--color-fons-2);
-}
-.orbita__fitxa-img {
-  width: 92px;
-  flex: none;
-  aspect-ratio: 16 / 10;
-  object-fit: cover;
-  border-radius: 8px;
-  border: 1px solid var(--color-linia);
-}
 .orbita__pista {
-  display: flex;
-  align-items: center;
-  min-height: 44px;
-  margin-top: 14px;
-  font-size: 13px;
+  margin: 0;
+  max-width: 80ch;
+  text-align: center;
+  font-size: 14px;
+  line-height: 1.5;
   color: var(--color-tinta-3);
+  text-wrap: balance;
 }
 
 /* ---------- Galaxia de proyectos (components/galeria/galaxia.tsx) ----------
@@ -608,6 +711,15 @@ img { max-width: 100%; display: block; }
 .galaxia canvas {
   display: block;
   outline: none;
+}
+
+/* La pista del zoom (Ctrl + rueda), debajo de la galaxia: pequena y apagada. */
+.galaxia__pista {
+  margin: 8px 0 0;
+  text-align: center;
+  font-size: 13px;
+  line-height: 1.4;
+  color: var(--color-tinta-3);
 }
 
 /* Tarjeta flotante: va dentro de un <Html> de drei, asi que es DOM de verdad. */
@@ -669,8 +781,12 @@ img { max-width: 100%; display: block; }
   color: var(--color-accent-2);
 }
 
-/* El modal con el detalle del proyecto. */
-.galaxia-modal {
+/* ---------- Modal de proyecto (components/galeria/ModalProjecte.tsx) ----------
+   El detalle de un proyecto sobre la pagina: lo abren el anillo de las demos y la galaxia de
+   proyectos. Va en un portal al body, asi que su z-index (60) cuenta contra el de la cabecera (50)
+   y no se queda atrapado en el contexto de apilado de la seccion que lo abre. */
+
+.modal-projecte {
   position: fixed;
   inset: 0;
   z-index: 60;
@@ -681,7 +797,7 @@ img { max-width: 100%; display: block; }
   background: rgba(0, 0, 0, 0.7);
   backdrop-filter: blur(4px);
 }
-.galaxia-modal__cos {
+.modal-projecte__cos {
   position: relative;
   width: 100%;
   max-width: 30rem;
@@ -782,15 +898,16 @@ html:has(.menu-fulla[open]) { overflow: hidden; }
 }
 
 /* ---------- Portada ----------
-   Tres columnas desde 1280 px: quien soy, el retrato con el chip 3D detras y el carrusel de
-   proyectos. De 768 a 1279, dos columnas (identidad y demos) con el retrato junto al nombre.
-   Por debajo, una columna con las demos en una fila deslizable (components/Portada.tsx).
+   Dos columnas desde 768 px: quien soy y como contactar a la izquierda, y a la derecha el retrato
+   con el chip 3D detras, que crece con la ventana. Por debajo, una sola columna con el retrato
+   junto al nombre (components/Portada.tsx). Las demos ya no estan aqui: tienen su banda a todo
+   el ancho justo debajo (ver "Banda de las demos").
 
    El retrato es un solo elemento que cambia de sitio con la rejilla, porque Escena.tsx se
-   coloca buscando la primera <img> de la seccion y no puede haber dos. En una columna o dos
-   comparte celda con la identidad y se queda arriba a la derecha; en tres ocupa la central.
-   Son dos elementos en la misma celda de la rejilla, y el que va encima no lleva relleno
-   para que no tape nada. */
+   coloca buscando la primera <img> de la seccion y no puede haber dos. En una columna comparte
+   celda con la identidad y se queda arriba a la derecha; en dos ocupa la de la derecha, centrado.
+   Con una columna son dos elementos en la misma celda de la rejilla, y el que va encima no lleva
+   relleno para que no tape nada. */
 
 .portada {
   position: relative;
@@ -811,7 +928,6 @@ html:has(.menu-fulla[open]) { overflow: hidden; }
 }
 
 .portada__id { grid-area: 1 / 1; }
-.portada__demos { grid-area: 2 / 1; }
 
 .portada__retrat {
   grid-area: 1 / 1;
@@ -845,8 +961,7 @@ html:has(.menu-fulla[open]) { overflow: hidden; }
   color: var(--color-tinta-3);
 }
 
-.portada__ante,
-.portada__etiqueta--accent {
+.portada__ante {
   margin: 0;
   font-size: 12px;
   font-weight: 500;
@@ -904,15 +1019,14 @@ html:has(.menu-fulla[open]) { overflow: hidden; }
   margin-top: 8px;
 }
 
-.portada__stack,
-.portada__nota { display: none; }
+.portada__stack { display: none; }
 
-/* Las demos son el carrusel compacto de Carrusel.tsx, con una columna de dos tarjetas por paso.
-   La cinta estira todas las columnas a la misma altura y las dos filas de cada una se reparten
-   esa altura a partes iguales, asi que los bordes de arriba y de abajo quedan alineados de una
-   columna a la siguiente. Con una sola tarjeta (cuenta par de proyectos) ocupa la columna. */
-.portada__carrusel { margin-top: 8px; }
-
+/* Las tarjetas de abajo (.portada__col, .portada__targeta...) ya no son de la portada: las usa la
+   fila plana de la banda de las demos (components/Demos.tsx), que es el carrusel compacto de
+   Carrusel.tsx con una columna de dos tarjetas por paso. La cinta estira todas las columnas a la
+   misma altura y las dos filas de cada una se reparten esa altura a partes iguales, asi que los
+   bordes de arriba y de abajo quedan alineados de una columna a la siguiente. Con una sola
+   tarjeta (cuenta par de proyectos) ocupa la columna. */
 .portada__col {
   display: grid;
   grid-template-rows: repeat(2, minmax(0, 1fr));
@@ -1038,22 +1152,24 @@ html:has(.menu-fulla[open]) { overflow: hidden; }
   }
 
   .portada__reixa {
-    --retrat: clamp(96px, 11.7vw, 120px);
+    --retrat: clamp(184px, 29vw, 300px);
     --ritme: 24px;
-    /* Lo que no es captura, para calcular el alto de las capturas (.portada__captura): el relleno
-       de arriba y de abajo de la portada y lo que ocupa la cabecera del bloque de demos (titulo,
-       nota y barra de botones, hasta la primera tarjeta). */
-    --pad-v: 96px;
-    --cap: 104px;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+    align-items: center;
     gap: 40px;
   }
 
-  .portada__demos { grid-area: 1 / 2; }
-  .portada__retrat { margin-top: 36px; }
+  /* El retrato pasa a la columna de la derecha, centrado: es lo que el chip 3D lleva detras. */
+  .portada__retrat {
+    grid-area: 1 / 2;
+    justify-self: center;
+    align-self: center;
+    margin-top: 0;
+  }
 
-  .portada__ante,
-  .portada__etiqueta--accent {
+  .portada__cap { padding-right: 0; }
+
+  .portada__ante {
     font-size: 14px;
     letter-spacing: 0.16em;
   }
@@ -1074,6 +1190,9 @@ html:has(.menu-fulla[open]) { overflow: hidden; }
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 1px;
+    /* Con la ventana muy ancha la columna se estira mucho: la ficha no pasa de 42 rem, que son
+       dos celdas de buen tamano, y el resto queda para el chip. */
+    max-width: 42rem;
     margin: var(--ritme) 0 0;
     overflow: hidden;
     border: 1px solid color-mix(in srgb, var(--color-linia) 70%, transparent);
@@ -1122,16 +1241,6 @@ html:has(.menu-fulla[open]) { overflow: hidden; }
     margin-top: var(--ritme);
   }
 
-  .portada__nota {
-    display: block;
-    margin: 6px 0 0;
-    font-size: 13px;
-    line-height: 1.45;
-    color: var(--color-tinta-3);
-  }
-
-  .portada__carrusel { margin-top: 4px; }
-
   /* Centrada abajo. El enlace mide 44 px de alto para el dedo, pero el texto cae donde
      estaba en la maqueta: a unos 16 px del borde. */
   .portada__pista {
@@ -1154,24 +1263,15 @@ html:has(.menu-fulla[open]) { overflow: hidden; }
 }
 
 @media (min-width: 1280px) {
-  /* Menos relleno: la columna de las demos aprovecha casi todo el alto de la portada. */
+  /* Menos relleno: la columna de la ficha aprovecha casi todo el alto de la portada. */
   .portada { padding-block: 16px 24px; }
 
   .portada__reixa {
-    /* El retrato sigue a la columna central (2,7 de 12,1 partes del ancho util) sin llegar a
-       tocar las otras dos. */
-    --retrat: clamp(224px, calc(20.4vw - 20px), 340px);
-    --pad-v: 40px;
-    /* La columna de las demos es la mas ancha: ahi viven las capturas. */
-    grid-template-columns: minmax(0, 4.4fr) minmax(0, 2.7fr) minmax(0, 5fr);
-    align-items: center;
-  }
-
-  .portada__retrat {
-    grid-area: 1 / 2;
-    justify-self: center;
-    align-self: center;
-    margin-top: 0;
+    /* Con dos columnas el retrato (y con el el chip, que sale a 2,1 veces su ancho) crece con la
+       ventana: casi un cuarto de su ancho, sin pasar de la mitad de su alto ni de 460 px. */
+    --retrat: clamp(280px, min(24vw, 54svh), 460px);
+    grid-template-columns: minmax(0, 1.18fr) minmax(0, 1fr);
+    gap: 56px;
   }
 
   .portada__foto {
@@ -1181,33 +1281,16 @@ html:has(.menu-fulla[open]) { overflow: hidden; }
       0 0 0 11px color-mix(in srgb, var(--color-accent) 15%, transparent);
   }
 
-  .portada__cap { padding-right: 0; }
-  .portada__demos { grid-area: 1 / 3; }
-
-  .portada__h1 { font-size: min(5.6vw, 9.6svh); }
+  .portada__h1 { font-size: min(6.4vw, 10.5svh, 9rem); }
 }
 
-/* Pantallas anchas pero bajas (1366 x 768, 1280 x 720): se aprieta el ritmo vertical, la
-   ficha pierde la segunda linea de cada celda y la nota de las demos sigue ahi para los
-   lectores de pantalla pero ya no se ve (la cabecera del bloque pierde sus 25 px). Lo que
-   sobra (los chips del stack, la pista) se queda por debajo del pliegue. */
+/* Pantallas anchas pero bajas (1366 x 768, 1280 x 720): se aprieta el ritmo vertical y la
+   ficha pierde la segunda linea de cada celda. Lo que sobra (los chips del stack, la pista) se
+   queda por debajo del pliegue. */
 @media (min-width: 1280px) and (max-height: 820px) {
-  .portada__reixa {
-    --ritme: 16px;
-    --cap: 79px;
-  }
+  .portada__reixa { --ritme: 16px; }
 
-  .portada__nota {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    margin: -1px;
-    overflow: hidden;
-    clip-path: inset(50%);
-    white-space: nowrap;
-  }
-
-  .portada__h1 { font-size: min(5vw, 10svh); }
+  .portada__h1 { font-size: min(5.6vw, 10svh); }
 
   .portada__lema {
     margin-top: 12px;
@@ -1218,16 +1301,17 @@ html:has(.menu-fulla[open]) { overflow: hidden; }
   .fitxa__n { display: none; }
 }
 
-/* Alto de las capturas con ventana de escritorio. La captura quiere ser 16:9, pero las dos
-   tarjetas de la primera columna tienen que caber enteras en el primer pantallazo, asi que su
-   alto no pasa de lo que deja la ventana: se resta lo que no es captura (la cabecera de 56 px,
-   el relleno de la portada, la cabecera del bloque, lo que mide una tarjeta sin su captura,
-   el hueco de 12 px entre las dos y los 16 px de la ventana del carrusel) y el resto se reparte
-   entre las dos. Nunca baja de 2,8:1, que ya es una tira: por debajo de eso la segunda
-   tarjeta se corta por abajo antes que aplastar las capturas. Una tarjeta sin captura mide
-   132 px: 26 de relleno y borde, 12 de hueco, 90 de texto (22 de nombre, 2, 18 de stack, 8 y
-   el boton de 40) y 4 de holgura para el boton de 44 del dedo. En el movil no hay nada que
-   restar: la pagina baja, y 16:9 de lo que mida la columna. */
+/* Alto de las capturas de la fila plana de la banda de las demos con ventana de escritorio (es lo
+   que se ve con movimiento reducido). La captura quiere ser 16:9, pero las dos tarjetas de una
+   columna tienen que caber enteras en la ventana, asi que su alto no pasa de lo que deja: se
+   resta lo que no es captura (la cabecera de 56 px, el relleno y la cabecera de la banda, que
+   declara .demos en --pad-v y --cap, lo que mide una tarjeta sin su captura, el hueco de 12 px
+   entre las dos y los 16 px de la ventana del carrusel) y el resto se reparte entre las dos.
+   Nunca baja de 2,8:1, que ya es una tira: por debajo de eso la segunda tarjeta se corta por
+   abajo antes que aplastar las capturas. Una tarjeta sin captura mide 132 px: 26 de relleno y
+   borde, 12 de hueco, 90 de texto (22 de nombre, 2, 18 de stack, 8 y el boton de 40) y 4 de
+   holgura para el boton de 44 del dedo. En el movil no hay nada que restar: la pagina baja, y
+   16:9 de lo que mida la columna. */
 @supports (height: 1svh) {
   @media (min-width: 768px) {
     .portada__captura {
@@ -1329,16 +1413,18 @@ html:has(.menu-fulla[open]) { overflow: hidden; }
 }
 
 /* ---------- Pelicula (escritorio) ----------
-   relat/Escenari.tsx y relat/Historia.tsx. #escenari envuelve la portada y la historia. Su
-   primer hijo es una pista absoluta de su mismo alto (fuera del flujo, asi que la portada
-   empieza donde empezaba) y dentro va la capa fijada con la escena 3D y la sombra que respira.
-   La capa se suelta justo cuando acaba #escenari. El contenido va por delante y la capa no
-   recibe el raton. Solo existe en modo pelicula: con movimiento reducido, en tactil o por
+   relat/Escenari.tsx y relat/Historia.tsx. #escenari envuelve la portada, la banda de las demos
+   y la historia. Su primer hijo es una pista absoluta de su mismo alto (fuera del flujo, asi que
+   la portada empieza donde empezaba) y dentro va la capa fijada con la escena 3D y la sombra que
+   respira. La capa se suelta justo cuando acaba #escenari. El contenido va por delante y la capa
+   no recibe el raton. La banda de las demos es transparente y no quiere ver el chip detras: la capa
+   lleva una mascara que la funde mientras pasa la banda (relat/Escenari.tsx), y asi se ve la placa. Solo existe en modo pelicula: con movimiento reducido, en tactil o por
    debajo de 1024 px no hay capa ni sticky. */
 
 .escenari { position: relative; }
 
 .escenari > .portada,
+.escenari > .demos,
 .escenari > .historia {
   position: relative;
   z-index: 10;

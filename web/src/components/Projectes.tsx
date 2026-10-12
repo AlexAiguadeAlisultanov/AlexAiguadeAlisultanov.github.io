@@ -4,7 +4,7 @@
 // salidas (la demo y el codigo). Todo en el cian de la web, sin colores por proyecto.
 //
 // La lista y el estado de las demos vienen de ProveidorProjectes: lo que se despierte en la
-// portada se ve aqui, y la lista se pide una sola vez.
+// banda de las demos se ve aqui, y la lista se pide una sola vez.
 
 import { lazy, Suspense } from "react";
 import type { ReactNode } from "react";
@@ -82,7 +82,7 @@ function Targeta({ dades }: { dades: Projecte }) {
   );
 
   // Mientras la demo arranca, una linea de 2 px en la base de la captura avanza con los segundos
-  // y se queda al 90 % hasta que contesta, igual que en la tarjeta pequena de la portada. El
+  // y se queda al 90 % hasta que contesta, igual que en la tarjeta pequena de las demos. El
   // resto del estado lo cuenta el boton. Con movimiento reducido no se pinta.
   const avanc =
     dorm && fase === "waking" && !quiet ? (

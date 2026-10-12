@@ -1,5 +1,5 @@
 // La captura de una demo dentro de su marco (el marco, con su alto y su recorte, lo pone quien la
-// usa). La tarjeta de la portada y la del carrusel grande la pintan igual.
+// usa). La tarjeta pequena de la banda de las demos y la del carrusel grande la pintan igual.
 //
 // No lleva loading="lazy" a proposito. Las capturas viven dentro de un carrusel que recorta
 // (overflow: clip, o scroll horizontal en el movil) y el navegador solo cuenta una imagen como

@@ -1,10 +1,16 @@
-// #escenari: la portada y la historia dentro de un mismo escenario.
+// #escenari: la portada, la banda de las demos y la historia dentro de un mismo escenario.
 //
 // En modo pelicula su primer hijo es una pista del alto del escenario, fuera del flujo, y dentro
 // va la capa fijada (sticky) del alto de la ventana, con la escena 3D y la sombra que respira.
-// La capa se queda quieta bajo la cabecera mientras pasan por delante la portada y las tarjetas
-// de la historia, y se suelta justo cuando acaba #historia. Debajo vuelve a asomar la placa del
-// fondo, porque motor.tsx solo la borra detras de [data-tapa].
+// La capa se queda quieta bajo la cabecera mientras pasan por delante la portada, la banda de las
+// demos y las tarjetas de la historia, y se suelta justo cuando acaba #historia. Debajo vuelve a
+// asomar la placa del fondo, porque motor.tsx solo la borra detras de [data-tapa].
+//
+// La banda de las demos es transparente y quiere ver la placa, no el chip. Por eso la capa lleva una
+// mascara (mascaraBanda) que la funde a transparente mientras pasa la banda, con el mismo fundido
+// con el que la placa asoma bajo la portada: el chip se apaga y la placa aparece a la vez, y al
+// salir la banda pasa lo contrario (la placa se apaga con data-tapa-entra en Historia.tsx). El chip
+// queda donde estaba al terminar la portada (q = 1), que es lo que necesita la historia (p = 0).
 //
 // La pista existe por una razon: con la capa en el flujo y un margen inferior negativo (para
 // que no ocupara sitio), Chrome limita el sticky por la caja de margen, asi que la capa se
@@ -24,8 +30,29 @@ import type { ReactNode, RefObject } from "react";
 import { motion, useMotionValue, useTransform } from "framer-motion";
 import type { MotionValue } from "framer-motion";
 import { Fons3D } from "../Fons3D";
+import { FUNDIDO_PORTADA } from "../fons/motor";
 import { usePelicula } from "./usePelicula";
 import { CENTRO, CIERRE, SOMBRA, VIAJE, clamp01, opacidad, ventana } from "./tabla";
+
+/** Alto de la cabecera fija: donde se pega la capa (--barra en index.css). */
+const BARRA = 56;
+
+/**
+ * La mascara de la capa fijada. La banda de las demos es transparente y quiere ver la placa del
+ * fondo, no el chip: la capa se queda opaca en todas partes menos donde pasa la banda, y se funde
+ * a un lado y a otro con el mismo degradado con el que la placa asoma bajo la portada
+ * (FUNDIDO_PORTADA, fons/motor.tsx), de modo que el chip y la placa se cruzan en vez de cortarse.
+ * a y b son el borde de arriba y el de abajo de la banda en coordenadas de la capa (0 es el borde
+ * de arriba de la capa) y alt lo que mide la capa. Con la banda lejos no hace falta ninguna.
+ */
+function mascaraBanda(a: number, b: number, alt: number): string {
+  if (b + FUNDIDO_PORTADA <= 0 || a - FUNDIDO_PORTADA >= alt) return "none";
+  const px = (n: number) => `${Math.round(n)}px`;
+  return (
+    `linear-gradient(to bottom, #000 ${px(a - FUNDIDO_PORTADA)}, transparent ${px(a)}, ` +
+    `transparent ${px(b)}, #000 ${px(b + FUNDIDO_PORTADA)})`
+  );
+}
 
 type Relat = {
   /** true con la capa fijada y la historia de 380svh. */
@@ -57,8 +84,9 @@ function ancoraActual(): Ancora | null {
   let millor: Ancora | null = null;
   let distancia = Infinity;
   // Los bloques de la historia se miden por el centro, que es donde va la tarjeta en la
-  // pelicula; las secciones de despues, por arriba.
-  for (const node of document.querySelectorAll("[data-ancora], #projectes, #trayectoria, #contacte")) {
+  // pelicula; la banda de las demos (que va antes de la historia y no cambia de alto) y las
+  // secciones de despues, por arriba.
+  for (const node of document.querySelectorAll("[data-ancora], #demos, #projectes, #trayectoria, #contacte")) {
     const r = node.getBoundingClientRect();
     const centre = node.hasAttribute("data-ancora");
     const y = centre ? r.top + r.height / 2 : r.top;
@@ -74,6 +102,10 @@ function ancoraActual(): Ancora | null {
 export function Escenari({ children }: { children: ReactNode }) {
   const sortida = useMotionValue(0);
   const progres = useMotionValue(0);
+  // La mascara de la capa fijada (ver mascaraBanda): "none" salvo mientras pasa la banda de las demos.
+  const mascara = useMotionValue("none");
+  // true mientras esa mascara deja la capa entera transparente: la escena no pinta lo que no se ve.
+  const oculta = useRef(false);
   const retrat = useRef<HTMLImageElement>(null);
   const ancora = useRef<Ancora | null>(null);
 
@@ -92,28 +124,47 @@ export function Escenari({ children }: { children: ReactNode }) {
     if (Math.abs(y - a.y) > 1) window.scrollBy({ top: y - a.y, behavior: "instant" });
   }, [pelicula]);
 
-  // Los dos recorridos. Se mide al montar, al cambiar el tamano de la ventana o de la pagina, y
-  // en cada scroll solo se divide.
+  // Los dos recorridos y la mascara de la capa. Se mide al montar, al cambiar el tamano de la
+  // ventana o de la pagina, y en cada scroll solo se divide y se resta.
   useLayoutEffect(() => {
     if (!pelicula) return;
     const dalt = document.getElementById("dalt");
     const historia = document.getElementById("historia");
     if (!dalt || !historia) return;
+    // La banda de las demos va entre las dos; si no esta (sin proyectos), la capa no lleva mascara.
+    const demos = document.getElementById("demos");
 
     let altPortada = 1;
     let iniciHistoria = 0;
     let recorregut = 1;
+    let iniciDemos = 0;
+    let fiDemos = 0;
+    let altCapa = 1;
 
     const llegir = () => {
       const y = window.scrollY;
       sortida.set(clamp01(y / altPortada));
       progres.set(clamp01((y - iniciHistoria) / recorregut));
+      // La capa esta pegada a BARRA px del borde de la ventana, asi que lo que cae a y px de la
+      // ventana cae a y - BARRA de la capa.
+      if (demos) {
+        const a = iniciDemos - y - BARRA;
+        const b = fiDemos - y - BARRA;
+        mascara.set(mascaraBanda(a, b, altCapa));
+        oculta.current = a <= 0 && b >= altCapa;
+      }
     };
     const mesurar = () => {
       altPortada = Math.max(1, dalt.offsetHeight);
       const r = historia.getBoundingClientRect();
       iniciHistoria = r.top + window.scrollY;
       recorregut = Math.max(1, r.height - window.innerHeight);
+      if (demos) {
+        const d = demos.getBoundingClientRect();
+        iniciDemos = d.top + window.scrollY;
+        fiDemos = iniciDemos + d.height;
+      }
+      altCapa = Math.max(1, window.innerHeight - BARRA);
       llegir();
     };
 
@@ -122,14 +173,17 @@ export function Escenari({ children }: { children: ReactNode }) {
     vigilant.observe(document.body);
     vigilant.observe(dalt);
     vigilant.observe(historia);
+    if (demos) vigilant.observe(demos);
     window.addEventListener("scroll", llegir, { passive: true });
     window.addEventListener("resize", mesurar);
     return () => {
       vigilant.disconnect();
       window.removeEventListener("scroll", llegir);
       window.removeEventListener("resize", mesurar);
+      mascara.set("none");
+      oculta.current = false;
     };
-  }, [pelicula, sortida, progres]);
+  }, [pelicula, sortida, progres, mascara]);
 
   // La sombra que respira: oscurece la columna de las tarjetas cuanto mas se ve la tarjeta mas
   // visible. Entra con el viaje del chip, para que arriba del todo la portada sea la de siempre.
@@ -147,13 +201,20 @@ export function Escenari({ children }: { children: ReactNode }) {
 
   return (
     <RelatCtx.Provider value={valor}>
-      <div id="escenari" className={pelicula ? "escenari" : undefined} data-tapa={pelicula ? "tot" : undefined}>
+      <div id="escenari" className={pelicula ? "escenari" : undefined}>
         {pelicula ? (
           <div className="escenari__pista" aria-hidden>
-            <div className="escenari__capa">
-              <Fons3D modo="pelicula" ancla={retrat} sortida={sortida} progres={progres} onFalla={fallar} />
+            <motion.div className="escenari__capa" style={{ maskImage: mascara, WebkitMaskImage: mascara }}>
+              <Fons3D
+                modo="pelicula"
+                ancla={retrat}
+                sortida={sortida}
+                progres={progres}
+                oculta={oculta}
+                onFalla={fallar}
+              />
               <motion.div className="escenari__ombra" style={{ opacity: ombra }} />
-            </div>
+            </motion.div>
           </div>
         ) : null}
         {children}

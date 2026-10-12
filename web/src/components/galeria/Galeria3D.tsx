@@ -62,7 +62,7 @@ type Props = {
   /** Clase del escenario (gal3d--anell o gal3d--escaparata). */
   variant: string;
   etiqueta?: string;
-  /** Accion a la izquierda de los botones (la portada pone "despertar todas"). */
+  /** Accion a la izquierda de los botones (hoy no la usa nadie: "despertar todas" va en la cabecera de #demos). */
   acciones?: ReactNode;
   /** La barra de botones encima del escenario en vez de debajo. */
   barraDalt?: boolean;

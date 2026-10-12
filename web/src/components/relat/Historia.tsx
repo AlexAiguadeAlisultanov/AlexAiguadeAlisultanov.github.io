@@ -146,7 +146,15 @@ export function Historia() {
   const opacitats = { hw: oHw, sw: oSw, seg: oSeg };
 
   return (
-    <section id="historia" className={pelicula ? "historia historia--pelicula" : "historia"}>
+    // En la pelicula la capa fijada del chip cubre la ventana mientras dura la historia, asi que
+    // la placa no se pinta detras (data-tapa="tot"), y se apaga poco a poco al llegar desde la banda
+    // de las demos (data-tapa-entra), donde si se ve. En modo normal no se tapa nada.
+    <section
+      id="historia"
+      className={pelicula ? "historia historia--pelicula" : "historia"}
+      data-tapa={pelicula ? "tot" : undefined}
+      data-tapa-entra={pelicula ? "" : undefined}
+    >
       {/* El rail va fijo en pantalla; aqui solo cuenta su sitio en el orden del tabulador. */}
       {pelicula ? <Rail /> : null}
       <div className="ample">

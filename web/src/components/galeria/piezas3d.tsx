@@ -1,12 +1,13 @@
-// Las piezas de las galerias que si usan three: la nube de particulas cian del nucleo y el campo
-// de estrellas del fondo. Solo las importan orbita.tsx y galaxia.tsx, que ya van en trozos aparte
-// (lazy), asi que three se queda ahi y no se cuela en el trozo del portafolio.
+// Las piezas de las galerias que si usan three: la nube de particulas cian del nucleo, el campo de
+// estrellas del fondo y el zoom con la rueda. Solo las importan orbita.tsx y galaxia.tsx, que ya van
+// en trozos aparte (lazy), asi que three se queda ahi y no se cuela en el trozo del portafolio.
 //
-// Las dos son un unico <points> cada una (un solo dibujo, no mil mallas) para que sea ligero. Como
-// el lienzo es transparente, las estrellas no tapan la placa base del fondo: solo la salpican.
+// Las dos nubes son un unico <points> cada una (un solo dibujo, no mil mallas) para que sea ligero.
+// Como el lienzo es transparente, las estrellas no tapan la placa base del fondo: solo la salpican.
 
 import { useEffect, useMemo } from "react";
 import * as THREE from "three";
+import { useThree } from "@react-three/fiber";
 import { CIAN } from "./comu3d";
 
 /** Punto redondo y blando: un degradado radial en un lienzo pequeno, reutilizado por las dos nubes. */
@@ -114,4 +115,34 @@ export function prepararMapa(tex: THREE.Texture): THREE.Texture {
   tex.colorSpace = THREE.SRGBColorSpace;
   tex.anisotropy = 4;
   return tex;
+}
+
+/**
+ * El zoom con la rueda de las dos galerias, sin atascar la pagina. La rueda sola no se toca (ni se
+ * cancela), asi que sigue moviendo la pagina aunque el raton este encima del lienzo; el zoom es con
+ * Ctrl + rueda (o Cmd + rueda en Mac), como en un mapa. OrbitControls sigue haciendo el zoom, con sus
+ * topes (minDistance y maxDistance), pero solo mientras se mantiene la tecla: este componente le
+ * enciende o le apaga enableZoom en cada rueda, antes de que la vea (su oyente va en el lienzo, mas
+ * hondo que el elemento donde escuchan los controles). Con la tecla puesta OrbitControls cancela el
+ * evento, asi que tampoco hace zoom el navegador. El pellizco del trackpad llega como rueda con
+ * Ctrl y tambien vale. Va dentro del <Canvas>, junto a unos OrbitControls con makeDefault.
+ */
+export function ZoomRueda() {
+  const gl = useThree((s) => s.gl);
+  const controls = useThree((s) => s.controls) as { enableZoom: boolean } | null;
+
+  useEffect(() => {
+    if (!controls) return;
+    const lienzo = gl.domElement;
+    const alRodar = (e: WheelEvent) => {
+      controls.enableZoom = e.ctrlKey || e.metaKey;
+    };
+    lienzo.addEventListener("wheel", alRodar, { capture: true, passive: true });
+    return () => {
+      lienzo.removeEventListener("wheel", alRodar, { capture: true });
+      controls.enableZoom = false;
+    };
+  }, [gl, controls]);
+
+  return null;
 }

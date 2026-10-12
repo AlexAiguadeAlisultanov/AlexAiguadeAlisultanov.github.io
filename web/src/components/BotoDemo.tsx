@@ -1,5 +1,6 @@
 // El boton de una demo, con las cuatro fases de siempre: dormida, arrancando, lista y sin
-// respuesta. Lo usan la tarjeta del carrusel y la tarjeta pequena de la portada, y como los
+// respuesta. Lo usan la tarjeta del carrusel, la tarjeta pequena de la banda de las demos y el modal
+// de proyecto, y como todos
 // dos leen el mismo estado (ProveidorProjectes), una demo que se despierta en una sale ya
 // lista en la otra.
 //
@@ -8,13 +9,13 @@
 //
 // Dos tamanos, con las mismas fases y los mismos colores:
 //   normal  el del carrusel de #projectes (48 px, ancho completo).
-//   mini    el de la portada (40 px, 44 con el dedo).
+//   mini    el de las tarjetas pequenas de la banda de las demos (40 px, 44 con el dedo).
 // Borde cian para probar y arrancar, relleno cuando contesta y rojo apagado solo cuando no
 // responde. Se leen igual salvo la fase de reposo: la normal dice "Probar la demo", que
 // cabe, y la mini "Probar". Una demo que se despierta en una tarjeta sale ya lista en la otra.
 //
 // El avance de la espera no va en el boton: es una linea de 2 px en la base de la captura de la
-// tarjeta (Portada.tsx y Projectes.tsx), que crece con los segundos segun progres() y se queda al
+// tarjeta (Demos.tsx y Projectes.tsx), que crece con los segundos segun progres() y se queda al
 // 90 % hasta que la demo contesta. Con movimiento reducido no se pinta, y el punto que late del
 // boton tampoco late.
 

@@ -27,7 +27,7 @@ export function useRaton(): boolean {
   return hi;
 }
 
-/** true en pantalla estrecha (movil). Ahi las demos de la portada son una fila con scroll nativo. */
+/** true en pantalla estrecha (movil). Ahi las demos de #demos son una fila con scroll nativo. */
 export function useMovil(): boolean {
   const [si, setSi] = useState(() => window.matchMedia("(max-width: 767px)").matches);
   useEffect(() => {

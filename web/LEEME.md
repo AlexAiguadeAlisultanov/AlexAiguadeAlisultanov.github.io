@@ -6,7 +6,8 @@ sigue siendo la web que está en marcha y no se toca.
 
 React 19, TypeScript, Tailwind 4 y Framer Motion. El fondo de la portada es una escena
 de Three.js construida por código, que se carga aparte y solo en equipos que puedan con
-ella.
+ella. Las galerías 3D (el anillo de `#demos` y la galaxia de `#projectes`) usan react-three-fiber y
+drei, también en trozos aparte.
 
 ## Arrancarlo en local
 
@@ -86,14 +87,22 @@ web/
       Porta.tsx         pantalla de acceso
       Portafoli.tsx     cabecera, contacto, pie y el montaje de la página
       MenuMobil.tsx     la hoja del menú en el móvil
-      Portada.tsx       la portada: ficha, contacto rápido, retrato y carrusel de demos
+      Portada.tsx       la portada: ficha, contacto rápido y el retrato con el chip detrás
+      Demos.tsx         #demos: la banda a todo el ancho entre la portada y la historia (el anillo 3D,
+                        su respaldo de CSS o la fila plana) y las tarjetas de esa fila
       XipCapes.tsx      las capas del chip dibujadas en SVG, marca de cada capítulo
       Projectes.tsx     la cabecera de #projectes (nota, contador y «Despertar todas») y las
                         tarjetas detalladas del carrusel grande
       Carrusel.tsx      la cinta plana de tarjetas (respaldo de móvil y movimiento reducido)
-      galeria/          las dos galerías 3D, solo con transforms de CSS (sin WebGL)
-        Galeria3D.tsx   el motor común: giro, pausa, arrastre, botones, teclado y foco
-        formes.ts       dónde va cada tarjeta: anillo (proyectos) y escaparate (portada)
+      galeria/          las galerías 3D
+        orbita.tsx      el anillo de #demos (WebGL): tarjetas enmarcadas, encuadre automático, nombre al pasar
+        galaxia.tsx     la galaxia de #projectes (WebGL)
+        ModalProjecte.tsx  el modal de proyecto, el mismo para las dos
+        piezas3d.tsx    lo de three que comparten: estrellas, partículas y ZoomRueda (Ctrl + rueda)
+        comu3d.tsx      lo que comparten sin tocar three: useCapaz, Limit, useBucle y teclaZoom
+        Galeria3D.tsx   el escaparate de CSS, respaldo del anillo sin WebGL: giro, pausa, arrastre,
+                        botones, teclado y foco (solo transforms, sin WebGL)
+        formes.ts       dónde va cada tarjeta del escaparate (y del anillo de CSS, ya sin uso)
       BotoDemo.tsx      el botón de una demo con sus fases (probar, arrancando, abrir)
       Trajectoria.tsx   experiencia y formación con línea de tiempo, herramientas e idiomas
       Fila.tsx          fila de lista con fecha; con `hito` es un nodo de la línea de tiempo
@@ -103,7 +112,8 @@ web/
       Fons3D.tsx        decide si hay escena o fondo estático y carga three; exporta capac()
       Escena.tsx        el procesador en 3D: geometría, shaders, bucle y etiquetas de la película
       relat/            la historia y el modo película
-        Escenari.tsx    #escenari: la capa fijada con la escena, los recorridos q y p y RelatCtx
+        Escenari.tsx    #escenari: la capa fijada con la escena, los recorridos q y p, RelatCtx y la
+                        máscara con la que la capa se funde mientras pasa #demos
         Historia.tsx    #historia en los dos modos: película (380svh) o bloques en flujo normal
         Rail.tsx        los cuatro segmentos de capítulo y «Saltar a los proyectos»
         tabla.ts        lo que comparten tarjetas, rail y escena: centros, opacidades y el viaje
@@ -156,6 +166,11 @@ la API, no el navegador.
 - **`prefers-reduced-motion` deja todo quieto, no lento.** Imán, entrada escalonada, línea
   de tiempo, carruseles, galerías 3D (que caen al carrusel plano) y anillo del puntero se
   apagan enteros.
+- **El menú sigue el orden de la página.** `SECCIONS`, en `Portafoli.tsx`: Historia, Proyectos,
+  Trayectoria y Contacto, que es el orden real (portada, demos, historia, proyectos...). Las demos no
+  tienen entrada propia: son lo primero que sale tras la portada y Proyectos ya las recoge. La
+  sección activa (`aria-current`) vigila también `#dalt` y `#demos`, que no tienen enlace, para que
+  al volver hacia arriba no se quede marcada la última que se vio.
 - **El retrato es la primera `<img>` de `#dalt` y no puede haber otra antes.** `Escena.tsx`
   se coloca buscándola y escala el chip con su ancho, y su máscara se centra en ella. Por eso
   es un solo elemento que cambia de sitio con la rejilla de la portada, y por eso el webp está
@@ -164,24 +179,72 @@ la API, no el navegador.
   es el original) pasado por un canvas, recortado a su círculo y codificado a calidad 0,85.
   En la película la escena no lo busca: `Escenari` le pasa la ref `retrat`, que la portada
   pone en ese mismo `<img>`.
-- **Hay dos galerías 3D, y las dos son DOM de verdad.** En `#projectes` las tarjetas se tienden
-  en un anillo giratorio (la de delante manda, las demás orbitan de canto y se apagan); en la
-  portada, un escaparate de profundidad dentro de su columna (la del centro de frente, las
-  vecinas inclinadas y hacia atrás). La profundidad sale solo de `perspective`, `rotateY`,
-  `translateZ` y opacidad en `components/galeria/`, nunca de WebGL ni de dependencias nuevas:
-  las tarjetas conservan su captura, título, viñetas, chips, botón de la demo y enlaces, y el
-  foco funciona. Cada tarjeta recibe su transform en un solo bucle, sin pasar por el estado de
-  React, y no se desenfoca nada por fotograma (daría tirones). `Galeria3D.tsx` lleva el giro
-  automático con pausa al pasar el ratón, el arrastre y el swipe, los botones anterior/pausa/
-  siguiente, las flechas del teclado y Tab (que trae la tarjeta enfocada al frente); `formes.ts`,
-  solo la geometría de cada una. El estilo vive en `.gal3d*` de `index.css`.
-- **El anillo y el escaparate solo son para escritorio y tableta.** En el móvil (menos de 768 px)
-  y con `prefers-reduced-motion` cae el carrusel plano de siempre (`Carrusel.tsx`): el de
-  `#projectes` sangra a los bordes de la ventana y el de la portada es su variante `compacte`
-  en columnas de dos, con la fila quieta y snap en el móvil (`quieta`). Es el mismo componente
-  de antes; las galerías no lo tocan. `Projectes.tsx` y `Portada.tsx` eligen una u otra versión
-  con `!useReducedMotion() && !useMovil()`.
-- **En la versión plana, cada paso del carrusel de la portada es una columna de dos proyectos**,
+- **Hay dos galerías 3D de verdad y una de respaldo.** El anillo de `#demos` (`galeria/orbita.tsx`) y
+  la galaxia de `#projectes` (`galeria/galaxia.tsx`) son WebGL con react-three-fiber y drei, en trozos
+  aparte (lazy) que solo se piden en escritorio con WebGL (`useCapaz` y `Limit`, de `comu3d.tsx`).
+  Cada una pausa su bucle fuera de pantalla con `useBucle`, así que no hay dos lienzos de galería
+  pintando a la vez, y la capa del chip también se para mientras `#demos` la cubre entera. Si el
+  anillo no puede montarse (sin WebGL, o el lienzo se cae) la banda cae al escaparate de CSS
+  (`Galeria3D.tsx` y `formes.ts`: DOM de verdad con `perspective` y `transform`, un solo bucle sin pasar
+  por el estado de React); en móvil y con movimiento reducido, a la fila plana de siempre. Mientras
+  llega el trozo del anillo se reserva su hueco entero, para que la banda no crezca de golpe. Las
+  piezas que usan three y comparten las dos (estrellas, partículas y `ZoomRueda`) están en
+  `piezas3d.tsx`; `comu3d.tsx` no puede importar three ni fiber, o su peso se colaría en el trozo del
+  portafolio. El lienzo de r3f necesita **altura explícita** en su caja (no `min-height`) o sale
+  minúsculo: `.orbita__llenc` y `.galaxia`, en `index.css`.
+- **Qué versión se monta lo decide `Demos.tsx`** (y `Projectes.tsx` para la galaxia) con
+  `!useReducedMotion() && !useMovil()` y, para WebGL, `useCapaz()`. En el móvil (menos de 768 px) y con
+  `prefers-reduced-motion` cae la fila plana (`Carrusel.tsx`, variante `compacte` en columnas de dos,
+  con la fila quieta y snap en el móvil: `quieta`); en escritorio sin WebGL, el escaparate de CSS. El
+  carrusel de `#projectes` sangra a los bordes de la ventana y el de `#demos` va dentro del margen de
+  la página.
+- **`#demos` es una banda a todo el ancho, transparente y sin contorno.** Va entre `#dalt` y `#historia`,
+  dentro de `#escenari`. Detrás tiene que verse la animación de la placa base (la que ilumina el
+  cursor) y por delante solo van las tarjetas y la ficha, que llevan su propio fondo: no hay fondo de
+  sección, ni filetes, ni `data-tapa` en ella, y un recuadro negro es justo lo que no se quiere. El lienzo
+  del anillo también es transparente (alpha y `setClearColor(0, 0)`), con una máscara en los cuatro
+  lados para que no se note dónde empieza. Desde 1024 px la banda mide `100svh - 56 px` y su contenido
+  se centra; el anillo se lleva el resto de la ventana: `calc(100svh - 296px)`, con tope de 52vw y de
+  880 px. Esos 296 px son la cabecera de la página (56), el relleno de la banda (56), su cabecera (unos
+  100, algo más con el titular grande de 1920 px), el hueco (16) y la pista (56), así que si cambia el
+  alto de alguna de esas piezas hay que retocar ese número en `.orbita__llenc`.
+- **En la película la capa fijada del chip se enmascara mientras pasa `#demos`.** Como la banda es
+  transparente, sin esto se vería el chip por detrás en vez de la placa. `Escenari` calcula en su
+  listener de scroll dónde cae la banda en coordenadas de la capa y le pone una `mask-image`
+  (`mascaraBanda`, otro `MotionValue`, sin pasar por React) que la deja transparente solo ahí, con un
+  fundido de `FUNDIDO_PORTADA` (160 px, el de `motor.tsx`) a cada lado: el chip se apaga a la vez que la
+  placa asoma bajo la portada, y al salir la banda pasa lo contrario. Para eso `#historia` lleva
+  `data-tapa="tot"` (la placa no se pinta mientras la capa cubre la ventana) y `data-tapa-entra` (la
+  placa se apaga con fundido por arriba, ver `zonasTapadas` en `motor.tsx`), y `#escenari` ya no lleva
+  `data-tapa`, porque taparía también la banda. Si la banda cubre la capa entera, `Escenari` marca
+  `oculta` y la escena no pinta (el bucle sigue, no cuesta nada, y retoma en el mismo fotograma).
+- **El modal de proyecto es uno solo** (`galeria/ModalProjecte.tsx`): lo abren el anillo y la galaxia al
+  pulsar una tarjeta, o el teclado desde su lista oculta (un botón por proyecto). Lleva la captura, el
+  detalle, «Probar la demo» (la demo se inicia desde ahí) y «Código», se cierra con la X, con Escape o
+  tocando fuera, y atrapa el foco. Va en un portal al `<body>`: la banda tiene su propio contexto de
+  apilado (`z-index: 10` en la película) y, sin el portal, la cabecera (`z-index: 50`) quedaría por
+  encima del modal. Con el modal abierto cada galería se esconde (`.orbita__llenc--amagat` y
+  `.galaxia--amagat`, `visibility: hidden`) y el anillo además deja de dibujar. Pulsar una tarjeta solo
+  cuenta si el puntero no se movió (`e.delta`): react-three-fiber dispara el clic al soltar un arrastre
+  encima de una tarjeta, y los controles giran con cualquier movimiento.
+- **La rueda sola siempre mueve la página, también sobre las galerías; el zoom es con Ctrl (o ⌘) +
+  rueda.** Antes OrbitControls cancelaba toda rueda sobre el lienzo y, con el anillo a todo el ancho,
+  quien bajaba por la página se quedaba atascado. `ZoomRueda` (`piezas3d.tsx`) enciende
+  `controls.enableZoom` solo si el evento lleva `ctrlKey` o `metaKey`, antes de que lo vean los
+  controles: sin tecla no se cancela nada, y con ella OrbitControls hace el zoom (con sus topes) y
+  cancela el evento, de modo que tampoco hay zoom del navegador. El pellizco del trackpad llega como
+  rueda con Ctrl y vale igual. La pista de cada galería lleva la tecla que toca (`teclaZoom`, en
+  `comu3d.tsx`). Para comprobarlo hace falta un `WheelEvent` real y cancelable
+  (`new WheelEvent("wheel", { ctrlKey: true, cancelable: true })`) y mirar `defaultPrevented`: la rueda
+  de CDP no es cancelable y da un falso negativo.
+- **El anillo se encuadra solo** (`encuadre`, en `orbita.tsx`): prueba las tarjetas en su círculo con la
+  cámara cada vez más lejos y coge la primera distancia con la que el anillo cabe de lado a lado
+  (`AIRE_X`) y de arriba abajo (`AIRE_Y`), centrado en vertical, sea cual sea la forma del lienzo. Se
+  recalcula al cambiar el tamaño, conservando el zoom y la dirección en que esté la cámara. Los topes del
+  zoom son `ZOOM_PROP` (sin atravesar la tarjeta de delante) y `ZOOM_LLUNY` veces la distancia de
+  encuadre. La primera tarjeta empieza de cara a la cámara y la niebla (`scene.fog`) sigue a la cámara
+  para apagar las del fondo a cualquier zoom.
+- **En la versión plana, cada paso del carrusel de `#demos` es una columna de dos proyectos**,
   uno encima de otro. Para `Carrusel.tsx` la columna es una sola pieza, así que «siguiente», Tab y el
   resaltado del ratón trabajan por columna, y Tab recorre primero la tarjeta de arriba y
   luego la de abajo. La tarjeta es vertical: la captura arriba, tan ancha como la tarjeta, y
@@ -194,25 +257,21 @@ la API, no el navegador.
   como el de las secciones, y el enlace abajo), que baja a `#projectes`: con nueve proyectos
   completa la última columna y, si la cuenta fuera par, ocupa ella sola la columna entera.
   Un título largo que parta en dos líneas se arregla con `curt` en la ficha de
-  `lib/projectes.ts`.
-- **El alto de la captura de la portada sale de la ventana, no es fijo.** A partir de 1280 px
-  la rejilla de la portada es 4,4 / 2,7 / 5 partes (identidad, retrato y demos), y la pieza
-  del carrusel mide `--col`, que declara `.carrusel--compacte` (la ventana menos 56 px, entre
-  15 y 40 rem; en el móvil, la ventana menos el margen y 32 px, hasta 28 rem). Con `--col`,
-  `.portada__captura` calcula su alto: 16:9, pero sin pasar de lo que deja la ventana
-  (`100svh` menos la cabecera de 56 px, el relleno de la portada `--pad-v`, la cabecera del
-  bloque `--cap` y 132 px por cada tarjeta sin su captura) y sin bajar de 2,8:1. Así las dos
-  tarjetas de la primera columna caben enteras, con sus botones, en 1440 × 900, 1920 × 1080,
-  1366 × 768 y 1280 × 720. En el móvil no se resta nada: la página baja y la captura es 16:9
-  de lo que mida la columna. **Si cambia el alto de algo que no es captura en la columna de
-  las demos** (la cabecera del bloque, el texto o el relleno de la tarjeta), hay que retocar
-  `--cap`, `--pad-v` o los 132 px en `index.css`; si no, la segunda tarjeta se corta por
-  abajo o sobra hueco. Con ventana baja (1280 × 720 y 1366 × 768) la nota de las demos se
-  queda solo para los lectores de pantalla y `--cap` baja de 104 a 79 px. Las capturas altas
-  (800 × 750) recorren al pasar el ratón justo lo que les sobra (`--alt` menos su alto). El
-  retrato (`--retrat`) sigue a la columna central para que su anillo no toque a las otras
-  dos: a 1440 queda a unos 31 px de cada lado.
-- **Las columnas de la portada entran por la derecha y salen por la izquierda** (`entra="dreta"`
+  `lib/projectes.ts`. Las tarjetas (`TargetaMini` y `TargetaTots`, en `Demos.tsx`) siguen con las
+  clases `.portada__*` de `index.css`, que son de tarjeta y no de la portada.
+- **El alto de las capturas de la fila plana sale de la ventana, no es fijo.** La pieza del carrusel
+  mide `--col`, que declara `.carrusel--compacte` (la ventana menos 56 px, entre 15 y 40 rem; en el
+  móvil, la ventana menos el margen y 32 px, hasta 28 rem) y que `.demos` acota desde 768 px a
+  `clamp(18rem, 30cqw, 26rem)`, para que no se estire en una banda a todo el ancho. Con `--col`,
+  `.portada__captura` calcula su alto: 16:9, pero sin pasar de lo que deja la ventana (`100svh` menos
+  la cabecera de 56 px, `--pad-v` y `--cap`, que declara `.demos` y son el relleno y la cabecera de la
+  banda, y 132 px por cada tarjeta sin su captura) y sin bajar de 2,8:1. Así las dos tarjetas de una
+  columna caben enteras, con sus botones, en la ventana. En el móvil no se resta nada: la página baja y
+  la captura es 16:9 de lo que mida la columna. **Si cambia el alto de algo que no es captura en la
+  banda** (la cabecera, el texto o el relleno de la tarjeta), hay que retocar `--cap`, `--pad-v` o los
+  132 px en `index.css`; si no, la segunda tarjeta se corta por abajo o sobra hueco. Las capturas altas
+  (800 × 750) recorren al pasar el ratón justo lo que les sobra (`--alt` menos su alto).
+- **Las columnas de la fila plana entran por la derecha y salen por la izquierda** (`entra="dreta"`
   en `Carrusel.tsx`): tras la primera llega la segunda, y «Ver todos» queda al final del
   recorrido. Lo que hace la prop es cambiar el signo de la velocidad de la cinta, nada más; el
   de `#projectes` no la pasa y sigue entrando por la izquierda. «Siguiente» y la flecha
@@ -266,13 +325,17 @@ la API, no el navegador.
   en `relat/rotols.ts`, no en `idioma.tsx`, para que sus textos viajen con la escena y no
   engorden el trozo inicial. El tipo obliga a que es, ca y en tengan las mismas claves. Van en
   una columna a la derecha, por encima del rail y lejos de las tarjetas.
-- **La placa del fondo no se pinta detrás de `[data-tapa]`.** `#dalt` lo lleva siempre; en la
-  película `#escenari` lleva `data-tapa="tot"`, que tapa hasta su final aunque quede por debajo
-  de la ventana. Así la placa no asoma durante la historia y vuelve con el fundido de 160 px
-  cuando la capa se suelta. Si lo tapado cubre la ventana entera, `motor.tsx` ni pinta.
+- **La placa del fondo no se pinta detrás de `[data-tapa]`.** `#dalt` lo lleva siempre; en la película
+  `#historia` lleva `data-tapa="tot"` (se borra hasta su final de verdad, aunque quede por debajo de la
+  ventana) y `data-tapa-entra` (el borrado crece con un fundido de 160 px por arriba, tras la banda de
+  las demos). Así la placa no asoma durante la historia fijada y vuelve con el fundido de 160 px
+  cuando la capa se suelta. `#demos` no lleva nada: ahí la placa se ve entera. Si lo tapado cubre la
+  ventana entera, `motor.tsx` ni pinta.
 - **El rail va abajo a la derecha a propósito.** Las tarjetas suben por la columna de la
   izquierda y un rail fijo en esa esquina se cruzaba con todas. Fuera de la historia se apaga y
   queda `inert`, así que el tabulador no se para en botones que no se ven.
-- **El trozo de `three` pesa unos 130 kB comprimidos y va en su propio fichero.** Se pide
-  después de pintar la página, así que la primera carga sigue costando lo mismo que antes.
-  Si se importa three desde cualquier otro sitio, ese trozo se cuela en el bundle principal.
+- **El trozo de `three` pesa unos 187 kB comprimidos y va en su propio fichero** (y otros 62 kB el de
+  react-three-fiber y drei, `piezas3d`, que solo piden las galerías). Se pide después de pintar la
+  página, así que la primera carga sigue costando lo mismo que antes: el trozo inicial queda en unos
+  120 kB comprimidos. Si se importa three o fiber desde cualquier otro sitio (`comu3d.tsx`, por ejemplo),
+  ese peso se cuela en el bundle principal.

@@ -22,7 +22,7 @@ import { useRaton } from "../Moviment";
 export const COLOR = "95, 198, 212";  // rgb del acento del portfolio
 const SEGUIMIENTO_FOCO = 12;           // rapidez con la que la linterna alcanza al cursor
 const FPS_MOVIL = 30;                  // tope de fotogramas fuera de escritorio
-const FUNDIDO_PORTADA = 160;           // px del degradado con el que el fondo asoma bajo la portada
+export const FUNDIDO_PORTADA = 160;    // px del degradado con el que el fondo asoma bajo la portada
 const CABECERA = 56;                   // alto de la cabecera fija (--barra en index.css)
 
 export const rgba = (alfa: number) => `rgba(${COLOR}, ${alfa})`;
@@ -90,20 +90,27 @@ export const elegir = <T,>(lista: T[]): T => lista[Math.floor(Math.random() * li
 
 /* ---------- Componente ---------- */
 
-type Tapa = { desde: number; corte: number; limite: number };
+type Tapa = { desde: number; corte: number; limite: number; entra: boolean };
 
-/** Lo que no se pinta: cada [data-tapa], que son la portada y, en la pelicula, #escenari
- * entero (ver relat/Escenari.tsx). Lo de encima de una zona que empieza bajo la cabecera
- * tambien se borra. Una zona marcada data-tapa="tot" se borra hasta su final de verdad,
- * aunque quede por debajo de la ventana: asi, mientras dura la historia fijada, la placa no
- * asoma por abajo, y vuelve con el fundido cuando el escenario se acaba. */
+/** Lo que no se pinta: cada [data-tapa], que son la portada y, en la pelicula, la historia
+ * (ver relat/Historia.tsx). La banda de las demos que va entre las dos no lleva data-tapa: ahi
+ * la placa se ve entera. Lo de encima de una zona que empieza bajo la cabecera tambien se
+ * borra. Una zona marcada data-tapa="tot" se borra hasta su final de verdad, aunque quede por
+ * debajo de la ventana: asi, mientras dura la historia fijada, la placa no asoma por abajo, y
+ * vuelve con el fundido cuando se acaba. Una zona con data-tapa-entra se funde tambien por
+ * arriba, con el mismo degradado de abajo: la placa se apaga poco a poco al entrar en ella. */
 function zonasTapadas(alt: number): Tapa[] {
   const zonas: Tapa[] = [];
   for (const el of document.querySelectorAll("[data-tapa]")) {
     const r = el.getBoundingClientRect();
     const limite = el.getAttribute("data-tapa") === "tot" ? r.bottom : Math.min(alt, r.bottom);
     if (limite <= 0 || r.top >= alt) continue;
-    zonas.push({ desde: r.top <= CABECERA ? 0 : r.top, corte: limite - FUNDIDO_PORTADA, limite });
+    zonas.push({
+      desde: r.top <= CABECERA ? 0 : r.top,
+      corte: limite - FUNDIDO_PORTADA,
+      limite,
+      entra: el.hasAttribute("data-tapa-entra") && r.top > CABECERA
+    });
   }
   return zonas;
 }
@@ -117,9 +124,21 @@ export function taparPortada(ctx: CanvasRenderingContext2D, ample: number, alt: 
   if (!zonas.length) return;
   ctx.save();
   ctx.globalCompositeOperation = "destination-out";
-  for (const { desde, corte, limite } of zonas) {
+  for (const { desde, corte, limite, entra } of zonas) {
+    // Por arriba, solo con data-tapa-entra: el borrado crece de nada a todo en el primer fundido.
+    let inicio = desde;
+    if (entra) {
+      inicio = Math.min(desde + FUNDIDO_PORTADA, Math.max(desde, corte));
+      if (inicio > desde) {
+        const g = ctx.createLinearGradient(0, desde, 0, inicio);
+        g.addColorStop(0, "rgba(0,0,0,0)");
+        g.addColorStop(1, "rgba(0,0,0,1)");
+        ctx.fillStyle = g;
+        ctx.fillRect(0, desde, ample, Math.min(inicio, alt) - desde);
+      }
+    }
     ctx.fillStyle = "#000";
-    if (corte > desde) ctx.fillRect(0, desde, ample, Math.min(corte, alt) - desde);
+    if (corte > inicio) ctx.fillRect(0, inicio, ample, Math.min(corte, alt) - inicio);
     if (corte >= alt) continue;
     const g = ctx.createLinearGradient(0, corte, 0, limite);
     g.addColorStop(0, "rgba(0,0,0,1)");

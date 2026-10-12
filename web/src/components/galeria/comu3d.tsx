@@ -1,9 +1,9 @@
 // Lo que comparten las dos galerias de verdad en 3D (WebGL, con react-three-fiber) SIN arrastrar
-// three. Esto es importante: la portada y los proyectos importan de aqui `useCapaz` y `Limit` de
-// forma normal, asi que este fichero no puede tocar three ni fiber. Si lo hiciera, el peso de
-// three se colaria en el trozo del portafolio y se descargaria aunque nadie llegue a ver una
-// galeria (en el movil, con movimiento reducido o sin WebGL). Las piezas que si usan three viven
-// en piezas3d.tsx, que solo importan las galerias (que ya van en trozos aparte, lazy).
+// three. Esto es importante: la banda de las demos y los proyectos importan de aqui `useCapaz` y
+// `Limit` de forma normal, asi que este fichero no puede tocar three ni fiber. Si lo hiciera, el
+// peso de three se colaria en el trozo del portafolio y se descargaria aunque nadie llegue a ver
+// una galeria (en el movil, con movimiento reducido o sin WebGL). Las piezas que si usan three
+// viven en piezas3d.tsx, que solo importan las galerias (que ya van en trozos aparte, lazy).
 
 import { Component, useEffect, useState } from "react";
 import type { ReactNode, RefObject } from "react";
@@ -32,9 +32,22 @@ export function useCapaz(): boolean {
 }
 
 /**
+ * La tecla que se mantiene con la rueda para hacer zoom en las galerias: Cmd en Mac y Ctrl en el
+ * resto (ver ZoomRueda en piezas3d.tsx). Sirve para escribirla en la pista que hay junto a cada
+ * galeria.
+ */
+export function teclaZoom(): string {
+  const plataforma =
+    (navigator as Navigator & { userAgentData?: { platform?: string } }).userAgentData?.platform ||
+    navigator.platform ||
+    "";
+  return /mac|iphone|ipad/i.test(plataforma) ? "⌘" : "Ctrl";
+}
+
+/**
  * "always" solo cuando la seccion se ve y la pestana esta delante; el resto del tiempo "never",
- * que deja el lienzo quieto sin gastar GPU. Asi, con la portada arriba y los proyectos mas abajo,
- * nunca hay dos lienzos pintando al mismo tiempo.
+ * que deja el lienzo quieto sin gastar GPU. Asi, con las demos arriba y los proyectos mas abajo,
+ * nunca hay dos lienzos de galeria pintando al mismo tiempo.
  */
 export function useBucle(ref: RefObject<HTMLElement | null>): "always" | "never" {
   const [dins, setDins] = useState(false);

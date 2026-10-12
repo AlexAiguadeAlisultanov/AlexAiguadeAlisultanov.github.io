@@ -29,13 +29,16 @@ export const anell: Colocar = (d, { n, ample }) => {
 };
 
 /**
- * Escaparate de profundidad (portada): la tarjeta del centro, de frente y entera; las vecinas
- * se inclinan, se van hacia atras y se apagan, asomando por los lados de la columna. Compacto.
+ * Escaparate de profundidad (respaldo del anillo en la banda de las demos): la tarjeta del centro, de
+ * frente y entera; las vecinas se inclinan, se van hacia atras y se apagan, asomando por los lados.
+ * Con un escenario estrecho van muy juntas (0,4 de tarjeta); con uno ancho se abren por los lados,
+ * hasta una tarjeta entera, para que al pasar no se pisen con la del centro.
  */
-export const escaparata: Colocar = (d, { ample }) => {
+export const escaparata: Colocar = (d, { ample, escenari }) => {
   const ad = Math.abs(d);
   const dir = Math.sign(d);
-  const x = dir * Math.min(ad, 2.5) * (ample * 0.4);
+  const separacio = Math.max(ample * 0.4, Math.min(ample, escenari * 0.18));
+  const x = dir * Math.min(ad, 2.5) * separacio;
   const z = -Math.min(ad, 3) * 150;
   const ry = Math.max(-44, Math.min(44, -d * 26));
   const transform = `translate(-50%,-50%) translateX(${x.toFixed(1)}px) translateZ(${z.toFixed(1)}px) rotateY(${ry.toFixed(1)}deg)`;

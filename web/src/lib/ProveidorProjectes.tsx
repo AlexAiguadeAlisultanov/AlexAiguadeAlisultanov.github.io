@@ -1,6 +1,6 @@
-// Un solo sitio donde se piden los proyectos y se despiertan las demos. La portada y el
+// Un solo sitio donde se piden los proyectos y se despiertan las demos. La banda de las demos y el
 // carrusel leen de aqui: si cada uno llamara a demanar() y a useDemos por su cuenta, una
-// demo despertada en la portada seguiria dormida en el carrusel y GitHub recibiria dos
+// demo despertada en la banda seguiria dormida en el carrusel y GitHub recibiria dos
 // peticiones por visita.
 //
 // Al montarse no llama a ninguna demo. Lo unico que sale de aqui es la lista de GitHub; las
@@ -22,7 +22,7 @@ export type ContextProjectes = {
   compte: number;
   /** El unico estado de demos de toda la pagina. */
   demos: Demos;
-  /** Las cuatro destacadas, que abren el carrusel de la portada, en su orden fijo. */
+  /** Las cuatro destacadas, que abren la banda de las demos, en su orden fijo. */
   destacats: Projecte[];
 };
 

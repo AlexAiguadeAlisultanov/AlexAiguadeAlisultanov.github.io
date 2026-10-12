@@ -2,12 +2,15 @@
 // y se arrastra para mirar alrededor, al estilo del StellarCardGallery de la referencia pero con
 // el cian de la web. Cada tarjeta lleva su captura y su nombre; al pulsarla se abre un modal con
 // el detalle del proyecto (ano, individual o equipo, que hizo Alex, tecnologias, probar la demo y
-// codigo), que se cierra con la X, con Escape o tocando fuera y atrapa el foco.
+// codigo), que se cierra con la X, con Escape o tocando fuera y atrapa el foco. Es el mismo modal
+// que abre el anillo de las demos (ModalProjecte.tsx).
 //
-// Como la de la portada: vive dentro de la pagina (no ocupa la pantalla), el lienzo es
-// transparente con un velo de estrellas, y con el raton dentro se gira y se hace zoom con la rueda
-// (fuera del lienzo la rueda sigue moviendo la pagina). El bucle se apaga cuando la seccion sale de
-// la vista. El 3D va con aria-hidden; el teclado y el lector de pantalla abren el mismo modal.
+// Como el anillo de la banda de las demos: vive dentro de la pagina (no ocupa la pantalla), el
+// lienzo es transparente con un velo de estrellas, y con el raton dentro se gira arrastrando. La
+// rueda sola sigue moviendo la pagina, tambien sobre el lienzo, para que nadie se quede atascado al
+// llegar aqui; el zoom es con Ctrl + rueda (ZoomRueda, en piezas3d.tsx). El bucle se apaga cuando la
+// seccion sale de la vista. El 3D va con aria-hidden; el teclado y el lector de pantalla abren el
+// mismo modal.
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import * as THREE from "three";
@@ -16,12 +19,9 @@ import type { ThreeEvent } from "@react-three/fiber";
 import { Html, OrbitControls } from "@react-three/drei";
 import { useIdioma } from "../../lib/idioma";
 import type { Projecte } from "../../lib/projectes";
-import { BotoDemo, CTA, progres } from "../BotoDemo";
-import { useEstatDemo } from "../../lib/ProveidorProjectes";
-import { Captura } from "../Captura";
-import { GitHub, Tancar } from "../Icones";
-import { Estrelles } from "./piezas3d";
-import { CIAN, useBucle } from "./comu3d";
+import { ModalProjecte } from "./ModalProjecte";
+import { Estrelles, ZoomRueda } from "./piezas3d";
+import { CIAN, teclaZoom, useBucle } from "./comu3d";
 
 type Lloc = { x: number; y: number; z: number };
 
@@ -130,8 +130,9 @@ function Escena({ projectes, onObrir }: { projectes: Projecte[]; onObrir: (p: Pr
 
       <OrbitControls
         makeDefault
-        // Con el raton dentro la rueda hace zoom; fuera no llega aqui y sigue moviendo la pagina.
-        enableZoom
+        // La rueda sola sigue moviendo la pagina, tambien sobre el lienzo; el zoom lo enciende
+        // ZoomRueda solo con Ctrl (o Cmd) + rueda, y se queda entre minDistance y maxDistance.
+        enableZoom={false}
         minDistance={7}
         maxDistance={40}
         enablePan={false}
@@ -143,184 +144,8 @@ function Escena({ projectes, onObrir }: { projectes: Projecte[]; onObrir: (p: Pr
         autoRotateSpeed={0.35}
         target={[0, 0, 0]}
       />
+      <ZoomRueda />
     </>
-  );
-}
-
-/* ---------- El modal con el detalle del proyecto ---------- */
-
-const ETIQUETA = "text-[12px] font-medium uppercase leading-normal tracking-[0.14em] text-tinta-3";
-
-function ModalProjecte({ projecte, onTancar }: { projecte: Projecte; onTancar: () => void }) {
-  const { t } = useIdioma();
-  const { dorm, fase, segons } = useEstatDemo(projecte.demo);
-  const quiet = useRef<boolean>(false);
-  const dialeg = useRef<HTMLDivElement>(null);
-  const idTitol = "modal-titol-" + projecte.nom.toLowerCase().replace(/[^a-z0-9]+/g, "-");
-  const individual = projecte.persones <= 1;
-
-  // Atrapa el foco dentro del dialogo, cierra con Escape y devuelve el foco a donde estaba.
-  useEffect(() => {
-    quiet.current = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const abans = document.activeElement as HTMLElement | null;
-    const node = dialeg.current;
-    const focos = () =>
-      Array.from(
-        node?.querySelectorAll<HTMLElement>(
-          'a[href], button:not([disabled]), input, [tabindex]:not([tabindex="-1"])'
-        ) ?? []
-      ).filter((el) => el.offsetParent !== null || el === document.activeElement);
-
-    const primero = focos()[0] ?? node;
-    primero?.focus();
-
-    const alTeclat = (e: KeyboardEvent) => {
-      if (e.key === "Escape") {
-        e.preventDefault();
-        onTancar();
-        return;
-      }
-      if (e.key !== "Tab") return;
-      const llista = focos();
-      if (!llista.length) return;
-      const primer = llista[0];
-      const ultim = llista[llista.length - 1];
-      if (e.shiftKey && document.activeElement === primer) {
-        e.preventDefault();
-        ultim.focus();
-      } else if (!e.shiftKey && document.activeElement === ultim) {
-        e.preventDefault();
-        primer.focus();
-      }
-    };
-
-    document.addEventListener("keydown", alTeclat, true);
-    const abansOverflow = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
-    return () => {
-      document.removeEventListener("keydown", alTeclat, true);
-      document.body.style.overflow = abansOverflow;
-      abans?.focus?.();
-    };
-  }, [onTancar]);
-
-  const avanc =
-    projecte.demo && dorm && fase === "waking" && !quiet.current ? (
-      <span
-        aria-hidden
-        className="absolute inset-x-0 bottom-0 z-[1] h-[2px] origin-left bg-accent transition-transform duration-1000 ease-linear"
-        style={{ transform: `scaleX(${progres(segons)})` }}
-      />
-    ) : null;
-
-  return (
-    <div
-      className="galaxia-modal"
-      onPointerDown={(e) => {
-        if (e.target === e.currentTarget) onTancar();
-      }}
-    >
-      <div
-        ref={dialeg}
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby={idTitol}
-        className="galaxia-modal__cos targeta rounded-[20px] border border-linia bg-fons-2"
-      >
-        <button
-          type="button"
-          onClick={onTancar}
-          aria-label={t("nav.close")}
-          className="absolute right-3 top-3 z-[2] inline-grid size-10 place-items-center rounded-[12px] border border-linia bg-fons-2/80 text-[18px] text-tinta-2 backdrop-blur transition-colors duration-200 hover:border-accent/40 hover:text-tinta"
-        >
-          <Tancar />
-        </button>
-
-        <div className="relative aspect-[16/10] overflow-hidden rounded-t-[20px] border-b border-linia bg-fons-3">
-          {projecte.captura ? (
-            <Captura src={projecte.captura} titol={projecte.titol} alta={projecte.alta} prioritaria />
-          ) : (
-            <span className="composicio absolute inset-0" aria-hidden />
-          )}
-          {avanc}
-        </div>
-
-        <div className="p-5 sm:p-6">
-          <div className="flex items-center justify-between gap-3">
-            <p className={`${ETIQUETA} flex flex-wrap items-center gap-x-2`}>
-              {projecte.anyInici ? <span>{projecte.anyInici}</span> : null}
-              {projecte.anyInici && projecte.persones ? <span aria-hidden>·</span> : null}
-              {projecte.persones ? (
-                <span>{individual ? t("proj.sol") : t("proj.equip", { n: projecte.persones })}</span>
-              ) : null}
-            </p>
-            {projecte.demo && projecte.url ? (
-              <a
-                href={projecte.url}
-                target="_blank"
-                rel="noopener"
-                className="-my-2 inline-flex min-h-11 shrink-0 items-center gap-2 rounded-[8px] px-2 text-[14px] text-tinta-3 transition-colors duration-200 hover:text-tinta"
-              >
-                <GitHub />
-                {t("feed.code")}
-              </a>
-            ) : null}
-          </div>
-
-          <h3 id={idTitol} className="mt-2 text-[21px] font-semibold leading-snug tracking-tight text-tinta">
-            {projecte.titol}
-          </h3>
-          <p className="mt-2 text-[15px] leading-relaxed text-tinta-2">{projecte.lema}</p>
-
-          {projecte.aportacio.length ? (
-            <>
-              <p className={`${ETIQUETA} mt-5`}>{t(individual ? "proj.paper.sol" : "proj.paper.equip")}</p>
-              <ul className="mt-2 space-y-1.5">
-                {projecte.aportacio.map((frase) => (
-                  <li
-                    key={frase}
-                    className="relative pl-4 text-[14px] leading-5 text-tinta-2 before:absolute before:left-0 before:top-2.5 before:h-px before:w-2 before:bg-accent"
-                  >
-                    {frase}
-                  </li>
-                ))}
-              </ul>
-            </>
-          ) : null}
-
-          {projecte.pila.length ? (
-            <ul aria-label={t("chips.aria")} className="mt-5 flex flex-wrap gap-1.5">
-              {projecte.pila.map((una) => (
-                <li
-                  key={una}
-                  className="rounded-[8px] border border-linia bg-fons-3 px-1.5 py-[3px] text-[12px] leading-snug text-tinta-2"
-                >
-                  {una}
-                </li>
-              ))}
-            </ul>
-          ) : null}
-
-          <div className="mt-6">
-            {projecte.demo ? (
-              <BotoDemo url={projecte.demo} titol={projecte.titol} />
-            ) : projecte.url ? (
-              <a
-                href={projecte.url}
-                target="_blank"
-                rel="noopener"
-                className={`${CTA} border border-linia text-tinta hover:border-accent/40`}
-              >
-                <GitHub />
-                {t("proj.code")}
-              </a>
-            ) : null}
-            {/* La nota de que la demo pide crear cuenta (el Volkswagen), donde toca. */}
-            {projecte.registre ? <p className="mt-3 text-[13px] text-tinta-3">{t("demos.registre")}</p> : null}
-          </div>
-        </div>
-      </div>
-    </div>
   );
 }
 
@@ -378,6 +203,9 @@ export function GalaxiaProjectes({ projectes }: { projectes: Projecte[] }) {
           />
         </Canvas>
       </div>
+
+      {/* La rueda sola mueve la pagina; el zoom es con Ctrl (o Cmd) y la rueda. */}
+      <p className="galaxia__pista">{t("zoom.pista", { k: teclaZoom() })}</p>
 
       {/* Via de teclado y lector de pantalla: abre el mismo modal, que si es accesible. */}
       <ul className="sr-only">

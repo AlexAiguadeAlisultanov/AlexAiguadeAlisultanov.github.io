@@ -31,7 +31,7 @@ type Multi = Record<Idioma, string>;
 
 type Fitxa = {
   titol: Multi;
-  /** Titulo corto para las tarjetas pequenas de la portada, cuando el entero no cabe en una linea. */
+  /** Titulo corto para las tarjetas pequenas de la banda de las demos, cuando el entero no cabe en una linea. */
   curt?: Multi;
   tipus?: string;
   /** Repositorio privado: la API no lo devuelve y no se ensena enlace al codigo. */
@@ -44,7 +44,7 @@ type Fitxa = {
   /** Captura de la demo y si es mas alta que el marco. */
   captura?: string;
   alta?: boolean;
-  /** Sitio entre las cuatro destacadas, que abren el carrusel de la portada siempre en este orden. */
+  /** Sitio entre las cuatro destacadas, que abren la banda de las demos siempre en este orden. */
   destacat?: 1 | 2 | 3 | 4;
   /** Para probar la demo hay que crear una cuenta. */
   registre?: true;
@@ -65,7 +65,7 @@ const CONEGUTS: Record<string, Fitxa> = {
       ca: "Gestor d'inventari de llibres",
       en: "Book inventory manager"
     },
-    // Con el titulo entero la tarjeta pequena de la portada lo parte en dos lineas y deja
+    // Con el titulo entero la tarjeta pequena de las demos lo parte en dos lineas y deja
     // "libros" suelto en la segunda.
     curt: {
       es: "Inventario de libros",
@@ -671,7 +671,7 @@ export function projecte(repo: Repo, idioma: Idioma, rol: Rol): Projecte {
 }
 
 /**
- * Las cuatro destacadas, que abren el carrusel de la portada, en su orden fijo. Si alguna falta en la lista (el
+ * Las cuatro destacadas, que abren la banda de las demos, en su orden fijo. Si alguna falta en la lista (el
  * repositorio ya no sale, o la demo esta cerrada a este rol), su sitio lo ocupa la primera
  * demo abierta de la lista que no este ya puesta.
  */
