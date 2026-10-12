@@ -17,11 +17,12 @@ import { Trajectoria } from "./Trajectoria";
 import { Correu, Fletxa, GitHub, Baixa, LinkedIn, Xat } from "./Icones";
 import logo from "../assets/logo.png";
 
-// Las anclas de la cabecera y de la hoja del menu. Van en este orden aunque en la pagina la
-// historia venga antes que los proyectos: lo que se busca primero son las demos.
+// Las anclas de la cabecera y de la hoja del menu, en el mismo orden en que van en la pagina
+// (portada, demos, historia, proyectos, trayectoria y contacto). Las demos no tienen entrada
+// propia: son la primera cosa que sale tras la portada y los proyectos ya las recogen.
 const SECCIONS: { id: string; clau: Clau }[] = [
-  { id: "projectes", clau: "nav.projects" },
   { id: "historia", clau: "nav.story" },
+  { id: "projectes", clau: "nav.projects" },
   { id: "trayectoria", clau: "nav.background" },
   { id: "contacte", clau: "nav.contact" }
 ];
