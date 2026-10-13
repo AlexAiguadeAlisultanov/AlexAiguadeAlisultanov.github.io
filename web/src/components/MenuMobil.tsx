@@ -12,6 +12,7 @@ import type { KeyboardEvent, PointerEvent } from "react";
 import { useIdioma } from "../lib/idioma";
 import type { Clau } from "../lib/idioma";
 import { CV_NOM, CV_PDF } from "../lib/cv";
+import { ACCESO_ACTIVO } from "../lib/acces";
 import { Baixa, Menu, Tancar } from "./Icones";
 
 export type Seccio = { id: string; clau: Clau };
@@ -160,9 +161,11 @@ export function MenuMobil({
               {t("hero.cv")}
               <Baixa className="text-[18px]" />
             </a>
-            <button type="button" onClick={sortir} className={SECUNDARI}>
-              {t("sortir")}
-            </button>
+            {ACCESO_ACTIVO && (
+              <button type="button" onClick={sortir} className={SECUNDARI}>
+                {t("sortir")}
+              </button>
+            )}
           </div>
         </div>
       </dialog>

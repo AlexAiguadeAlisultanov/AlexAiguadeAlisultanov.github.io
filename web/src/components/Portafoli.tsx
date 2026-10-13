@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useIdioma } from "../lib/idioma";
 import type { Clau } from "../lib/idioma";
 import type { Rol } from "../lib/acces";
+import { ACCESO_ACTIVO } from "../lib/acces";
 import { ProveidorProjectes } from "../lib/ProveidorProjectes";
 import { CORREU, GITHUB, LINKEDIN, WHATSAPP } from "../lib/contacte";
 import { Entrada } from "./Moviment";
@@ -134,13 +135,15 @@ function Capcalera({ sortir }: { sortir: () => void }) {
             <Baixa className="text-[18px]" />
           </a>
           <Idiomes />
-          <button
-            type="button"
-            onClick={sortir}
-            className="hidden min-h-[44px] items-center rounded-[8px] border border-linia px-3 text-[14px] font-medium text-tinta-2 transition-colors duration-200 hover:border-accent/40 hover:text-tinta lg:inline-flex"
-          >
-            {t("sortir")}
-          </button>
+          {ACCESO_ACTIVO && (
+            <button
+              type="button"
+              onClick={sortir}
+              className="hidden min-h-[44px] items-center rounded-[8px] border border-linia px-3 text-[14px] font-medium text-tinta-2 transition-colors duration-200 hover:border-accent/40 hover:text-tinta lg:inline-flex"
+            >
+              {t("sortir")}
+            </button>
+          )}
           {/* Por debajo de 1024 px la navegacion y "Salir" van en una hoja, para que la
               cabecera siga siendo una sola fila. */}
           <MenuMobil seccions={SECCIONS} activa={activa} sortir={sortir} />

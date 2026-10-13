@@ -5,6 +5,12 @@
 export type Rol = "invitado" | "admin";
 export type FallaAcces = "empty" | "creds" | "net" | "time" | "server";
 
+// Interruptor de la pantalla de acceso. En false, el portafolio se abre directo
+// (como invitado) sin pedir usuario ni contrasena: util para enlazarlo en abierto
+// (LinkedIn, etc.). Todo el login se queda guardado; para volver a exigirlo, basta
+// con poner esto en true.
+export const ACCESO_ACTIVO = false;
+
 const PRODUCCIO = "https://portfolio-acceso.onrender.com";
 
 // En desarrollo las llamadas van por el proxy de Vite. La API solo acepta el dominio

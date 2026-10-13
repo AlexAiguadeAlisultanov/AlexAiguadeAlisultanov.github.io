@@ -1,6 +1,6 @@
 import { Suspense, lazy, useCallback, useEffect, useState } from "react";
 import { ProveidorIdioma } from "./lib/idioma";
-import { oblidarSessio, sessioDesada } from "./lib/acces";
+import { ACCESO_ACTIVO, oblidarSessio, sessioDesada } from "./lib/acces";
 import type { Rol } from "./lib/acces";
 import { LimitCarrega } from "./components/LimitCarrega";
 import { Porta } from "./components/Porta";
@@ -17,8 +17,9 @@ const Portafoli = lazy(cargarPortafoli);
 const Curriculum = lazy(cargarCurriculum);
 
 // Con una sesion guardada lo normal es abrir el portafolio en cuanto la API la confirme: el trozo
-// se pide ya, a la vez que la comprobacion, y no despues de ella.
-if (sessioDesada()) void cargarPortafoli();
+// se pide ya, a la vez que la comprobacion, y no despues de ella. Con el acceso desactivado se
+// pide siempre, porque el portafolio se abre directo.
+if (!ACCESO_ACTIVO || sessioDesada()) void cargarPortafoli();
 
 /** Ejecuta algo cuando el navegador esta libre. Safari no tiene requestIdleCallback. */
 function alLliure(fer: () => void): () => void {
@@ -33,7 +34,8 @@ function alLliure(fer: () => void): () => void {
 const veCurriculum = () => window.location.hash === "#cv";
 
 export default function App() {
-  const [rol, setRol] = useState<Rol | null>(null);
+  // Con el acceso desactivado se entra directo como invitado y la pantalla de login no se pinta.
+  const [rol, setRol] = useState<Rol | null>(ACCESO_ACTIVO ? null : "invitado");
   const obrir = useCallback((nou: Rol) => setRol(nou), []);
 
   // El curriculum es la vista #cv. No hay router: basta con leer el hash, y asi el boton
