@@ -457,7 +457,7 @@ const CONEGUTS: Record<string, Fitxa> = {
       en: "What you expose to the internet, the way an attacker sees it."
     },
     captura: capAtalaya,
-    alta: true,
+    alta: false,
     anyInici: 2026,
     pila: ["TypeScript", "React", "Vite", "Express", "SQLite", "Vitest"],
     aportacio: [
