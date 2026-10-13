@@ -17,6 +17,7 @@ import capLibros from "../assets/demos/libros.webp";
 import capReservas from "../assets/demos/reservas.webp";
 import capTaquilla from "../assets/demos/taquilla.webp";
 import capVolkswagen from "../assets/demos/volkswagen.webp";
+import capAtalaya from "../assets/demos/atalaya.webp";
 
 export const USUARI = "AlexAiguadeAlisultanov";
 const API = "https://api.github.com/users/" + USUARI + "/repos?sort=updated&per_page=100";
@@ -432,6 +433,48 @@ const CONEGUTS: Record<string, Fitxa> = {
         es: "Recambios, app de escritorio y despliegue",
         ca: "Recanvis, app d'escriptori i desplegament",
         en: "Spare parts, desktop app and deployment"
+      }
+    ]
+  },
+  "atalaya": {
+    titol: {
+      es: "ATALAYA · exposición y OSINT",
+      ca: "ATALAYA · exposició i OSINT",
+      en: "ATALAYA · exposure & OSINT"
+    },
+    curt: { es: "ATALAYA", ca: "ATALAYA", en: "ATALAYA" },
+    tipus: "web",
+    tec: ["TypeScript", "React", "Node", "SQLite"],
+    demo: "https://atalaya-yjy7.onrender.com",
+    text: {
+      es: "Dos herramientas de ciberseguridad en una, siempre con fuentes públicas y pasivas. Exposición reconstruye la superficie de ataque de un dominio (subdominios, IPs, servicios, CVE) y la resume en una nota priorizada por riesgo real: EPSS, catálogo KEV de CISA y criticidad del activo, no por CVSS a secas. OSINT parte de un email, usuario, dominio o IP y pivota hasta dibujar un grafo de entidades, con un dossier exportable a PDF.",
+      ca: "Dues eines de ciberseguretat en una, sempre amb fonts públiques i passives. Exposició reconstrueix la superfície d'atac d'un domini (subdominis, IPs, serveis, CVE) i la resumeix en una nota prioritzada per risc real: EPSS, catàleg KEV de CISA i criticitat de l'actiu, no per CVSS a seques. OSINT parteix d'un email, usuari, domini o IP i pivota fins a dibuixar un graf d'entitats, amb un dossier exportable a PDF.",
+      en: "Two cybersecurity tools in one, always from public and passive sources. Exposure rebuilds a domain's attack surface (subdomains, IPs, services, CVEs) and sums it up in a score prioritised by real risk: EPSS, CISA's KEV catalogue and how critical each asset is, not raw CVSS. OSINT starts from an email, username, domain or IP and pivots into a graph of entities, with a dossier you can export to PDF."
+    },
+    lema: {
+      es: "Lo que expones a internet, visto como lo ve un atacante.",
+      ca: "El que exposes a internet, vist com ho veu un atacant.",
+      en: "What you expose to the internet, the way an attacker sees it."
+    },
+    captura: capAtalaya,
+    alta: true,
+    anyInici: 2026,
+    pila: ["TypeScript", "React", "Vite", "Express", "SQLite", "Vitest"],
+    aportacio: [
+      {
+        es: "Motor en TypeScript puro y determinista, con tests",
+        ca: "Motor en TypeScript pur i determinista, amb tests",
+        en: "Pure, deterministic TypeScript engine, with tests"
+      },
+      {
+        es: "Prioriza por EPSS y catálogo KEV, no por CVSS a secas",
+        ca: "Prioritza per EPSS i catàleg KEV, no per CVSS a seques",
+        en: "Prioritises by EPSS and the KEV catalogue, not raw CVSS"
+      },
+      {
+        es: "OSINT que pivota por fuentes públicas y exporta un dossier en PDF",
+        ca: "OSINT que pivota per fonts públiques i exporta un dossier en PDF",
+        en: "OSINT that pivots over public sources and exports a PDF dossier"
       }
     ]
   }
