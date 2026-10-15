@@ -18,6 +18,7 @@ import capReservas from "../assets/demos/reservas.webp";
 import capTaquilla from "../assets/demos/taquilla.webp";
 import capVolkswagen from "../assets/demos/volkswagen.webp";
 import capAtalaya from "../assets/demos/atalaya.webp";
+import capBrio from "../assets/demos/brio.webp";
 
 export const USUARI = "AlexAiguadeAlisultanov";
 const API = "https://api.github.com/users/" + USUARI + "/repos?sort=updated&per_page=100";
@@ -475,6 +476,47 @@ const CONEGUTS: Record<string, Fitxa> = {
         es: "OSINT que pivota por fuentes públicas y exporta un dossier en PDF",
         ca: "OSINT que pivota per fonts públiques i exporta un dossier en PDF",
         en: "OSINT that pivots over public sources and exports a PDF dossier"
+      }
+    ]
+  },
+  "brio": {
+    titol: {
+      es: "Brío · entreno y dieta",
+      ca: "Brío · entrenament i dieta",
+      en: "Brío · training & diet"
+    },
+    curt: { es: "Brío", ca: "Brío", en: "Brío" },
+    tec: ["React Native", "Expo", "TypeScript"],
+    demo: "https://alexaiguadealisultanov.github.io/brio/",
+    text: {
+      es: "App de móvil que arma tu entreno y tu dieta a partir de tus datos reales: calcula tu gasto, las calorías y los macros, y una rutina que progresa sola. Cuando algo no te encaja, propone cambios distinguiendo entre lo que no puedes comer y lo que hoy no te apetece. El motor es determinista y funciona sin internet; tus datos viven en el teléfono y la IA es opcional. Lleva una capa de seguridad con mínimos y avisos para derivar al médico cuando toca.",
+      ca: "App de mòbil que munta el teu entrenament i la teva dieta a partir de les teves dades reals: calcula la despesa, les calories i els macros, i una rutina que progressa sola. Quan alguna cosa no et va bé, proposa canvis distingint entre el que no pots menjar i el que avui no et ve de gust. El motor és determinista i funciona sense internet; les teves dades viuen al telèfon i la IA és opcional. Porta una capa de seguretat amb mínims i avisos per derivar al metge quan cal.",
+      en: "A mobile app that builds your training and diet from your real data: it works out your expenditure, calories and macros, plus a routine that progresses on its own. When something doesn't fit, it suggests swaps, telling apart what you can't eat from what you just don't fancy today. The engine is deterministic and works offline; your data stays on the phone and the AI is opt-in. It carries a safety layer with floors and flags to refer you to a doctor when needed."
+    },
+    lema: {
+      es: "Tu cuerpo, con un plan que piensa por ti.",
+      ca: "El teu cos, amb un pla que pensa per tu.",
+      en: "Your body, with a plan that thinks for you."
+    },
+    captura: capBrio,
+    alta: false,
+    anyInici: 2026,
+    pila: ["TypeScript", "React Native", "Expo", "Node", "Express", "SQLite", "Turso", "Stripe", "Vitest"],
+    aportacio: [
+      {
+        es: "Motor de dieta y entreno en TypeScript puro, determinista y con tests",
+        ca: "Motor de dieta i entrenament en TypeScript pur, determinista i amb tests",
+        en: "Pure, deterministic TypeScript diet and training engine, with tests"
+      },
+      {
+        es: "Funciona sin internet; la IA es opcional y los datos viven en el móvil",
+        ca: "Funciona sense internet; la IA és opcional i les dades viuen al mòbil",
+        en: "Works offline; the AI is opt-in and data stays on the phone"
+      },
+      {
+        es: "Cuentas y suscripción con backend propio: Express, Stripe y base en Turso",
+        ca: "Comptes i subscripció amb backend propi: Express, Stripe i base a Turso",
+        en: "Accounts and subscription with a custom backend: Express, Stripe and a Turso DB"
       }
     ]
   }
