@@ -27,7 +27,9 @@ import { CIAN, teclaZoom, useBucle } from "./comu3d";
 import { ModalProjecte } from "./ModalProjecte";
 import { Estrelles, Particules, ZoomRueda, prepararMapa } from "./piezas3d";
 
-const RADI = 6.8; // radio del anillo y de la nube de particulas (holgado, sin que se solapen)
+const RADI = 8.4; // radio del anillo y de la nube de particulas. Dimensiona la separacion entre
+// tarjetas: el hueco entre dos es ~2*PI*RADI/(nº proyectos). Con 11 proyectos, 6.8 las dejaba
+// tocandose; 8.4 abre hueco. Si se añaden muchos mas, subirlo para que no se solapen.
 const ALT = 2.2; // alto de la captura en el mundo; el ancho sale de su proporcion
 const MARC = 0.16; // margen oscuro alrededor de la captura, para que parezca una tarjeta
 const CANTO = 0.14; // radio de las esquinas de la captura (la tarjeta lleva ese mas el margen)
