@@ -10,6 +10,8 @@
 //   FIRMA                                          secreto para firmar los pases
 //   ORIGEN                                         de dónde se aceptan peticiones
 //   PORT                                           lo pone el hosting
+//   CLAVE_MANTENIMIENTO                            contraseña del panel de mantenimiento
+//   PROYECTOS_MANTENIMIENTO                        JSON con la lista de proyectos (incl. ocultos)
 
 import { createServer } from "node:http";
 import { createHmac, scryptSync, timingSafeEqual, randomUUID } from "node:crypto";
@@ -28,6 +30,23 @@ function origenDe(req) {
   return ORIGENES.includes(pide) ? pide : ORIGENES[0];
 }
 const HORAS = 12;
+
+// Panel de mantenimiento: la contraseña y la lista de proyectos (incluidos los que no
+// salen en el portfolio público) viven aquí en variables de entorno, NUNCA en el repo,
+// que es público. Sin estas variables, el panel simplemente no está disponible.
+const CLAVE_MANTENIMIENTO = process.env.CLAVE_MANTENIMIENTO ?? "";
+
+function proyectosMantenimiento() {
+  try {
+    const dato = process.env.PROYECTOS_MANTENIMIENTO;
+    if (!dato) return [];
+    const lista = JSON.parse(dato);
+    return Array.isArray(lista) ? lista : [];
+  } catch {
+    console.error("PROYECTOS_MANTENIMIENTO no es un JSON válido.");
+    return [];
+  }
+}
 
 if (!FIRMA) {
   console.error("Falta FIRMA: sin ella cualquiera podría fabricarse un pase.");
@@ -83,6 +102,15 @@ function contrasenaCorrecta(contrasena, guardado) {
   const calculado = scryptSync(contrasena, sal, 64).toString("hex");
   if (calculado.length !== esperado.length) return false;
   return timingSafeEqual(Buffer.from(calculado), Buffer.from(esperado));
+}
+
+// Comparación de la clave de mantenimiento en tiempo constante.
+function claveCorrecta(dada, buena) {
+  if (!buena) return false;
+  const a = Buffer.from(String(dada));
+  const b = Buffer.from(String(buena));
+  if (a.length !== b.length) return false;
+  return timingSafeEqual(a, b);
 }
 
 /* ---------- Freno a la fuerza bruta ---------- */
@@ -189,6 +217,42 @@ const servidor = createServer(async (req, res) => {
     const cuerpo = leerPase(pase);
     if (!cuerpo) return responder(res, 401, { error: "La sesión no vale o ha caducado." }, origen);
     return responder(res, 200, { ok: true, rol: cuerpo.rol, usuario: cuerpo.usuario }, origen);
+  }
+
+  // Entrar al panel de mantenimiento: usuario "admin" + la clave de la variable de entorno.
+  if (ruta === "/api/mantenimiento/entrar" && req.method === "POST") {
+    const ip = String(req.headers["x-forwarded-for"] ?? req.socket.remoteAddress ?? "").split(",")[0].trim();
+    if (demasiados(ip)) {
+      return responder(res, 429, { error: "Demasiados intentos. Prueba dentro de un rato." }, origen);
+    }
+    if (!CLAVE_MANTENIMIENTO) {
+      return responder(res, 503, { error: "El mantenimiento no está configurado en el servidor." }, origen);
+    }
+    let cuerpo;
+    try {
+      cuerpo = await leerCuerpo(req);
+    } catch {
+      return responder(res, 400, { error: "Petición mal formada." }, origen);
+    }
+    const usuario = String(cuerpo.usuario ?? "").trim().toLowerCase();
+    const clave = String(cuerpo.clave ?? cuerpo.contrasena ?? "");
+    if (usuario !== "admin" || !claveCorrecta(clave, CLAVE_MANTENIMIENTO)) {
+      anotarFallo(ip);
+      return responder(res, 401, { error: "El usuario o la contraseña no son correctos." }, origen);
+    }
+    const { pase, caduca } = crearPase("admin", "admin");
+    return responder(res, 200, { ok: true, rol: "admin", token: pase, expira: caduca }, origen);
+  }
+
+  // Lista de proyectos del panel (incluidos los ocultos). Solo con pase de admin.
+  if (ruta === "/api/mantenimiento" && req.method === "GET") {
+    const cabecera = String(req.headers.authorization ?? "");
+    const pase = cabecera.startsWith("Bearer ") ? cabecera.slice(7) : "";
+    const cuerpo = leerPase(pase);
+    if (!cuerpo || cuerpo.rol !== "admin") {
+      return responder(res, 401, { error: "Necesitas entrar como admin." }, origen);
+    }
+    return responder(res, 200, { ok: true, proyectos: proyectosMantenimiento() }, origen);
   }
 
   responder(res, 404, { error: "No encontrado." }, origen);

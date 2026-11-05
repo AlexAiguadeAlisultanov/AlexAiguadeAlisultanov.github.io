@@ -279,9 +279,21 @@ function Pagina({ sortir }: { sortir: () => void }) {
       <footer className="border-t border-linia py-10">
         <div className={`${AMPLE} flex flex-wrap items-center justify-between gap-x-6 gap-y-2 text-[14px] text-tinta-3`}>
           <p>Alejandro (Alex) Aiguadé Alisultánov · Lleida</p>
-          <p>
-            {t("foot.made")} · {new Date().getFullYear()}
-          </p>
+          <div className="flex flex-wrap items-center gap-x-5 gap-y-1">
+            <p>
+              {t("foot.made")} · {new Date().getFullYear()}
+            </p>
+            {/* Entrada al panel interno. A proposito poco visible: no es para el visitante. */}
+            <button
+              type="button"
+              onClick={() => {
+                window.location.hash = "mantenimiento";
+              }}
+              className="min-h-[44px] rounded-[8px] transition-colors duration-200 hover:text-tinta-2"
+            >
+              {t("foot.mant")}
+            </button>
+          </div>
         </div>
       </footer>
     </>

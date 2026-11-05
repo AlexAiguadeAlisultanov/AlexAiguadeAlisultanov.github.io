@@ -63,6 +63,7 @@ const es = {
   "contact.li": "El perfil entero, con más detalle",
   "contact.gh": "Todo el código de los proyectos",
   "foot.made": "Hecho a mano con React y TypeScript",
+  "foot.mant": "Mantenimiento",
   "contact.cv": "Ver currículum",
 
   "cv.back": "Volver al portafolio",
@@ -276,6 +277,7 @@ const ca: Partial<Record<Clau, string>> = {
   "contact.li": "El perfil sencer, amb més detall",
   "contact.gh": "Tot el codi dels projectes",
   "foot.made": "Fet a mà amb React i TypeScript",
+  "foot.mant": "Manteniment",
   "contact.cv": "Veure el currículum",
 
   "cv.back": "Tornar al portafoli",
@@ -484,6 +486,7 @@ const en: Partial<Record<Clau, string>> = {
   "contact.li": "The full profile, in more detail",
   "contact.gh": "All the code from the projects",
   "foot.made": "Handmade with React and TypeScript",
+  "foot.mant": "Maintenance",
   "contact.cv": "View CV",
 
   "cv.back": "Back to portfolio",

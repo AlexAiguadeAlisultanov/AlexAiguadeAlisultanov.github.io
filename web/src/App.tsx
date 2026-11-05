@@ -15,6 +15,11 @@ const cargarPortafoli = () => import("./components/Portafoli").then((m) => ({ de
 const cargarCurriculum = () => import("./components/Curriculum").then((m) => ({ default: m.Curriculum }));
 const Portafoli = lazy(cargarPortafoli);
 const Curriculum = lazy(cargarCurriculum);
+// El panel de mantenimiento es una vista interna que casi nadie abre: su trozo se pide solo
+// cuando se entra en el hash #mantenimiento, no antes.
+const Mantenimiento = lazy(() =>
+  import("./components/Mantenimiento").then((m) => ({ default: m.Mantenimiento }))
+);
 
 // Con una sesion guardada lo normal es abrir el portafolio en cuanto la API la confirme: el trozo
 // se pide ya, a la vez que la comprobacion, y no despues de ella. Con el acceso desactivado se
@@ -32,19 +37,31 @@ function alLliure(fer: () => void): () => void {
 }
 
 const veCurriculum = () => window.location.hash === "#cv";
+const veMantenimiento = () => window.location.hash === "#mantenimiento";
 
 export default function App() {
   // Con el acceso desactivado se entra directo como invitado y la pantalla de login no se pinta.
   const [rol, setRol] = useState<Rol | null>(ACCESO_ACTIVO ? null : "invitado");
   const obrir = useCallback((nou: Rol) => setRol(nou), []);
 
-  // El curriculum es la vista #cv. No hay router: basta con leer el hash, y asi el boton
-  // de atras del navegador tambien vuelve al portafolio.
+  // El curriculum (#cv) y el mantenimiento (#mantenimiento) son vistas que sustituyen al
+  // portafolio. No hay router: basta con leer el hash, y asi el boton de atras del navegador
+  // tambien vuelve al portafolio.
   const [cv, setCv] = useState(veCurriculum);
+  const [mant, setMant] = useState(veMantenimiento);
   useEffect(() => {
-    const alCanviar = () => setCv(veCurriculum());
+    const alCanviar = () => {
+      setCv(veCurriculum());
+      setMant(veMantenimiento());
+    };
     window.addEventListener("hashchange", alCanviar);
     return () => window.removeEventListener("hashchange", alCanviar);
+  }, []);
+
+  const tornarPortafoli = useCallback(() => {
+    history.pushState(null, "", window.location.pathname + window.location.search);
+    setMant(false);
+    window.scrollTo({ top: 0, behavior: "instant" });
   }, []);
 
   const tornar = useCallback((idForzat?: string) => {
@@ -92,7 +109,13 @@ export default function App() {
         // LimitCarrega lo cuenta y deja recargar.
         <LimitCarrega>
           <Suspense fallback={<div aria-hidden className="min-h-dvh" />}>
-            {cv ? <Curriculum tornar={tornar} /> : <Portafoli rol={rol} sortir={sortir} />}
+            {mant ? (
+              <Mantenimiento tornar={tornarPortafoli} />
+            ) : cv ? (
+              <Curriculum tornar={tornar} />
+            ) : (
+              <Portafoli rol={rol} sortir={sortir} />
+            )}
           </Suspense>
         </LimitCarrega>
       ) : (
