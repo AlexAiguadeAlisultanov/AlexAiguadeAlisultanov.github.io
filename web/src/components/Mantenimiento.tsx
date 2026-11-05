@@ -1,10 +1,19 @@
 // Panel interno de mantenimiento. Vive dentro del portafolio pero detras de su propio login
 // de administrador, que valida la API (aqui no hay ninguna clave). Se abre con el hash
-// #mantenimiento y ensena la lista completa de proyectos, incluidos los que no salen en el
-// portafolio publico. Esta en castellano a proposito: es una pantalla interna, no de cara al
-// visitante.
+// #mantenimiento.
+//
+// Ya dentro es un panel de admin que junta TODOS los proyectos en una sola vista, para poder
+// probar cualquier demo:
+//   - Los visibles en el portafolio publico salen del mismo cargador que usa la web, pedido
+//     en rol "admin" (ProveidorProjectes), asi que llegan con su demo y su repo ya resueltos
+//     y con las URLs correctas, sin reescribir nada a mano.
+//   - Los ocultos (los que NO salen en el portafolio publico, como la herramienta eJPT) los
+//     trae la API con cargarMantenimiento y se anaden marcados aparte.
+// El portafolio publico no se toca: ahi se siguen viendo solo los visibles.
+//
+// Esta pantalla esta en castellano a proposito: es interna, no de cara al visitante.
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import {
   cargarMantenimiento,
@@ -14,6 +23,7 @@ import {
   oblidarMant
 } from "../lib/acces";
 import type { FallaMant, ProjecteMant } from "../lib/acces";
+import { ProveidorProjectes, useProjectesCtx } from "../lib/ProveidorProjectes";
 import { Enrere, Escut, Fletxa, GitHub } from "./Icones";
 import logo from "../assets/logo.png";
 
@@ -50,20 +60,39 @@ const SECUNDARI =
   "inline-flex min-h-11 items-center gap-2 rounded-[8px] border border-linia px-4 text-[14px] " +
   "font-medium text-tinta-2 transition-colors duration-200 hover:border-accent/40 hover:text-tinta";
 
+// Una fila del panel, da igual de donde venga: un proyecto visible o uno oculto.
+type Fila = {
+  clau: string;
+  nombre: string;
+  descripcion: string;
+  demo: string; // vacia = pendiente de desplegar
+  repo: string; // vacia = sin enlace al codigo (repo privado o aun sin publicar)
+  oculto: boolean;
+};
+
+// Dos URLs son la misma aunque cambien mayusculas o la barra final.
+function normUrl(u?: string): string {
+  return (u ?? "").trim().toLowerCase().replace(/\/+$/, "");
+}
+
 /* ---------- Tarjeta de un proyecto ---------- */
 
-function Targeta({ projecte }: { projecte: ProjecteMant }) {
-  const { nombre, descripcion, url, repo, oculto } = projecte;
+function Targeta({ fila }: { fila: Fila }) {
+  const { nombre, descripcion, demo, repo, oculto } = fila;
   return (
     <li className={CARD}>
       <div className="flex items-start justify-between gap-3">
-        <h2 className="text-[17px] font-semibold tracking-tight text-tinta">{nombre}</h2>
+        <h3 className="text-[17px] font-semibold tracking-tight text-tinta">{nombre}</h3>
         {oculto ? (
           <span className="inline-flex shrink-0 items-center gap-1.5 rounded-[8px] border border-espera/40 bg-espera/10 px-2.5 py-1 text-[12px] font-medium uppercase tracking-[0.08em] text-espera">
             <span aria-hidden className="size-1.5 rounded-full bg-espera" />
             Oculto
           </span>
-        ) : null}
+        ) : (
+          <span className="inline-flex shrink-0 items-center rounded-[8px] border border-linia bg-fons-3 px-2.5 py-1 text-[12px] font-medium uppercase tracking-[0.08em] text-tinta-3">
+            Visible
+          </span>
+        )}
       </div>
 
       {descripcion ? (
@@ -73,8 +102,8 @@ function Targeta({ projecte }: { projecte: ProjecteMant }) {
       )}
 
       <div className="mt-5 flex flex-wrap items-center gap-3">
-        {url ? (
-          <a href={url} target="_blank" rel="noopener noreferrer" className={PRIMARI}>
+        {demo ? (
+          <a href={demo} target="_blank" rel="noopener noreferrer" className={PRIMARI}>
             Abrir demo
             <Fletxa className="text-[18px]" />
           </a>
@@ -94,7 +123,129 @@ function Targeta({ projecte }: { projecte: ProjecteMant }) {
   );
 }
 
-/* ---------- Panel ---------- */
+/* ---------- Un bloque de tarjetas con su encabezado ---------- */
+
+function Bloc({ titol, files }: { titol: string; files: Fila[] }) {
+  return (
+    <section className="mt-12">
+      <h2 className="text-[14px] font-semibold uppercase tracking-[0.14em] text-tinta-3">
+        {titol} · {files.length}
+      </h2>
+      {files.length ? (
+        <ul className="mt-5 grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+          {files.map((fila) => (
+            <Targeta key={fila.clau} fila={fila} />
+          ))}
+        </ul>
+      ) : (
+        <p className="mt-5 text-[15px] leading-relaxed text-tinta-3">Aquí no hay nada todavía.</p>
+      )}
+    </section>
+  );
+}
+
+/* ---------- Panel ya logueado ----------
+   Vive dentro de ProveidorProjectes (rol admin), asi que useProjectesCtx le da la lista de
+   proyectos del portafolio. Los ocultos llegan por prop, desde la API. */
+
+type ApiEstat = {
+  llista: ProjecteMant[] | null;
+  carregant: boolean;
+  lent: boolean;
+  error: FallaMant | "";
+  reintentar: () => void;
+};
+
+function PanellAdmin({ api }: { api: ApiEstat }) {
+  const { llista } = useProjectesCtx();
+
+  // Los visibles: todo lo que el portafolio ensena, con rol admin ya resueltos demo y repo.
+  const visibles: Fila[] = useMemo(
+    () =>
+      llista.map((p) => ({
+        clau: "pub:" + p.nom,
+        nombre: p.titol,
+        descripcion: p.lema,
+        demo: p.demo,
+        repo: p.url,
+        oculto: false
+      })),
+    [llista]
+  );
+
+  // Los ocultos: los de la API que no estan ya entre los visibles (se compara por la URL de
+  // la demo o del repo, que es lo fiable). Asi eJPT y compania salen aqui sin duplicar nada.
+  const ocults: Fila[] = useMemo(() => {
+    if (!api.llista) return [];
+    const urls = new Set<string>();
+    for (const p of llista) {
+      if (p.demo) urls.add(normUrl(p.demo));
+      if (p.url) urls.add(normUrl(p.url));
+    }
+    const jaVisible = (m: ProjecteMant) => {
+      const d = normUrl(m.url);
+      const r = normUrl(m.repo);
+      return (!!d && urls.has(d)) || (!!r && urls.has(r));
+    };
+    return api.llista
+      .filter((m) => !jaVisible(m))
+      .map((m) => ({
+        clau: "oc:" + (m.repo || m.url || m.nombre),
+        nombre: m.nombre,
+        descripcion: m.descripcion,
+        demo: m.url,
+        repo: m.repo ?? "",
+        oculto: true
+      }));
+  }, [api.llista, llista]);
+
+  const total = visibles.length + ocults.length;
+  const resum = api.carregant
+    ? `${visibles.length} ${visibles.length === 1 ? "proyecto visible" : "proyectos visibles"} · buscando los ocultos`
+    : `${total} ${total === 1 ? "proyecto" : "proyectos"} · ${visibles.length} ${
+        visibles.length === 1 ? "visible" : "visibles"
+      } · ${ocults.length} ${ocults.length === 1 ? "oculto" : "ocultos"}`;
+
+  return (
+    <section aria-labelledby="mant-titol">
+      <span className="inline-flex items-center gap-2 text-[14px] font-medium uppercase tracking-[0.16em] text-accent">
+        <Escut className="text-[18px]" />
+        Panel interno
+      </span>
+      <h1 id="mant-titol" className="titular titular--l mt-3">
+        Panel de administración
+      </h1>
+      <p className="mt-4 text-[15px] leading-relaxed text-tinta-2">{resum}</p>
+
+      <Bloc titol="Visibles en el portfolio" files={visibles} />
+
+      {/* Los ocultos tienen su propia carga: el panel ya ensena los visibles mientras llegan. */}
+      {api.carregant ? (
+        <section className="mt-12">
+          <h2 className="text-[14px] font-semibold uppercase tracking-[0.14em] text-tinta-3">Ocultos</h2>
+          <p role="status" className="mt-5 flex items-start gap-2 text-[14px] leading-relaxed text-tinta-3">
+            <span aria-hidden className="mt-[7px] size-1.5 shrink-0 rounded-full bg-accent" />
+            {api.lent ? LENT : "Pidiendo la lista de proyectos ocultos."}
+          </p>
+        </section>
+      ) : api.error ? (
+        <section className="mt-12">
+          <h2 className="text-[14px] font-semibold uppercase tracking-[0.14em] text-tinta-3">Ocultos</h2>
+          <p role="alert" className="mt-5 text-[15px] leading-relaxed text-malament">
+            {MISSATGE[api.error]}
+          </p>
+          <button type="button" onClick={api.reintentar} className={`${SECUNDARI} mt-5`}>
+            Volver a intentarlo
+          </button>
+        </section>
+      ) : (
+        <Bloc titol="Ocultos" files={ocults} />
+      )}
+    </section>
+  );
+}
+
+/* ---------- Mantenimiento: login y, ya dentro, el panel ---------- */
 
 export function Mantenimiento({ tornar }: { tornar: () => void }) {
   const quiet = useReducedMotion();
@@ -109,11 +260,11 @@ export function Mantenimiento({ tornar }: { tornar: () => void }) {
   const [lentLogin, setLentLogin] = useState(false);
   const [avis, setAvis] = useState(false); // la sesion caduco mientras se usaba el panel
 
-  // Lista de proyectos.
-  const [projectes, setProjectes] = useState<ProjecteMant[] | null>(null);
-  const [carregant, setCarregant] = useState(false);
-  const [errLlista, setErrLlista] = useState<FallaMant | "">("");
-  const [lentLlista, setLentLlista] = useState(false);
+  // Lista de proyectos ocultos (la de la API). Los visibles los pone ProveidorProjectes.
+  const [apiLlista, setApiLlista] = useState<ProjecteMant[] | null>(null);
+  const [apiCarregant, setApiCarregant] = useState(false);
+  const [apiError, setApiError] = useState<FallaMant | "">("");
+  const [apiLent, setApiLent] = useState(false);
   const [intent, setIntent] = useState(0); // para reintentar la carga
 
   const clauRef = useRef<HTMLInputElement>(null);
@@ -133,34 +284,35 @@ export function Mantenimiento({ tornar }: { tornar: () => void }) {
     }
   }, [token]);
 
-  // Con token, se pide la lista. Si el token ya no vale se vuelve al login con un aviso.
+  // Con token, se pide la lista de ocultos. Esta llamada vale tambien de comprobacion del
+  // token: si contesta que ya no vale, se vuelve al login con un aviso.
   useEffect(() => {
     if (!token) return;
 
     let viu = true;
-    setCarregant(true);
-    setErrLlista("");
-    setLentLlista(false);
+    setApiCarregant(true);
+    setApiError("");
+    setApiLent(false);
     const rellotge = window.setTimeout(() => {
-      if (viu) setLentLlista(true);
+      if (viu) setApiLent(true);
     }, AVIS_LENT);
 
     cargarMantenimiento(token).then((res) => {
       if (!viu) return;
       window.clearTimeout(rellotge);
-      setLentLlista(false);
-      setCarregant(false);
+      setApiLent(false);
+      setApiCarregant(false);
       if (res.ok) {
-        setProjectes(res.proyectos);
+        setApiLlista(res.proyectos);
         return;
       }
       if (res.falla === "auth") {
         setToken(null);
-        setProjectes(null);
+        setApiLlista(null);
         setAvis(true);
         return;
       }
-      setErrLlista(res.falla);
+      setApiError(res.falla);
     });
 
     return () => {
@@ -206,17 +358,11 @@ export function Mantenimiento({ tornar }: { tornar: () => void }) {
   const sortir = () => {
     oblidarMant();
     setToken(null);
-    setProjectes(null);
-    setErrLlista("");
+    setApiLlista(null);
+    setApiError("");
     setClau("");
     setAvis(false);
   };
-
-  const ocults = projectes ? projectes.filter((p) => p.oculto).length : 0;
-  // Los ocultos primero: son lo que no se ve en la web, lo que hay que vigilar.
-  const ordenats = projectes
-    ? [...projectes].sort((a, b) => Number(b.oculto) - Number(a.oculto))
-    : [];
 
   return (
     <div className="min-h-dvh">
@@ -252,51 +398,17 @@ export function Mantenimiento({ tornar }: { tornar: () => void }) {
           transition={{ duration: 0.4, ease: [0.22, 0.61, 0.36, 1] }}
         >
           {token ? (
-            /* ---------- Con sesion: la lista ---------- */
-            <section aria-labelledby="mant-titol">
-              <span className="inline-flex items-center gap-2 text-[14px] font-medium uppercase tracking-[0.16em] text-accent">
-                <Escut className="text-[18px]" />
-                Panel interno
-              </span>
-              <h1 id="mant-titol" className="titular titular--l mt-3">
-                Mantenimiento
-              </h1>
-              <p className="mt-4 text-[15px] leading-relaxed text-tinta-2">
-                {carregant
-                  ? "Cargando los proyectos."
-                  : projectes
-                    ? `${projectes.length} ${projectes.length === 1 ? "proyecto" : "proyectos"}${
-                        ocults ? ` · ${ocults} ${ocults === 1 ? "oculto" : "ocultos"}` : ""
-                      }`
-                    : "Lista de todos los proyectos, incluidos los que no salen en el portafolio."}
-              </p>
-
-              {carregant ? (
-                <p role="status" className="mt-10 flex items-start gap-2 text-[14px] leading-relaxed text-tinta-3">
-                  <span aria-hidden className="mt-[7px] size-1.5 shrink-0 rounded-full bg-accent" />
-                  {lentLlista ? LENT : "Comprobando la sesión y pidiendo la lista."}
-                </p>
-              ) : errLlista ? (
-                <div className="mt-10">
-                  <p role="alert" className="text-[15px] leading-relaxed text-malament">
-                    {MISSATGE[errLlista]}
-                  </p>
-                  <button type="button" onClick={() => setIntent((n) => n + 1)} className={`${SECUNDARI} mt-5`}>
-                    Volver a intentarlo
-                  </button>
-                </div>
-              ) : ordenats.length ? (
-                <ul className="mt-10 grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
-                  {ordenats.map((p, i) => (
-                    <Targeta key={p.repo ?? p.url ?? p.nombre ?? i} projecte={p} />
-                  ))}
-                </ul>
-              ) : (
-                <p className="mt-10 text-[15px] leading-relaxed text-tinta-3">
-                  Todavía no hay proyectos en la lista.
-                </p>
-              )}
-            </section>
+            <ProveidorProjectes rol="admin">
+              <PanellAdmin
+                api={{
+                  llista: apiLlista,
+                  carregant: apiCarregant,
+                  lent: apiLent,
+                  error: apiError,
+                  reintentar: () => setIntent((n) => n + 1)
+                }}
+              />
+            </ProveidorProjectes>
           ) : (
             /* ---------- Sin sesion: el login ---------- */
             <div className="mx-auto max-w-[420px]">
@@ -306,7 +418,8 @@ export function Mantenimiento({ tornar }: { tornar: () => void }) {
               </span>
               <h1 className="titular titular--l mt-3">Mantenimiento</h1>
               <p className="mt-4 text-[15px] leading-relaxed text-tinta-2">
-                Entra con la cuenta de administrador para ver la lista completa de proyectos.
+                Entra con la cuenta de administrador para ver y probar todos los proyectos, incluidos los
+                que no salen en el portafolio.
               </p>
 
               <form
