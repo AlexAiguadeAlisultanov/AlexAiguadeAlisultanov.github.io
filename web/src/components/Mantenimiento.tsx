@@ -125,12 +125,17 @@ function Targeta({ fila }: { fila: Fila }) {
 
 /* ---------- Un bloque de tarjetas con su encabezado ---------- */
 
-function Bloc({ titol, files }: { titol: string; files: Fila[] }) {
+function Bloc({ titol, files, nota }: { titol: string; files: Fila[]; nota?: string }) {
   return (
     <section className="mt-12">
       <h2 className="text-[14px] font-semibold uppercase tracking-[0.14em] text-tinta-3">
         {titol} · {files.length}
       </h2>
+      {nota ? (
+        <p role="status" className="mt-3 text-[14px] leading-relaxed text-tinta-3">
+          {nota}
+        </p>
+      ) : null}
       {files.length ? (
         <ul className="mt-5 grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
           {files.map((fila) => (
@@ -157,7 +162,7 @@ type ApiEstat = {
 };
 
 function PanellAdmin({ api }: { api: ApiEstat }) {
-  const { llista } = useProjectesCtx();
+  const { llista, estat } = useProjectesCtx();
 
   // Los visibles: todo lo que el portafolio ensena, con rol admin ya resueltos demo y repo.
   const visibles: Fila[] = useMemo(
@@ -202,9 +207,20 @@ function PanellAdmin({ api }: { api: ApiEstat }) {
   const total = visibles.length + ocults.length;
   const resum = api.carregant
     ? `${visibles.length} ${visibles.length === 1 ? "proyecto visible" : "proyectos visibles"} · buscando los ocultos`
-    : `${total} ${total === 1 ? "proyecto" : "proyectos"} · ${visibles.length} ${
-        visibles.length === 1 ? "visible" : "visibles"
-      } · ${ocults.length} ${ocults.length === 1 ? "oculto" : "ocultos"}`;
+    : `${total} ${total === 1 ? "proyecto" : "proyectos"} · ${ocults.length} ${
+        ocults.length === 1 ? "oculto" : "ocultos"
+      } · ${visibles.length} ${visibles.length === 1 ? "visible" : "visibles"}`;
+
+  // De donde sale la lista del portafolio. Las tarjetas se ven igual (hay copia local o la
+  // lista escrita a mano de respaldo); esto solo avisa de si esta al dia o es la de reserva.
+  const avisVisibles =
+    estat === "feed.loading"
+      ? "Actualizando la lista desde GitHub."
+      : estat === "feed.cache"
+        ? "GitHub no contesta ahora mismo. Esta es la última lista guardada."
+        : estat === "feed.offline"
+          ? "GitHub no contesta ahora mismo. Esta es la lista de siempre."
+          : "";
 
   return (
     <section aria-labelledby="mant-titol">
@@ -217,9 +233,8 @@ function PanellAdmin({ api }: { api: ApiEstat }) {
       </h1>
       <p className="mt-4 text-[15px] leading-relaxed text-tinta-2">{resum}</p>
 
-      <Bloc titol="Visibles en el portfolio" files={visibles} />
-
-      {/* Los ocultos tienen su propia carga: el panel ya ensena los visibles mientras llegan. */}
+      {/* Primero los ocultos: es lo que no se ve en la web y lo que el admin viene a probar.
+          Tienen su propia carga, asi que los visibles de debajo no esperan por ellos. */}
       {api.carregant ? (
         <section className="mt-12">
           <h2 className="text-[14px] font-semibold uppercase tracking-[0.14em] text-tinta-3">Ocultos</h2>
@@ -241,6 +256,8 @@ function PanellAdmin({ api }: { api: ApiEstat }) {
       ) : (
         <Bloc titol="Ocultos" files={ocults} />
       )}
+
+      <Bloc titol="Visibles en el portfolio" files={visibles} nota={avisVisibles || undefined} />
     </section>
   );
 }
@@ -364,13 +381,20 @@ export function Mantenimiento({ tornar }: { tornar: () => void }) {
     setAvis(false);
   };
 
+  // Volver al portafolio cierra antes la sesion de mantenimiento: al salir del panel no queda
+  // ningun token abierto, ni en memoria ni guardado.
+  const volverAlPortafolio = () => {
+    sortir();
+    tornar();
+  };
+
   return (
     <div className="min-h-dvh">
       <header className="sticky top-0 z-50 border-b border-linia/70 bg-fons/80 backdrop-blur-xl">
         <div className="ample flex h-14 items-center justify-between gap-3">
           <button
             type="button"
-            onClick={tornar}
+            onClick={volverAlPortafolio}
             className="group inline-flex min-h-[44px] items-center gap-2 rounded-[8px] pr-2 text-[14px] font-medium text-tinta-2 transition-colors duration-200 hover:text-tinta"
           >
             <Enrere className="text-[18px] transition-transform duration-200 group-hover:-translate-x-0.5 motion-reduce:transition-none" />
